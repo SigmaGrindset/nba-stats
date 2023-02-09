@@ -9,9 +9,12 @@ async function scrapeTeams() {
   const teamsActiveTable = dom.window.document.querySelector("#teams_active")
   const activeTeams = teamsActiveTable.querySelectorAll(".full_table")
 
+  // activeTeams.forEach(async team => {
   link = activeTeams[0].querySelector("a").getAttribute("href")
   currentSeasonTeamLink = await getCurrentSeasonTeam(link)
-  scrapeTeam(currentSeasonTeamLink)
+  const teamData = scrapeTeam(currentSeasonTeamLink)
+  console.log(teamData)
+  // });
 
 }
 
@@ -49,36 +52,63 @@ async function scrapeTeam(link) {
   let teamData = {}
 
   dataParagraphs.forEach(p => {
-    const text = p.textContent.split(":")
-    console.log(p.textContent.split("\n"))
-    // if (text.length == 2) {
-    //   let [name, value] = text
+    row = p.textContent.split("\n")
+    if (row.length == 1) {
+      [name, value] = oneStatParagraph(row)
+      teamData[name] = value
+    }
+    else {
+      // ako u redu ima vise statistika
+      row = removeWhitespaceFromArr(row)
+      let currentStatValue = ""
+      let currentName = ""
+      let rowStats = {}
+      row.forEach(item => {
+        if (item.split(":").length == 2 && item.split(":")[1] !== "") {
+          // ako je oblika ["name: value", "name:value"]
+          [name, value] = oneStatParagraph([item])
+          rowStats[name] = value
+        } else {
+          if (item.slice(-1) == ":") {
+            // ako je samo name, znaci da nakon njega dolaze vrijednosti i mozda opet name
+            if (currentName !== "") {
+              rowStats[currentName] = currentStatValue
+              currentName = ""
+              currentStatValue = ""
+            }
+            currentName = item.replace(":", "")
+          } else {
+            // ako je vrijednost statistike
+            currentStatValue = currentStatValue.concat(item).concat(" ")
+          }
+          if (currentName !== "") {
+            rowStats[currentName] = currentStatValue
+          }
+        }
 
-    //   name = name.replaceAll(" ", "").replaceAll("\n", "").trim()
-    //   name = name[0].toLowerCase() + name.slice(1)
-    //   value = removeWhitespace(value.replaceAll("\n", "").trim())
+      })
+      teamData = {
+        ...teamData,
+        ...rowStats
+      }
+    }
+  })
+  return teamData
+}
 
-    //   teamData[name] = value;
-
-    // } else {
-    //   // console.log(p.textContent.split("\n"))
-    //   p = p.textContent.split("\n")
-    //   p = removeWhitespaceFromArr(p)
-    //   p.forEach(item => {
-    //     if (item.splice(-2) == ":") {
-
-    //     }
-    //   });
-    // }
-  });
-  // console.log(teamData)
-
+function oneStatParagraph(row) {
+  // ako je jedna statistika u redu
+  [statName, value] = row[0].split(":")
+  statName = removeWhitespace(statName).replaceAll("\n", "").trim()
+  value = removeWhitespace(value).replaceAll("\n", "").trim()
+  return [statName, value]
 }
 
 function removeWhitespaceFromArr(arr) {
   arr2 = []
   arr.forEach(item => {
     item = removeWhitespace(item)
+    item = item.trim()
     if (item !== "") {
       arr2.push(item)
     }
@@ -86,4 +116,11 @@ function removeWhitespaceFromArr(arr) {
   return arr2
 }
 
-scrapeTeams()
+// scrapeTeams()
+
+async function dsadsa() {
+
+  const res = await axios.get("https://www.basketball-reference.com/teams/")
+}
+
+dsadsa()
