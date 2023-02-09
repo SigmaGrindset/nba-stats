@@ -116,11 +116,4 @@ function removeWhitespaceFromArr(arr) {
   return arr2
 }
 
-// scrapeTeams()
-
-async function dsadsa() {
-
-  const res = await axios.get("https://www.basketball-reference.com/teams/")
-}
-
-dsadsa()
+scrapeTeams()
