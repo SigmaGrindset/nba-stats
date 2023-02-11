@@ -1,126 +1,94 @@
 const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const axios = require("axios")
-const axiosInstance = axios.create({ baseURL: "https://www.basketball-reference.com" })
+const axiosInstance = axios.create({ baseURL: "https://www.nba.com" })
+const fs = require("fs").promises
+
+
+async function getTeamLinks() {
+  // daje linkove svih timova
+  const data = JSON.parse(await fs.readFile("team_links.json"));
+  if (data.links.length !== 30) {
+    // ako nema sve timove onda treb scrapeati
+    const links = await scrapeTeamLinks();
+    data.links = links;
+    await fs.writeFile("team_links.json", JSON.stringify(data), err => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
+  return data.links
+}
+
+async function scrapeTeamLinks() {
+  // uzima linkove svih timova sa stranice
+  const res = await axios.get("https://www.nba.com/teams");
+  const dom = new JSDOM(res.data);
+  const teamLinksContainer = dom.window.document.querySelectorAll(".TeamFigure_tfLinks__gwWFj");
+  const teamLinks = []
+  teamLinksContainer.forEach(async container => {
+    const teamLink = container.querySelector("a").getAttribute("href"); // uvijek je prvi link za profile
+    teamLinks.push(teamLink);
+  });
+  return teamLinks;
+}
+
+
 
 async function scrapeTeams() {
-  const res = await axios.get("https://www.basketball-reference.com/teams/")
-  const dom = new JSDOM(res.data)
-  const teamsActiveTable = dom.window.document.querySelector("#teams_active")
-  const activeTeams = teamsActiveTable.querySelectorAll(".full_table")
+  // ide kroz sve timove i scrapea svaki tim posebno sa zasebnom funkcijom
+  const teamLinks = await getTeamLinks();
 
-  const link = activeTeams[0].querySelector("a").getAttribute("href")
-  const currentSeasonTeamLink = await getCurrentSeasonTeam(link)
-  const teamData = await scrapeTeam(currentSeasonTeamLink)
-  console.log(teamData)
-
-  // activeTeams.forEach(async team => {
-  //   const link = team.querySelector("a").getAttribute("href")
-  //   const currentSeasonTeamLink = await getCurrentSeasonTeam(link)
-  //   console.log(currentSeasonTeamLink)
-  // const teamData = await scrapeTeam(currentSeasonTeamLink)
-  // console.log(teamData)
-  // });
-
-}
-
-async function getCurrentSeasonTeam(link) {
-  // link za team opcenito, vraca link za team u trenutnoj sezoni
-  const res = await axiosInstance.get(link)
-  const dom = new JSDOM(res.data)
-  const table = dom.window.document.querySelector(".stats_table")
-  const body = table.querySelector("tbody")
-  const row = body.querySelector("tr")
-  const team = row.querySelectorAll("td")[1].querySelector("a").getAttribute("href")
-  return team
-}
-
-function removeWhitespace(expression) {
-  expression = expression.split(" ")
-  expression = expression.filter(word => word !== "")
-  res = ""
-  expression.forEach(word => {
-    res = res.concat(word, " ")
+  // const teamData = await scrapeTeam(teamLinks[0]);
+  teamLinks.forEach(async link => {
+    const teamData = await scrapeTeam(link);
+    console.log(teamData.name);
   });
-  res.trim()
-  return res
 }
 
 
 async function scrapeTeam(link) {
-  const res = await axiosInstance.get(link)
-  const dom = new JSDOM(res.data)
+  const res = await axiosInstance.get(link);
+  const dom = new JSDOM(res.data);
+  const document = dom.window.document
 
-  const general = dom.window.document.querySelector("#meta")
-  const dataWrapper = general.querySelectorAll("div")[1]
-  const dataParagraphs = dataWrapper.querySelectorAll("p")
+  const id = parseInt(link.split("/").slice(-3));
+  const name = document.querySelector(".TeamHeader_name__MmHlP").textContent;
+  const recordContainers = document.querySelector(".TeamHeader_record__wzofp").querySelectorAll("span")
+  const record = recordContainers.item(0).textContent;
+  const placementText = recordContainers.item(1).textContent.replace("|", "").replace(" ", "").replace(" ", "");
 
-  let teamData = {}
-
-  dataParagraphs.forEach(p => {
-    row = p.textContent.split("\n")
-    if (row.length == 1) {
-      [name, value] = oneStatParagraph(row)
-      teamData[name] = value
-    }
-    else {
-      // ako u redu ima vise statistika
-      row = removeWhitespaceFromArr(row)
-      let currentStatValue = ""
-      let currentName = ""
-      let rowStats = {}
-      row.forEach(item => {
-        if (item.split(":").length == 2 && item.split(":")[1] !== "") {
-          // ako je oblika ["name: value", "name:value"]
-          [name, value] = oneStatParagraph([item])
-          rowStats[name] = value
-        } else {
-          if (item.slice(-1) == ":") {
-            // ako je samo name, znaci da nakon njega dolaze vrijednosti i mozda opet name
-            if (currentName !== "") {
-              rowStats[currentName] = currentStatValue
-              currentName = ""
-              currentStatValue = ""
-            }
-            currentName = item.replace(":", "")
-          } else {
-            // ako je vrijednost statistike
-            currentStatValue = currentStatValue.concat(item).concat(" ")
-          }
-          if (currentName !== "") {
-            rowStats[currentName] = currentStatValue
-          }
-        }
-
-      })
-      teamData = {
-        ...teamData,
-        ...rowStats
-      }
-    }
-  })
-  return teamData
-}
-
-function oneStatParagraph(row) {
-  // ako je jedna statistika u redu
-  [statName, value] = row[0].split(":")
-  statName = removeWhitespace(statName).replaceAll("\n", "").trim()
-  value = removeWhitespace(value).replaceAll("\n", "").trim()
-  return [statName, value]
-}
-
-function removeWhitespaceFromArr(arr) {
-  arr2 = []
-  arr.forEach(item => {
-    item = removeWhitespace(item)
-    item = item.trim()
-    if (item !== "") {
-      arr2.push(item)
-    }
+  const ranksData = []
+  const ranksContainer = document.querySelectorAll(".TeamHeader_rank__lMnzF");
+  ranksContainer.forEach(rankConainer => {
+    const label = rankConainer.querySelector(".TeamHeader_rankLabel__5mPf9").textContent;
+    const placement = rankConainer.querySelector(".TeamHeader_rankOrdinal__AaXPR").textContent;
+    const value = parseFloat(rankConainer.querySelector(".TeamHeader_rankValue__ZGDCq").textContent);
+    ranksData.push({ label, placement, value });
   });
-  return arr2
+
+  const playersTable = document.querySelector(".MockStatsTable_statsTable__V_Skx").querySelector("table");
+  const playerLinks = playersTable.querySelector("tbody").querySelectorAll(".primary.text");
+  playerLinks.forEach(async link => {
+    link = link.querySelector("a").getAttribute("href");
+    const playerData = await scrapePlayer(link);
+  });
+
+  const teamData = {
+    id,
+    name,
+    record,
+    placementText,
+    ranksData
+  };
+  return teamData;
+}
+
+
+async function scrapePlayer(link) {
 }
 
 scrapeTeams()
+
 
