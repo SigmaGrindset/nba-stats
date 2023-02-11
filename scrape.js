@@ -9,11 +9,17 @@ async function scrapeTeams() {
   const teamsActiveTable = dom.window.document.querySelector("#teams_active")
   const activeTeams = teamsActiveTable.querySelectorAll(".full_table")
 
-  // activeTeams.forEach(async team => {
-  link = activeTeams[0].querySelector("a").getAttribute("href")
-  currentSeasonTeamLink = await getCurrentSeasonTeam(link)
-  const teamData = scrapeTeam(currentSeasonTeamLink)
+  const link = activeTeams[0].querySelector("a").getAttribute("href")
+  const currentSeasonTeamLink = await getCurrentSeasonTeam(link)
+  const teamData = await scrapeTeam(currentSeasonTeamLink)
   console.log(teamData)
+
+  // activeTeams.forEach(async team => {
+  //   const link = team.querySelector("a").getAttribute("href")
+  //   const currentSeasonTeamLink = await getCurrentSeasonTeam(link)
+  //   console.log(currentSeasonTeamLink)
+  // const teamData = await scrapeTeam(currentSeasonTeamLink)
+  // console.log(teamData)
   // });
 
 }
@@ -117,3 +123,4 @@ function removeWhitespaceFromArr(arr) {
 }
 
 scrapeTeams()
+
