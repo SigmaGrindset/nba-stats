@@ -1,13 +1,28 @@
 const jsdom = require("jsdom")
 const { JSDOM } = jsdom
+const fs = require("fs").promises;
 const axios = require("axios")
 const axiosInstance = axios.create({ baseURL: "https://www.nba.com" })
 const puppeteer = require("puppeteer");
-const { getTeamLinks, mergeColumnRow, transformLabel } = require("./utils/scrape_utils");
+const { mergeColumnRow, transformLabel } = require("./utils/scrape_utils");
 
 const BASELINK = "https://www.nba.com"
 
-
+async function getTeamLinks() {
+  // daje linkove svih timova
+  const data = JSON.parse(await fs.readFile("team_links.json"));
+  if (data.links.length !== 30) {
+    // ako nema sve timove onda treb scrapeati
+    const links = await scrapeTeamLinks();
+    data.links = links;
+    await fs.writeFile("team_links.json", JSON.stringify(data), err => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
+  return data.links
+}
 
 async function scrapeTeamLinks() {
   // uzima linkove svih timova sa stranice
@@ -16,8 +31,12 @@ async function scrapeTeamLinks() {
   const teamLinksContainer = dom.window.document.querySelectorAll(".TeamFigure_tfLinks__gwWFj");
   const teamLinks = []
   teamLinksContainer.forEach(async container => {
-    const teamLink = container.querySelector("a").getAttribute("href"); // uvijek je prvi link za profile
-    teamLinks.push(teamLink);
+    let teamLink = container.querySelector("a").getAttribute("href"); // uvijek je prvi link za profile
+    if (teamLink.slice(-1) == "/") {
+      teamLinks.push(teamLink.slice(0, -1));
+    } else {
+      teamLinks.push(teamLink);
+    }
   });
   return teamLinks;
 }
@@ -58,7 +77,7 @@ async function scrapeTeam(link) {
   const dom = new JSDOM(res.data);
   const document = dom.window.document
 
-  const id = parseInt(link.split("/").slice(-3));
+  const id = parseInt(link.split("/").slice(-2));
   const name = document.querySelector(".TeamHeader_name__MmHlP").textContent;
   const recordContainers = document.querySelector(".TeamHeader_record__wzofp").querySelectorAll("span")
   const record = recordContainers.item(0).textContent;
@@ -73,8 +92,11 @@ async function scrapeTeam(link) {
     ranksData.push({ label, placement, value });
   });
 
+  const playerIds = []
   const playerLinks = await getPlayerLinks(link);
   playerLinks.forEach(async link => {
+    const playerId = parseInt(link.split("/").slice(-3));
+    playerIds.push(playerId);
     const playerData = await scrapePlayer(link);
   });
 
@@ -82,6 +104,7 @@ async function scrapeTeam(link) {
     id,
     name,
     record,
+    players: playerIds,
     placementText,
     ranksData
   };
@@ -207,14 +230,11 @@ async function loadDynamicPage(fullLink) {
 }
 
 
-scrapePlayerStats("/stats/player/1628369/career")
-  .then(val => console.log(val));
 
-
-
-module.exports.getTeamLinks = getTeamLinks;
 module.exports.scrapeTeam = scrapeTeam;
 module.exports.scrapePlayer = scrapePlayer;
 module.exports.getPlayerLinks = getPlayerLinks;
-
-
+module.exports.scrapePlayerStats = scrapePlayerStats;
+module.exports.getPlayerStatsLink = getPlayerStatsLink;
+module.exports.scrapeTeamLinks = scrapeTeamLinks;
+module.exports.getTeamLinks = getTeamLinks;

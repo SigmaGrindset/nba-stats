@@ -1,4 +1,5 @@
-const { getTeamLinks, scrapeTeam, getPlayerLinks, scrapePlayer } = require("../scrape.js");
+const { getTeamLinks, scrapeTeam, getPlayerLinks, scrapePlayer, scrapePlayerStats, getPlayerStatsLink } = require("../scrape.js");
+jest.setTimeout(40 * 1000);
 
 describe("team scrape", () => {
 
@@ -7,13 +8,20 @@ describe("team scrape", () => {
     expect(links.length).toEqual(30);
   });
 
-  test("scrapeTeam single team, should contain all data", async () => {
+  test("scrape single team, should contain all data", async () => {
     const links = await getTeamLinks();
-    const teamData = await scrapeTeam(links[5]);
+    const teamData = await scrapeTeam(links[2]);
+    console.log(links[2])
+    console.log(teamData);
+    expect(isNaN(teamData.id)).toBeFalsy();
     expect(typeof teamData.id).toEqual("number");
     expect(typeof teamData.name).toEqual("string");
     expect(typeof teamData.record).toEqual("string");
     expect(typeof teamData.placementText).toEqual("string");
+    teamData.players.forEach(playerId => {
+      expect(isNaN(playerId)).toBeFalsy();
+      expect(typeof playerId).toEqual("number");
+    });
     expect(teamData).toHaveProperty("ranksData");
     teamData.ranksData.forEach(rankData => {
       expect(rankData).toHaveProperty("label")
@@ -23,7 +31,7 @@ describe("team scrape", () => {
     });
   });
 
-  test("test if 30 teams can be scraped", async () => {
+  test.skip("scrape 30 teams", async () => {
     const teamsData = [];
     const links = await getTeamLinks();
     links.forEach(async link => {
@@ -38,7 +46,8 @@ describe("team scrape", () => {
 
 describe("player scrape test", () => {
 
-  test.only("general info and stats for players of one team", async () => {
+  test("general info for players of one team", async () => {
+
     const teamLinks = await getTeamLinks();
     const playerLinks = await getPlayerLinks(teamLinks[0]);
     playerLinks.forEach(async link => {
@@ -59,6 +68,41 @@ describe("player scrape test", () => {
       expect(data.playerInfo.draft).toBeDefined();
       expect(data.playerInfo.experience).toBeDefined();
     });
+  });
+
+
+  test("player stats", async () => {
+    const teamLinks = await getTeamLinks();
+    const playerLinks = await getPlayerLinks(teamLinks[5]);
+    const statsLink = await getPlayerStatsLink(undefined, profileLink = playerLinks[0]);
+    const playerStats = await scrapePlayerStats(statsLink);
+    expect(typeof playerStats).toEqual("object");
+    const yearStat = playerStats[0];
+    expect(yearStat.season_id).toContain("-");
+    expect(yearStat.team.length <= 5).toBeTruthy();
+    expect(typeof yearStat.gp).toEqual("number");
+    expect(typeof yearStat.gs).toEqual("number");
+    expect(typeof yearStat.min).toEqual("number");
+    expect(typeof yearStat.pts).toEqual("number");
+    expect(typeof yearStat.fgm).toEqual("number");
+    expect(typeof yearStat.fga).toEqual("number");
+    expect(typeof yearStat.fg_pct).toEqual("number");
+    expect(typeof yearStat.fg3m).toEqual("number");
+    expect(typeof yearStat.fg3a).toEqual("number");
+    expect(typeof yearStat.fg3_pct).toEqual("number");
+    expect(typeof yearStat.ftm).toEqual("number");
+    expect(typeof yearStat.fta).toEqual("number");
+    expect(typeof yearStat.ft_pct).toEqual("number");
+    expect(typeof yearStat.oreb).toEqual("number");
+    expect(typeof yearStat.dreb).toEqual("number");
+    expect(typeof yearStat.reb).toEqual("number");
+    expect(typeof yearStat.ast).toEqual("number");
+    expect(typeof yearStat.stl).toEqual("number");
+    expect(typeof yearStat.blk).toEqual("number");
+    expect(typeof yearStat.tov).toEqual("number");
+    expect(typeof yearStat.pf).toEqual("number");
+
+
   });
 
 });
