@@ -1,4 +1,6 @@
-const { getTeamLinks, scrapeTeam, getPlayerLinks, scrapePlayer, scrapePlayerStats, getPlayerStatsLink } = require("../scrape.js");
+
+const { getTeamLinks, scrapeTeam } = require("../scrape/teams.js");
+const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../scrape/players.js");
 jest.setTimeout(40 * 1000);
 
 describe("team scrape", () => {
@@ -11,8 +13,6 @@ describe("team scrape", () => {
   test("scrape single team, should contain all data", async () => {
     const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[2]);
-    console.log(links[2])
-    console.log(teamData);
     expect(isNaN(teamData.id)).toBeFalsy();
     expect(typeof teamData.id).toEqual("number");
     expect(typeof teamData.name).toEqual("string");
