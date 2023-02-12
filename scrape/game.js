@@ -36,23 +36,41 @@ async function scrapeGame(gameLink) {
   return gameData;
 }
 
+function getTeamIdFromImageUrl(imageURL) {
+  // src="https://cdn.nba.com/logos/nba/1610612766/global/D/logo.svg"
+  // src="https://cdn.nba.com/logos/nba/1610612738/global/D/logo.svg"
+  const arr = imageURL.split("/");
+  arr.pop();
+  arr.pop();
+  arr.pop();
+  return parseInt(arr.pop());
+}
 
 async function scrapeBoxScore(boxScoreLink) {
   const pageContent = await loadDynamicPage(BASEURL.concat(boxScoreLink));
   const dom = new JSDOM(pageContent);
   const document = dom.window.document;
 
-  const statsTables = document.querySelectorAll(".StatsTable_table__Ejk5X");
-  const teamA = await scrapeGameStatsTable(statsTables.item(0));
-  const teamB = await scrapeGameStatsTable(statsTables.item(1));
-  console.log(teamA);
+  // tim ciji je box score prvi je isti tim cija je slika prva odnosno s lijeve strane.
+  const imageContainer = document.querySelector(".MatchupCard_block__RWCas");
+  const images = imageContainer.querySelectorAll(".TeamLogo_logo__PclAJ");
+  const teamAId = getTeamIdFromImageUrl(images.item(0).getAttribute("src"));
+  const teamBId = getTeamIdFromImageUrl(images.item(1).getAttribute("src"));
 
+  const statsTables = document.querySelectorAll(".StatsTable_table__Ejk5X");
+  const teamA = await scrapeGameStatsTable(statsTables.item(0), teamAId);
+  const teamB = await scrapeGameStatsTable(statsTables.item(1), teamBId);
+  console.log(teamA);
+  console.log();
+  console.log();
+  console.log(teamB);
 }
 
-async function scrapeGameStatsTable(table) {
+async function scrapeGameStatsTable(table, teamId) {
   const headCells = table.querySelector(".StatsTableHead_thead__omZuF").querySelectorAll("th");
   const columnNamesStats = []; // za statistiku
   const boxScoreData = {
+    teamId,
     playerStats: []
   };
 
