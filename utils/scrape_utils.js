@@ -3,7 +3,10 @@ const puppeteer = require("puppeteer");
 
 module.exports.transformLabel = function (label) {
   // pretvara label u mala slova i joina sa _
-  label = label.toLowerCase().replaceAll(" ", "_");
+  if (label == "+/-") {
+    label = "plus_minus";
+  }
+  label = label.replaceAll("%", "_PCT").toLowerCase().replaceAll(" ", "_");
   return label;
 }
 
