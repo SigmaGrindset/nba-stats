@@ -35,6 +35,12 @@ async function scrapeTeamLinks() {
 }
 
 
+function transformLabel(label) {
+  // pretvara label u mala slova i joina sa _
+  label = label.toLowerCase().replaceAll(" ", "_");
+  return label;
+}
+
 
 async function scrapeTeams() {
   // ide kroz sve timove i scrapea svaki tim posebno sa zasebnom funkcijom
@@ -43,8 +49,25 @@ async function scrapeTeams() {
   // const teamData = await scrapeTeam(teamLinks[0]);
   teamLinks.forEach(async link => {
     const teamData = await scrapeTeam(link);
-    console.log(teamData.name);
+    // console.log(teamData);
   });
+}
+
+
+async function getPlayerLinks(teamLink) {
+  // vraca linkove svih igraca iz nekoga tima
+  const res = await axiosInstance.get(teamLink);
+  const dom = new JSDOM(res.data);
+  const document = dom.window.document;
+
+  const links = [];
+  const playersTable = document.querySelector(".MockStatsTable_statsTable__V_Skx").querySelector("table");
+  const playerLinksContainers = playersTable.querySelector("tbody").querySelectorAll(".primary.text");
+  playerLinksContainers.forEach(container => {
+    const link = container.querySelector("a").getAttribute("href");
+    links.push(link);
+  });
+  return links;
 }
 
 
@@ -68,10 +91,8 @@ async function scrapeTeam(link) {
     ranksData.push({ label, placement, value });
   });
 
-  const playersTable = document.querySelector(".MockStatsTable_statsTable__V_Skx").querySelector("table");
-  const playerLinks = playersTable.querySelector("tbody").querySelectorAll(".primary.text");
+  const playerLinks = await getPlayerLinks(link);
   playerLinks.forEach(async link => {
-    link = link.querySelector("a").getAttribute("href");
     const playerData = await scrapePlayer(link);
   });
 
@@ -87,8 +108,48 @@ async function scrapeTeam(link) {
 
 
 async function scrapePlayer(link) {
+  const res = await axiosInstance.get(link);
+  const dom = new JSDOM(res.data);
+  const document = dom.window.document;
+
+  const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
+  const headerInfoArr = headerInfo.textContent.split("|");
+  const number = headerInfoArr[1].trim();
+  const position = headerInfoArr[2].trim();
+  const playerNameContainers = document.querySelectorAll(".PlayerSummary_playerNameText___MhqC");
+  const playerName = playerNameContainers.item(0).textContent.concat(" ", playerNameContainers.item(1).textContent);
+
+  const statsContainers = document.querySelectorAll(".PlayerSummary_playerStat__rmEOP");
+  const stats = {};
+  statsContainers.forEach(container => {
+    const label = transformLabel(container.querySelector(".PlayerSummary_playerStatLabel__I3TO3").textContent);
+    const value = parseFloat(container.querySelector(".PlayerSummary_playerStatValue___EDg_").textContent);
+    const stat = {};
+    stats[label] = value;
+  });
+
+  const playerInfo = {};
+  const playerInfoMainContainer = document.querySelector(".PlayerSummary_hw__HNuGb");
+  const playerInfoContainers = playerInfoMainContainer.querySelectorAll(".PlayerSummary_playerInfo__om2G4");
+  playerInfoContainers.forEach(container => {
+    const label = transformLabel(container.querySelector(".PlayerSummary_playerInfoLabel__hb5fs").textContent);
+    const value = container.querySelector(".PlayerSummary_playerInfoValue__JS8_v").textContent;
+    playerInfo[label] = value;
+  });
+
+  const playerData = {
+    playerName, number, position, stats, playerInfo
+  };
+  console.log(playerData);
+  return playerData;
 }
 
-scrapeTeams()
+
+scrapeTeam("https://www.nba.com/team/1610612738/celtics");
+// scrapePlayer("/player/1628369/jayson-tatum");
 
 
+module.exports.getTeamLinks = getTeamLinks;
+module.exports.scrapeTeam = scrapeTeam;
+module.exports.scrapePlayer = scrapePlayer;
+module.exports.getPlayerLinks = getPlayerLinks;
