@@ -71,13 +71,15 @@ describe("player scrape test", () => {
   });
 
 
-  test("player stats", async () => {
+  test.only("player stats", async () => {
     const teamLinks = await getTeamLinks();
     const playerLinks = await getPlayerLinks(teamLinks[5]);
     const statsLink = await getPlayerStatsLink(undefined, profileLink = playerLinks[0]);
     const playerStats = await scrapePlayerStats(statsLink);
+    const yearStat = playerStats.regSeason.seasons[0];
+
     expect(typeof playerStats).toEqual("object");
-    const yearStat = playerStats[0];
+    expect(typeof playerStats.regSeason.statsGroup).toEqual("string");
     expect(yearStat.season_id).toContain("-");
     expect(yearStat.team.length <= 5).toBeTruthy();
     expect(typeof yearStat.gp).toEqual("number");

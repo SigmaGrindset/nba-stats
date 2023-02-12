@@ -90,17 +90,16 @@ async function getPlayerStatsLink(profileDom = undefined, profileLink = undefine
 }
 
 
+async function scrapePlayerStatsTable(table) {
+  const theadRows = table.querySelector("thead").querySelectorAll("tr")
+  const columns = theadRows.item(1).querySelectorAll("th");
+  const tableName = theadRows.item(0).querySelector("th").textContent;
 
-
-async function scrapePlayerStats(statsLink) {
-  const pageContent = await loadDynamicPage(BASEURL.concat(statsLink));
-  const dom = new JSDOM(pageContent);
-
-  const stats = [];
   const columnNames = [];
-
-  const statsTable = dom.window.document.querySelector(".Crom_table__p1iZz");
-  const columns = statsTable.querySelector("thead").querySelectorAll("tr").item(1).querySelectorAll("th");
+  const stats = {
+    statsGroup: tableName,
+    seasons: []
+  };
 
   columns.forEach(column => {
     const columnName = column.getAttribute("field");
@@ -108,7 +107,7 @@ async function scrapePlayerStats(statsLink) {
   });
 
 
-  const rows = statsTable.querySelector("tbody").querySelectorAll("tr");
+  const rows = table.querySelector("tbody").querySelectorAll("tr");
   rows.forEach(row => {
     const rowStats = [];
     const cells = row.querySelectorAll("td");
@@ -124,9 +123,24 @@ async function scrapePlayerStats(statsLink) {
     });
 
     const rowStatsObj = mergeColumnRow(columnNames, rowStats);
-    stats.push(rowStatsObj);
+    stats.seasons.push(rowStatsObj);
   });
   return stats;
+}
+
+
+async function scrapePlayerStats(statsLink) {
+  const pageContent = await loadDynamicPage(BASEURL.concat(statsLink));
+  const dom = new JSDOM(pageContent);
+
+
+  const statsTable = dom.window.document.querySelectorAll(".Crom_table__p1iZz");
+  const regSeasonStats = await scrapePlayerStatsTable(statsTable.item(0));
+  const playoffStats = await scrapePlayerStatsTable(statsTable.item(1));
+  return {
+    regSeason: regSeasonStats,
+    playoffs: playoffStats
+  };
 }
 
 
