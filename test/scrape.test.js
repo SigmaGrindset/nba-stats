@@ -1,4 +1,4 @@
-const { getTeamLinks, scrapeTeam } = require("../scrape.js");
+const { getTeamLinks, scrapeTeam, getPlayerLinks, scrapePlayer } = require("../scrape.js");
 
 describe("team scrape", () => {
 
@@ -45,7 +45,8 @@ describe("player scrape test", () => {
       const data = await scrapePlayer(link);
       expect(typeof data.playerName).toEqual("string");
       expect(typeof data.number).toEqual("string");
-      expect(data.position).toContain("#");
+      expect(typeof data.position).toEqual("string");
+      expect(data.number).toContain("#");
       expect(typeof data.stats.ppg).toEqual("number");
       expect(typeof data.stats.apg).toEqual("number");
       expect(typeof data.stats.rpg).toEqual("number");

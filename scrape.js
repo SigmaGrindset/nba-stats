@@ -2,24 +2,12 @@ const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const axios = require("axios")
 const axiosInstance = axios.create({ baseURL: "https://www.nba.com" })
-const fs = require("fs").promises
+const puppeteer = require("puppeteer");
+const { getTeamLinks, mergeColumnRow, transformLabel } = require("./utils/scrape_utils");
+
+const BASELINK = "https://www.nba.com"
 
 
-async function getTeamLinks() {
-  // daje linkove svih timova
-  const data = JSON.parse(await fs.readFile("team_links.json"));
-  if (data.links.length !== 30) {
-    // ako nema sve timove onda treb scrapeati
-    const links = await scrapeTeamLinks();
-    data.links = links;
-    await fs.writeFile("team_links.json", JSON.stringify(data), err => {
-      if (err) {
-        console.log(err);
-      }
-    });
-  }
-  return data.links
-}
 
 async function scrapeTeamLinks() {
   // uzima linkove svih timova sa stranice
@@ -34,12 +22,6 @@ async function scrapeTeamLinks() {
   return teamLinks;
 }
 
-
-function transformLabel(label) {
-  // pretvara label u mala slova i joina sa _
-  label = label.toLowerCase().replaceAll(" ", "_");
-  return label;
-}
 
 
 async function scrapeTeams() {
@@ -137,19 +119,102 @@ async function scrapePlayer(link) {
     playerInfo[label] = value;
   });
 
+
   const playerData = {
     playerName, number, position, stats, playerInfo
   };
-  console.log(playerData);
   return playerData;
 }
 
 
-scrapeTeam("https://www.nba.com/team/1610612738/celtics");
-// scrapePlayer("/player/1628369/jayson-tatum");
+async function getPlayerStatsLink(profileDom = undefined, profileLink = undefined, playerId = undefined) {
+  let profileDocument;
+  console.log(profileLink)
+  if (playerId) {
+    return `/stats/player/${(playerId.toString())}/career`;
+  }
+  else if (profileLink) {
+    const res = await axiosInstance.get(profileLink);
+    const profileDom = new JSDOM(res.data);
+    profileDocument = profileDom.window.document;
+  }
+
+  const viewMode = profileDocument.querySelector(".InnerNavTabs_list__tIFRN");
+  const statsButton = viewMode.querySelectorAll(".InnerNavTab_tab__bs7aN").item(1);
+  const statsLink = statsButton.querySelector("a").getAttribute("href");
+
+
+  const statsRes = await axiosInstance.get(statsLink);
+  const statsDom = new JSDOM(statsRes.data);
+  const statsDocument = statsDom.window.document;
+
+  const optionList = statsDocument.querySelector(".StatsQuickNavSelector_list__nb3l1").querySelectorAll("li");
+  const careerStatsLink = optionList.item(2).querySelector("a").getAttribute("href");
+  // drugi li je za career stats
+  return careerStatsLink;
+}
+
+async function scrapePlayerStats(statsLink) {
+  const pageContent = await loadDynamicPage(BASELINK.concat(statsLink));
+  const dom = new JSDOM(pageContent);
+
+  const stats = [];
+  const columnNames = [];
+
+  const statsTable = dom.window.document.querySelector(".Crom_table__p1iZz");
+  const columns = statsTable.querySelector("thead").querySelectorAll("tr").item(1).querySelectorAll("th");
+
+  columns.forEach(column => {
+    const columnName = column.getAttribute("field");
+    columnNames.push(transformLabel(columnName));
+  });
+
+
+  const rows = statsTable.querySelector("tbody").querySelectorAll("tr");
+  rows.forEach(row => {
+    const rowStats = [];
+    const cells = row.querySelectorAll("td");
+    cells.forEach(cell => {
+      let cellValue = cell.textContent;
+      if (!cellValue.includes("-")) {
+        // season je oblika 2018-19
+        if (!isNaN(parseFloat(cellValue))) {
+          cellValue = parseFloat(cellValue);
+        }
+      }
+      rowStats.push(cellValue);
+    });
+
+    const rowStatsObj = mergeColumnRow(columnNames, rowStats);
+    stats.push(rowStatsObj);
+  });
+  return stats;
+}
+
+
+async function loadDynamicPage(fullLink) {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.goto(fullLink);
+
+  await page.waitForSelector("#onetrust-accept-btn-handler");
+  await page.click("#onetrust-accept-btn-handler");
+
+  const content = await page.content();
+  await browser.close();
+  return content;
+
+}
+
+
+scrapePlayerStats("/stats/player/1628369/career")
+  .then(val => console.log(val));
+
 
 
 module.exports.getTeamLinks = getTeamLinks;
 module.exports.scrapeTeam = scrapeTeam;
 module.exports.scrapePlayer = scrapePlayer;
 module.exports.getPlayerLinks = getPlayerLinks;
+
+
