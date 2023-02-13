@@ -7,6 +7,24 @@ const { transformLabel, loadDynamicPage, mergeColumnRow } = require("../utils/sc
 const { boxScore } = require("nba/src/data");
 
 
+async function getGameLinks(teamLink) {
+  // pronalazi linkove za svaki game
+  const res = await axiosInstance.get(teamLink.concat("/schedule"));
+  const dom = new JSDOM(res.data);
+  const document = dom.window.document;
+  const links = [];
+
+  const gameContainers = document.querySelectorAll(".TeamScheduleTable_game__STLzU");
+  gameContainers.forEach(container => {
+    const result = container.querySelectorAll(".Crom_text__NpR1_").item(2);
+    if (result.textContent.toUpperCase().includes("W") || result.textContent.toUpperCase().includes("L")) {
+      links.push(result.querySelector("a").getAttribute("href"));
+    }
+  }); 
+  return links;
+}
+
+
 async function scrapeGame(gameLink) {
   // gameLink - /game/game-id
 
@@ -32,7 +50,7 @@ async function scrapeGame(gameLink) {
   const boxScoreLink = document.querySelectorAll(".InnerNavTabLink_tab__T1vNe").item(1)
     .querySelector("a").getAttribute("href");
   const boxScoreData = await scrapeBoxScore(boxScoreLink);
-
+  gameData.boxScore = boxScoreData;
   return gameData;
 }
 
@@ -60,10 +78,7 @@ async function scrapeBoxScore(boxScoreLink) {
   const statsTables = document.querySelectorAll(".StatsTable_table__Ejk5X");
   const teamA = await scrapeGameStatsTable(statsTables.item(0), teamAId);
   const teamB = await scrapeGameStatsTable(statsTables.item(1), teamBId);
-  console.log(teamA);
-  console.log();
-  console.log();
-  console.log(teamB);
+  return  [teamA, teamB];
 }
 
 async function scrapeGameStatsTable(table, teamId) {
@@ -135,5 +150,5 @@ async function scrapeGameStatsTable(table, teamId) {
 }
 
 
-
-scrapeBoxScore("/game/0012200005/box-score");
+module.exports.scrapeGame = scrapeGame;
+module.exports.getGameLinks = getGameLinks;
