@@ -95,5 +95,6 @@ async function scrapeTeam(link) {
 }
 
 
+
 module.exports.getTeamLinks = getTeamLinks;
 module.exports.scrapeTeam = scrapeTeam;

@@ -55,7 +55,7 @@ async function scrapePlayer(link) {
 
 
   const playerData = {
-    playerName, number, position, stats, playerInfo
+    playerName, number, position, stats, ...playerInfo
   };
   return playerData;
 }
@@ -142,6 +142,9 @@ async function scrapePlayerStats(statsLink) {
     playoffs: playoffStats
   };
 }
+
+scrapePlayerStats("/stats/player/1628369/career").then(val => console.log(val.regSeason));
+
 
 
 module.exports.getPlayerLinks = getPlayerLinks;

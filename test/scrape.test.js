@@ -1,7 +1,7 @@
 
 const { getTeamLinks, scrapeTeam } = require("../scrape/teams.js");
 const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../scrape/players.js");
-const {scrapeGame, getGameLinks} = require("../scrape/game");
+const { scrapeGame, getGameLinks } = require("../scrape/game");
 jest.setTimeout(60 * 1000);
 
 describe("team scrape", () => {
@@ -12,7 +12,7 @@ describe("team scrape", () => {
   });
 
   test("scrape single team, should contain all data", async () => {
-    const links = await getTeamLinks();
+    const links = await getTeamscLinks();
     const teamData = await scrapeTeam(links[2]);
     expect(isNaN(teamData.id)).toBeFalsy();
     expect(typeof teamData.id).toEqual("number");
@@ -60,14 +60,14 @@ describe("player scrape test", () => {
       expect(typeof data.stats.ppg).toEqual("number");
       expect(typeof data.stats.apg).toEqual("number");
       expect(typeof data.stats.rpg).toEqual("number");
-      expect(data.playerInfo.height).toBeDefined();
-      expect(data.playerInfo.weight).toBeDefined();
-      expect(data.playerInfo.country).toBeDefined();
-      expect(data.playerInfo.last_attended).toBeDefined();
-      expect(data.playerInfo.age).toBeDefined();
-      expect(data.playerInfo.birthdate).toBeDefined();
-      expect(data.playerInfo.draft).toBeDefined();
-      expect(data.playerInfo.experience).toBeDefined();
+      expect(data.height).toBeDefined();
+      expect(data.weight).toBeDefined();
+      expect(data.country).toBeDefined();
+      expect(data.last_attended).toBeDefined();
+      expect(data.age).toBeDefined();
+      expect(data.birthdate).toBeDefined();
+      expect(data.draft).toBeDefined();
+      expect(data.experience).toBeDefined();
     });
   });
 
@@ -136,7 +136,6 @@ describe("game scrape", () => {
     const teamBoxScore = boxScore[0];
     expect(typeof teamBoxScore.teamId).toEqual("number");
     expect(teamBoxScore.playerStats.length >= 3).toBeTruthy();
-    console.log(teamBoxScore.playerStats);
     teamBoxScore.playerStats.forEach(player => {
       if (player.status == undefined) {
         // ako ima neku statistiku, odnosno ako je igrao

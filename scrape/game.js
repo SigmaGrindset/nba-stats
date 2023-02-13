@@ -20,7 +20,7 @@ async function getGameLinks(teamLink) {
     if (result.textContent.toUpperCase().includes("W") || result.textContent.toUpperCase().includes("L")) {
       links.push(result.querySelector("a").getAttribute("href"));
     }
-  }); 
+  });
   return links;
 }
 
@@ -78,7 +78,7 @@ async function scrapeBoxScore(boxScoreLink) {
   const statsTables = document.querySelectorAll(".StatsTable_table__Ejk5X");
   const teamA = await scrapeGameStatsTable(statsTables.item(0), teamAId);
   const teamB = await scrapeGameStatsTable(statsTables.item(1), teamBId);
-  return  [teamA, teamB];
+  return [teamA, teamB];
 }
 
 async function scrapeGameStatsTable(table, teamId) {
@@ -149,6 +149,7 @@ async function scrapeGameStatsTable(table, teamId) {
   return boxScoreData;
 }
 
+scrapeGame("/game/0012200005").then(val => console.log(val.boxScore[0].playerStats));
 
 module.exports.scrapeGame = scrapeGame;
 module.exports.getGameLinks = getGameLinks;
