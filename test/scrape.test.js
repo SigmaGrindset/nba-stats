@@ -1,7 +1,8 @@
 
 const { getTeamLinks, scrapeTeam } = require("../scrape/teams.js");
 const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../scrape/players.js");
-jest.setTimeout(40 * 1000);
+const {scrapeGame, getGameLinks} = require("../scrape/game");
+jest.setTimeout(60 * 1000);
 
 describe("team scrape", () => {
 
@@ -71,7 +72,7 @@ describe("player scrape test", () => {
   });
 
 
-  test.only("player stats", async () => {
+  test("player stats", async () => {
     const teamLinks = await getTeamLinks();
     const playerLinks = await getPlayerLinks(teamLinks[5]);
     const statsLink = await getPlayerStatsLink(undefined, profileLink = playerLinks[0]);
@@ -107,4 +108,64 @@ describe("player scrape test", () => {
 
   });
 
+
+});
+
+
+describe("game scrape", () => {
+
+  test("getGameLinks", async () => {
+    const teamLinks = await getTeamLinks();
+    const gameLinks = await getGameLinks(teamLinks[0]);
+
+    expect(gameLinks.length >= 1).toBeTruthy();
+  });
+
+  test("single game", async () => {
+    const teamLinks = await getTeamLinks();
+    const gameLinks = await getGameLinks(teamLinks[0]);
+    const gameData = await scrapeGame(gameLinks[0]);
+
+    expect(gameData.attendance).toBeDefined();
+    expect(gameData.officials).toBeDefined();
+    expect(gameData.location).toBeDefined();
+    expect(gameData.date).toBeDefined();
+    expect(gameData.boxScore).toBeDefined();
+    const boxScore = gameData.boxScore;
+    expect(boxScore.length).toEqual(2);
+    const teamBoxScore = boxScore[0];
+    expect(typeof teamBoxScore.teamId).toEqual("number");
+    expect(teamBoxScore.playerStats.length >= 3).toBeTruthy();
+    console.log(teamBoxScore.playerStats);
+    teamBoxScore.playerStats.forEach(player => {
+      if (player.status == undefined) {
+        // ako ima neku statistiku, odnosno ako je igrao
+        expect(player.player).toBeDefined();
+        expect(player.min).toBeDefined();
+        expect(player.fgm).toBeDefined();
+        expect(player.fga).toBeDefined();
+        expect(player.fg_pct).toBeDefined();
+        expect(player["3pm"]).toBeDefined();
+        expect(player["3pa"]).toBeDefined();
+        expect(player["3p_pct"]).toBeDefined();
+        expect(player.ftm).toBeDefined();
+        expect(player.fta).toBeDefined();
+        expect(player.ft_pct).toBeDefined();
+        expect(player.oreb).toBeDefined();
+        expect(player.dreb).toBeDefined();
+        expect(player.reb).toBeDefined();
+        expect(player.ast).toBeDefined();
+        expect(player.stl).toBeDefined();
+        expect(player.blk).toBeDefined();
+        expect(player.to).toBeDefined();
+        expect(player.pf).toBeDefined();
+        expect(player.pts).toBeDefined();
+        expect(player.plus_minus).toBeDefined();
+
+      } else {
+        expect(typeof player.player).toEqual("number");
+        expect(typeof player.status).toEqual("string");
+      }
+    });
+  });
 });
