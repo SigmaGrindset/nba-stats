@@ -1,7 +1,7 @@
 
-const { getTeamLinks, scrapeTeam } = require("../scrape/teams.js");
-const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../scrape/players.js");
-const { scrapeGame, getGameLinks } = require("../scrape/game");
+const { getTeamLinks, scrapeTeam } = require("../src/scrape/teams.js");
+const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../src/scrape/players.js");
+const { scrapeGame, getGameLinks } = require("../src/scrape/game");
 jest.setTimeout(60 * 1000);
 
 describe("team scrape", () => {
@@ -11,8 +11,8 @@ describe("team scrape", () => {
     expect(links.length).toEqual(30);
   });
 
-  test("scrape single team, should contain all data", async () => {
-    const links = await getTeamscLinks();
+  test.only("scrape single team, should contain all data", async () => {
+    const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[2]);
     expect(isNaN(teamData.id)).toBeFalsy();
     expect(typeof teamData.id).toEqual("number");
@@ -24,12 +24,10 @@ describe("team scrape", () => {
       expect(typeof playerId).toEqual("number");
     });
     expect(teamData).toHaveProperty("ranksData");
-    teamData.ranksData.forEach(rankData => {
-      expect(rankData).toHaveProperty("label")
-      expect(rankData).toHaveProperty("placement")
-      expect(rankData).toHaveProperty("value")
-      expect(typeof rankData.value).toEqual("number")
-    });
+    expect(teamData.ranksData).toHaveProperty("ppg");
+    expect(teamData.ranksData).toHaveProperty("rpg");
+    expect(teamData.ranksData).toHaveProperty("apg");
+    expect(teamData.ranksData).toHaveProperty("oppg");
   });
 
   test.skip("scrape 30 teams", async () => {

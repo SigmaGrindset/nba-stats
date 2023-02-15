@@ -143,7 +143,6 @@ async function scrapePlayerStats(statsLink) {
   };
 }
 
-scrapePlayerStats("/stats/player/1628369/career").then(val => console.log(val.regSeason));
 
 
 
