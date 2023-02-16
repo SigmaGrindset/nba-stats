@@ -11,13 +11,17 @@ describe("team scrape", () => {
     expect(links.length).toEqual(30);
   });
 
-  test("scrape single team, should contain all data", async () => {
+  test.only("scrape single team, should contain all data", async () => {
     const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[2]);
     expect(isNaN(teamData.id)).toBeFalsy();
     expect(typeof teamData.id).toEqual("number");
     expect(typeof teamData.name).toEqual("string");
     expect(typeof teamData.record).toEqual("string");
+    expect(typeof teamData.records).toBeDefined();
+    expect(typeof teamData.achievements).toBeDefined();
+    expect(typeof teamData.coaching).toBeDefined();
+    expect(typeof teamData.background).toBeDefined();
     expect(typeof teamData.placementText).toEqual("string");
     teamData.players.forEach(playerId => {
       expect(isNaN(playerId)).toBeFalsy();
