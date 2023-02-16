@@ -6,10 +6,6 @@ const requiredNumber = {
 };
 
 const boxScoreStatsSchema = new mongoose.Schema({
-  player_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Player"
-  },
   min: String,
   fgm: requiredNumber,
   fga: requiredNumber,

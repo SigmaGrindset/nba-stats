@@ -145,7 +145,6 @@ async function scrapePlayerStats(statsLink) {
 
 
 
-
 module.exports.getPlayerLinks = getPlayerLinks;
 module.exports.scrapePlayer = scrapePlayer;
 module.exports.scrapePlayerStats = scrapePlayerStats;
