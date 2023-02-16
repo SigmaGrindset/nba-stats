@@ -18,7 +18,11 @@ const teamSchema = new mongoose.Schema({
     apg: { type: Number, required: true },
     rpg: { type: Number, required: true },
     oppg: { type: Number, required: true }
-  })
+  }),
+  coaching: {
+    type: Object,
+    required: true
+  }
 });
 
 
