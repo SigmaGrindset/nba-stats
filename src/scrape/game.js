@@ -149,7 +149,6 @@ async function scrapeGameStatsTable(table, teamId) {
   return boxScoreData;
 }
 
-scrapeBoxScore("/game/cha-vs-bos-0012200005/box-score").then(val => console.log(val[0]));
 
 module.exports.scrapeGame = scrapeGame;
 module.exports.getGameLinks = getGameLinks;

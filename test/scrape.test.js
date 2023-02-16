@@ -11,7 +11,7 @@ describe("team scrape", () => {
     expect(links.length).toEqual(30);
   });
 
-  test.only("scrape single team, should contain all data", async () => {
+  test("scrape single team, should contain all data", async () => {
     const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[2]);
     expect(isNaN(teamData.id)).toBeFalsy();
