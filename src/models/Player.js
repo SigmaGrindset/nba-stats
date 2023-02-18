@@ -4,6 +4,11 @@ const mongoose = require("mongoose");
 
 
 const playerSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+    unique: true,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -16,7 +21,24 @@ const playerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // mainStats
+  stats: new mongoose.Schema({
+    ppg: {
+      required: true,
+      type: Number
+    },
+    rpg: {
+      required: true,
+      type: Number
+    },
+    apg: {
+      required: true,
+      type: Number
+    },
+    pie: {
+      required: true,
+      type: Number
+    },
+  }),
   height: {
     type: String,
     required: true,

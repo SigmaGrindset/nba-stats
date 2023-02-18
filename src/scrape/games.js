@@ -26,13 +26,16 @@ async function getGameLinks(teamLink) {
 
 
 async function scrapeGame(gameLink) {
-  // gameLink - /game/game-id
+  // gameLink - /game/game-id/
 
+  const gameId = parseInt(gameLink.split("/").slice(-2, -1));
   const pageContent = await loadDynamicPage(BASEURL.concat(gameLink));
   const dom = new JSDOM(pageContent);
   const document = dom.window.document;
 
-  const gameData = {};
+  const gameData = {
+    id: gameId
+  };
 
   const gameSummaryContainer = document.querySelector(".GameSummary_sumContainer__WBZiw").querySelector("section");
   const infoCards = gameSummaryContainer.querySelectorAll(".InfoCard_row__FO1v_");
@@ -148,7 +151,6 @@ async function scrapeGameStatsTable(table, teamId) {
 
   return boxScoreData;
 }
-
 
 module.exports.scrapeGame = scrapeGame;
 module.exports.getGameLinks = getGameLinks;
