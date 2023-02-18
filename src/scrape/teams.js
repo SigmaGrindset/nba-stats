@@ -42,17 +42,6 @@ async function scrapeTeamLinks() {
 }
 
 
-async function scrapeTeams() {
-  // ide kroz sve timove i scrapea svaki tim posebno sa zasebnom funkcijom
-  const teamLinks = await getTeamLinks();
-
-  // const teamData = await scrapeTeam(teamLinks[0]);
-  teamLinks.forEach(async link => {
-    const teamData = await scrapeTeam(link);
-    // console.log(teamData);
-  });
-}
-
 
 function scrapeInfoBox(infoBox) {
   const blockContent = infoBox.querySelector(".Block_blockContent__6iJ_n");
@@ -126,7 +115,6 @@ async function scrapeTeam(link) {
   playerLinks.forEach(async link => {
     const playerId = parseInt(link.split("/").slice(-3));
     playerIds.push(playerId);
-    const playerData = await scrapePlayer(link);
   });
 
   const teamData = {

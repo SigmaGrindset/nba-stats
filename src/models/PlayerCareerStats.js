@@ -1,20 +1,19 @@
 const mongoose = require("mongoose");
 
+
 const playerCareerStatsSchema = new mongoose.Schema({
-  _id: new mongoose.Schema({
-    season_id: {
-      type: String,
-      required: true
-    },
-    player: {
-      type: mongoose.Types.ObjectId,
-      ref: "Player"
-    },
-    type: {
-      type: String,
-      required: true
-    },
-  }),
+  season_id: {
+    type: String,
+    required: true
+  },
+  player: {
+    type: Number,
+    ref: "Player"
+  },
+  type: {
+    type: String,
+    required: true
+  },
 
 
   team: {
@@ -113,6 +112,8 @@ const playerCareerStatsSchema = new mongoose.Schema({
 
 
 });
+
+playerCareerStatsSchema.index({ season_id: 1, player: 1, type: 1 }, { unique: true });
 
 const PlayerCareerStats = mongoose.model("PlayerCareerStats", playerCareerStatsSchema);
 module.exports = PlayerCareerStats;

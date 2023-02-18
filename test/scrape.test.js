@@ -1,7 +1,7 @@
 
 const { getTeamLinks, scrapeTeam } = require("../src/scrape/teams.js");
 const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../src/scrape/players.js");
-const { scrapeGame, getGameLinks } = require("../src/scrape/game");
+const { scrapeGame, getGameLinks } = require("../src/scrape/games");
 jest.setTimeout(60 * 1000);
 
 describe("team scrape", () => {
@@ -11,7 +11,7 @@ describe("team scrape", () => {
     expect(links.length).toEqual(30);
   });
 
-  test.only("scrape single team, should contain all data", async () => {
+  test("scrape single team, should contain all data", async () => {
     const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[2]);
     expect(isNaN(teamData.id)).toBeFalsy();
@@ -55,7 +55,8 @@ describe("player scrape test", () => {
     const playerLinks = await getPlayerLinks(teamLinks[0]);
     playerLinks.forEach(async link => {
       const data = await scrapePlayer(link);
-      expect(typeof data.playerName).toEqual("string");
+      expect(typeof data.id).toBeDefined();
+      expect(typeof data.name).toEqual("string");
       expect(typeof data.number).toEqual("string");
       expect(typeof data.position).toEqual("string");
       expect(data.number).toContain("#");
@@ -128,6 +129,7 @@ describe("game scrape", () => {
     const gameLinks = await getGameLinks(teamLinks[0]);
     const gameData = await scrapeGame(gameLinks[0]);
 
+    expect(gameData.id).toBeDefined();
     expect(gameData.attendance).toBeDefined();
     expect(gameData.officials).toBeDefined();
     expect(gameData.location).toBeDefined();

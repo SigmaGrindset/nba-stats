@@ -27,6 +27,7 @@ async function scrapePlayer(link) {
   const res = await axiosInstance.get(link);
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
+  const playerId = parseInt(link.split("/").slice(-2, -1));
 
   const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
   const headerInfoArr = headerInfo.textContent.split("|");
@@ -55,12 +56,17 @@ async function scrapePlayer(link) {
 
 
   const playerData = {
-    playerName, number, position, stats, ...playerInfo
+    id: playerId,
+    name: playerName,
+    number, position, stats, ...playerInfo
   };
   return playerData;
 }
 
 
+function createLinkFromPlayerId(playerId) {
+  return `/player/${playerId}/`
+}
 
 
 async function getPlayerStatsLink(profileDom = undefined, profileLink = undefined, playerId = undefined) {
@@ -149,3 +155,4 @@ module.exports.getPlayerLinks = getPlayerLinks;
 module.exports.scrapePlayer = scrapePlayer;
 module.exports.scrapePlayerStats = scrapePlayerStats;
 module.exports.getPlayerStatsLink = getPlayerStatsLink;
+module.exports.createLinkFromPlayerId = createLinkFromPlayerId;

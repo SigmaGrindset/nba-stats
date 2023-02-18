@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema({
   name: {
+    unique: true,
     type: String,
     required: true
   },
@@ -14,15 +15,63 @@ const teamSchema = new mongoose.Schema({
     required: true
   },
   ranksData: new mongoose.Schema({
-    ppg: { type: Number, required: true },
-    apg: { type: Number, required: true },
-    rpg: { type: Number, required: true },
-    oppg: { type: Number, required: true }
+    ppg: new mongoose.Schema({
+      placement: {
+        required: true,
+        type: String
+      },
+      value: {
+        required: true,
+        type: Number
+      }
+    }),
+    apg: new mongoose.Schema({
+      placement: {
+        required: true,
+        type: String
+      },
+      value: {
+        required: true,
+        type: Number
+      }
+    }),
+    rpg: new mongoose.Schema({
+      placement: {
+        required: true,
+        type: String
+      },
+      value: {
+        required: true,
+        type: Number
+      }
+    }),
+    oppg: new mongoose.Schema({
+      placement: {
+        required: true,
+        type: String
+      },
+      value: {
+        required: true,
+        type: Number
+      }
+    })
   }),
+  records: {
+    type: Object,
+    required: true
+  },
   coaching: {
     type: Object,
     required: true
-  }
+  },
+  background: {
+    type: Object,
+    required: true
+  },
+  achievements: {
+    type: Object,
+    required: true
+  },
 });
 
 
