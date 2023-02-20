@@ -22,23 +22,36 @@ mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/
 
 async function scrapeTeamWrapper() {
   const teamLinks = await getTeamLinks();
-  const teamData = await scrapeTeam(teamLinks[0])
-  // const team = await Team.create({ ...teamData });
 
-  const playerId = teamData.players[0];
+  teamLinks.forEach(async (link) => {
+    const teamData = await scrapeTeam(link);
+    let team = await Team.findOne({ id: teamData.id });
+    if (!team) {
+      team = await Team.create({ ...teamData });
+    }
 
-  const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
-  // console.log(playerData);
 
-  // const roster = await TeamCurrentRoster.create({
-  //   player: playerId,
-  //   team: teamData.id
-  // });
-  // const player = await Player.create({
-  //   ...playerData
-  // });
 
-  
+    teamData.players.forEach(async (playerId) => {
+      const existingPlayer = await Player.findOne({ id: playerId });
+      console.log(playerId);
+      if (!existingPlayer) {
+        const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
+        const player = await Player.create({ ...playerData });
+        console.log("player created", player.name);
+      } else {
+        console.log("player exists", existingPlayer.name);
+      }
+      await TeamCurrentRoster.assignPlayer(playerId, teamData.id);
+
+      // career stats;
+      const careerStats = await scrapePlayerStats(getPlayerStatsLink({ playerId }));
+      await PlayerCareerStats.handlePlayerStats(careerStats.regSeason);
+      await PlayerCareerStats.handlePlayerStats(careerStats.playoffs);
+    });
+  });
+
+
 }
 
 

@@ -113,6 +113,21 @@ const playerCareerStatsSchema = new mongoose.Schema({
 
 });
 
+playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playerId) {
+  // stats je {type, seasons:[]}
+
+  if (stats) {
+    stats.seasons.forEach(async (season) => {
+      const existingSeasonStats = await this.findOne({ type: stats.type, player: playerId, season_id: stats.season_id });
+      if (!existingSeasonStats) {
+        const newStats = await this.create({ ...stats, player: playerId, type: stats.type });
+        return newStats;
+      }
+      return existingSeasonStats
+    });
+  }
+}
+
 playerCareerStatsSchema.index({ season_id: 1, player: 1, type: 1 }, { unique: true });
 
 const PlayerCareerStats = mongoose.model("PlayerCareerStats", playerCareerStatsSchema);

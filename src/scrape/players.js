@@ -69,13 +69,13 @@ function createLinkFromPlayerId(playerId) {
 }
 
 
-async function getPlayerStatsLink(profileDom = undefined, profileLink = undefined, playerId = undefined) {
+async function getPlayerStatsLink(settings) {
   let profileDocument;
-  if (playerId) {
-    return `/stats/player/${(playerId.toString())}/career`;
+  if (settings.playerId) {
+    return `/stats/player/${(settings.playerId.toString())}/career`;
   }
-  else if (profileLink) {
-    const res = await axiosInstance.get(profileLink);
+  else if (settings.profileLink) {
+    const res = await axiosInstance.get(settings.profileLink);
     const profileDom = new JSDOM(res.data);
     profileDocument = profileDom.window.document;
   }
@@ -103,7 +103,7 @@ async function scrapePlayerStatsTable(table) {
 
   const columnNames = [];
   const stats = {
-    statsGroup: tableName,
+    type: tableName,
     seasons: []
   };
 
