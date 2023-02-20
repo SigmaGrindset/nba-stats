@@ -34,11 +34,11 @@ async function scrapeTeamWrapper() {
 
 
 
-    teamData.players.forEach(async (playerId) => {
-      const existingPlayer = await Player.findOne({ id: playerId });
+    for (playerId of teamData.players) {
+      await sleep(1000)
       console.log(playerId);
+      const existingPlayer = await Player.findOne({ id: playerId });
       if (!existingPlayer) {
-        await sleep(1000);
         const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
         const player = await Player.create({ ...playerData });
         console.log("player created", player.name);
@@ -48,16 +48,17 @@ async function scrapeTeamWrapper() {
       await TeamCurrentRoster.assignPlayer(playerId, teamData.id);
 
       // career stats;
-      sleep(5000)
       const playerStatsLink = await getPlayerStatsLink({ playerId });
       const careerStats = await scrapePlayerStats(playerStatsLink);
-      await PlayerCareerStats.handlePlayerStats(careerStats.regSeason);
-      await PlayerCareerStats.handlePlayerStats(careerStats.playoffs);
-    });
+      await PlayerCareerStats.handlePlayerStats(careerStats.regSeason, playerId);
+      await PlayerCareerStats.handlePlayerStats(careerStats.playoffs, playerId);
+    };
+
   });
 
 
 }
+
 
 function sleep(ms) {
   return new Promise((resolve) => {
