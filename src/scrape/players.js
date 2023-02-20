@@ -22,6 +22,13 @@ async function getPlayerLinks(teamLink) {
 }
 
 
+async function scrapePlayers(links, cb) {
+  links.forEach(async (link) => {
+    const data = await scrapePlayer(link);
+    await cb(data);
+  });
+}
+
 
 async function scrapePlayer(link) {
   const res = await axiosInstance.get(link);
@@ -74,24 +81,24 @@ async function getPlayerStatsLink(settings) {
   if (settings.playerId) {
     return `/stats/player/${(settings.playerId.toString())}/career`;
   }
-  else if (settings.profileLink) {
-    const res = await axiosInstance.get(settings.profileLink);
-    const profileDom = new JSDOM(res.data);
-    profileDocument = profileDom.window.document;
-  }
+  // else if (settings.profileLink) {
+  //   const res = await axiosInstance.get(settings.profileLink);
+  //   const profileDom = new JSDOM(res.data);
+  //   profileDocument = profileDom.window.document;
+  // }
 
-  const viewMode = profileDocument.querySelector(".InnerNavTabs_list__tIFRN");
-  const statsButton = viewMode.querySelectorAll(".InnerNavTab_tab__bs7aN").item(1);
-  const statsLink = statsButton.querySelector("a").getAttribute("href");
+  // const viewMode = profileDocument.querySelector(".InnerNavTabs_list__tIFRN");
+  // const statsButton = viewMode.querySelectorAll(".InnerNavTab_tab__bs7aN").item(1);
+  // const statsLink = statsButton.querySelector("a").getAttribute("href");
 
 
-  const statsRes = await axiosInstance.get(statsLink);
-  const statsDom = new JSDOM(statsRes.data);
-  const statsDocument = statsDom.window.document;
+  // const statsRes = await axiosInstance.get(statsLink);
+  // const statsDom = new JSDOM(statsRes.data);
+  // const statsDocument = statsDom.window.document;
 
-  const optionList = statsDocument.querySelector(".StatsQuickNavSelector_list__nb3l1").querySelectorAll("li");
-  const careerStatsLink = optionList.item(2).querySelector("a").getAttribute("href");
-  // drugi li je za career stats
+  // const optionList = statsDocument.querySelector(".StatsQuickNavSelector_list__nb3l1").querySelectorAll("li");
+  // const careerStatsLink = optionList.item(2).querySelector("a").getAttribute("href");
+  // // drugi li je za career stats
   return careerStatsLink;
 }
 

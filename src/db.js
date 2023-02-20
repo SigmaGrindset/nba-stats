@@ -23,8 +23,10 @@ mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/
 async function scrapeTeamWrapper() {
   const teamLinks = await getTeamLinks();
 
-  teamLinks.forEach(async (link) => {
+  [teamLinks[0]].forEach(async (link) => {
+    // const teamId = parseInt(link.split("/").slice(-2, -1));
     const teamData = await scrapeTeam(link);
+    await sleep(1000);
     let team = await Team.findOne({ id: teamData.id });
     if (!team) {
       team = await Team.create({ ...teamData });
@@ -36,6 +38,7 @@ async function scrapeTeamWrapper() {
       const existingPlayer = await Player.findOne({ id: playerId });
       console.log(playerId);
       if (!existingPlayer) {
+        await sleep(1000);
         const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
         const player = await Player.create({ ...playerData });
         console.log("player created", player.name);
@@ -45,7 +48,9 @@ async function scrapeTeamWrapper() {
       await TeamCurrentRoster.assignPlayer(playerId, teamData.id);
 
       // career stats;
-      const careerStats = await scrapePlayerStats(getPlayerStatsLink({ playerId }));
+      sleep(5000)
+      const playerStatsLink = await getPlayerStatsLink({ playerId });
+      const careerStats = await scrapePlayerStats(playerStatsLink);
       await PlayerCareerStats.handlePlayerStats(careerStats.regSeason);
       await PlayerCareerStats.handlePlayerStats(careerStats.playoffs);
     });
@@ -54,5 +59,10 @@ async function scrapeTeamWrapper() {
 
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 scrapeTeamWrapper();

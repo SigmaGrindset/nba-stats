@@ -24,19 +24,19 @@ const playerSchema = new mongoose.Schema({
   stats: new mongoose.Schema({
     ppg: {
       required: true,
-      type: Number
+      type: String
     },
     rpg: {
       required: true,
-      type: Number
+      type: String
     },
     apg: {
       required: true,
-      type: Number
+      type: String
     },
     pie: {
       required: true,
-      type: Number
+      type: String
     },
   }),
   height: {
