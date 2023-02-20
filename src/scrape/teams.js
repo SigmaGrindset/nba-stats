@@ -132,7 +132,6 @@ async function scrapeTeam(link) {
   return teamData;
 }
 
-scrapeTeam("/team/1610612738/celtics");
 
 
 module.exports.getTeamLinks = getTeamLinks;
