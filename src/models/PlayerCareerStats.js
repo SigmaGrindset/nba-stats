@@ -14,12 +14,11 @@ const playerCareerStatsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-
-
   team: {
     type: String,
     required: true
   },
+
 
   player_age: {
     type: Number,
@@ -115,12 +114,12 @@ const playerCareerStatsSchema = new mongoose.Schema({
 
 playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playerId) {
   // stats je {type, seasons:[]}
-
   if (stats) {
     stats.seasons.forEach(async (season) => {
-      const existingSeasonStats = await this.findOne({ type: stats.type, player: playerId, season_id: stats.season_id });
+      console.log(stats.type, season);
+      const existingSeasonStats = await this.findOne({ type: stats.type, player: playerId, season_id: season.season_id, team: season.team });
       if (!existingSeasonStats) {
-        const newStats = await this.create({ ...stats, player: playerId, type: stats.type });
+        const newStats = await this.create({ ...season, player: playerId, type: stats.type });
         return newStats;
       }
       return existingSeasonStats
@@ -128,7 +127,7 @@ playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playe
   }
 }
 
-playerCareerStatsSchema.index({ season_id: 1, player: 1, type: 1 }, { unique: true });
+playerCareerStatsSchema.index({ season_id: 1, team: 1, player: 1, type: 1 }, { unique: true });
 
 const PlayerCareerStats = mongoose.model("PlayerCareerStats", playerCareerStatsSchema);
 module.exports = PlayerCareerStats;
