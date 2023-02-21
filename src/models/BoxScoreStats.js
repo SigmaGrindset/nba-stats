@@ -1,31 +1,35 @@
 const mongoose = require("mongoose");
 
-const requiredNumber = {
+const stat = {
   type: Number,
-  required: true
 };
 
 const boxScoreStatsSchema = new mongoose.Schema({
-  min: String,
-  fgm: requiredNumber,
-  fga: requiredNumber,
-  fg_pct: requiredNumber,
-  fg3m: requiredNumber,
-  fg3a: requiredNumber,
-  fg3_pct: requiredNumber,
-  ftm: requiredNumber,
-  fta: requiredNumber,
-  ft_pct: requiredNumber,
-  oreb: requiredNumber,
-  dreb: requiredNumber,
-  reb: requiredNumber,
-  ast: requiredNumber,
-  stl: requiredNumber,
-  blk: requiredNumber,
-  to: requiredNumber,
-  pf: requiredNumber,
-  pts: requiredNumber,
-  plus_minus: requiredNumber
+  min: {
+    type: String
+  },
+  fgm: stat,
+  fga: stat,
+  fg_pct: stat,
+  fg3m: stat,
+  fg3a: stat,
+  fg3_pct: stat,
+  ftm: stat,
+  fta: stat,
+  ft_pct: stat,
+  oreb: stat,
+  dreb: stat,
+  reb: stat,
+  ast: stat,
+  stl: stat,
+  blk: stat,
+  to: stat,
+  pf: stat,
+  pts: stat,
+  plus_minus: stat,
+  status: {
+    type: String
+  }
 
 });
 

@@ -2,12 +2,14 @@ const fs = require("fs").promises;
 const puppeteer = require("puppeteer");
 
 module.exports.transformLabel = function (label) {
+  label = label.toLowerCase();
+
   // pretvara label u mala slova i joina sa _
   if (label == "+/-") {
     label = "plus_minus";
   }
   if (label[0] == "3") {
-    label.replace("3p", "fg3");
+    label = label.replace("3p", "fg3");
 
   }
   label = label.replaceAll("%", "_PCT").toLowerCase().replaceAll(" ", "_");

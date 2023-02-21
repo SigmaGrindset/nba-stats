@@ -79,7 +79,7 @@ describe("player scrape test", () => {
   test("player stats", async () => {
     const teamLinks = await getTeamLinks();
     const playerLinks = await getPlayerLinks(teamLinks[5]);
-    const statsLink = await getPlayerStatsLink(undefined, profileLink = playerLinks[0]);
+    const statsLink = await getPlayerStatsLink({ profileLink: playerLinks[0] });
     const playerStats = await scrapePlayerStats(statsLink);
     const yearStat = playerStats.regSeason.seasons[0];
 

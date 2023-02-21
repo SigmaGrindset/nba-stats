@@ -98,6 +98,7 @@ async function getPlayerStatsLink(settings) {
 
 
 async function scrapePlayerStatsTable(table) {
+  console.log(table);
   const theadRows = table.querySelector("thead").querySelectorAll("tr")
   const columns = theadRows.item(1).querySelectorAll("th");
   const tableName = theadRows.item(0).querySelector("th").textContent;
@@ -139,6 +140,7 @@ async function scrapePlayerStatsTable(table) {
 async function scrapePlayerStats(statsLink) {
   const pageContent = await loadDynamicPage(BASEURL.concat(statsLink));
   const dom = new JSDOM(pageContent);
+  console.log(statsLink);
 
 
   const statsTable = dom.window.document.querySelectorAll(".Crom_table__p1iZz");
