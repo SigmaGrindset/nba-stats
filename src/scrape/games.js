@@ -49,7 +49,6 @@ async function scrapeGame(gameLink) {
     const value = columns.item(1).textContent;
     gameData[label] = value;
   });
-
   const boxScoreLink = document.querySelectorAll(".InnerNavTabLink_tab__T1vNe").item(1)
     .querySelector("a").getAttribute("href");
   const boxScoreData = await scrapeBoxScore(boxScoreLink);
