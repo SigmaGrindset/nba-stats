@@ -149,9 +149,9 @@ describe("game scrape", () => {
         expect(player.fgm).toBeDefined();
         expect(player.fga).toBeDefined();
         expect(player.fg_pct).toBeDefined();
-        expect(player["3pm"]).toBeDefined();
-        expect(player["3pa"]).toBeDefined();
-        expect(player["3p_pct"]).toBeDefined();
+        expect(player.fg3m).toBeDefined();
+        expect(player.fg3a).toBeDefined();
+        expect(player.fg3_pct).toBeDefined();
         expect(player.ftm).toBeDefined();
         expect(player.fta).toBeDefined();
         expect(player.ft_pct).toBeDefined();
