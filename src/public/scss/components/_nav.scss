@@ -1,0 +1,85 @@
+@use "../variables" as *;
+@use "../utils" as *;
+@use "../breakpoints" as *;
+
+
+.nav {
+  @include main-padding;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  padding: {
+    top: 2rem;
+    bottom: 2rem;
+  }
+
+  ;
+  max-width: $main-width-desktop;
+  margin: 0 auto;
+  font-family: montserrat;
+
+  .nav-heading {
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  .nav-heading,
+  .nav-item {
+    color: white;
+  }
+
+
+  .nav-item {
+    font-size: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
+  .nav-item:last-of-type {
+    margin-right: 0;
+  }
+
+  .nav-items {
+    margin-left: 8rem;
+    // margin-left: 4rem;
+    justify-self: center;
+  }
+
+  @include md() {
+    .nav-heading {
+      font-size: 1.75rem;
+    }
+
+    .nav-item {
+      font-size: 1.3rem;
+    }
+
+    .nav-items {
+      margin-left: 4rem;
+    }
+
+    padding: {
+      top: 1.25rem;
+      bottom: 1.25rem;
+    }
+
+    ;
+  }
+
+  @include sm() {
+
+    .nav-heading {
+      font-size: 1.5rem;
+    }
+
+    .nav-item {
+      font-size: 1.2rem;
+      margin-right: 1rem;
+    }
+
+    .nav-items {
+      margin-left: 1rem;
+    }
+
+  }
+}

@@ -24,7 +24,7 @@ function buildStylesProd() {
 }
 
 function watchStylesDev() {
-  watch(["./src/public/scss/**/*.scss", "./src/views/**/*.html"], { delay: 500 }, buildStylesDev);
+  watch(["./src/public/scss/**/*.scss", "./views/**/*.html"], { delay: 500 }, buildStylesDev);
 }
 
 exports.default = series(buildStylesDev, watchStylesDev);

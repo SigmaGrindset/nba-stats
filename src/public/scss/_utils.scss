@@ -1,0 +1,20 @@
+@use "variables" as *;
+@use "breakpoints" as *;
+
+@mixin main-padding {
+  max-width: $main-width-desktop;
+  padding-left: $main-padding-desktop;
+  padding-right: $main-padding-desktop;
+  margin-left: auto;
+  margin-right: auto;
+
+  @include md() {
+    padding-left: $main-padding-tablet;
+    padding-right: $main-padding-tablet;
+  }
+
+  @include sm() {
+    padding-left: $main-padding-mobile;
+    padding-right: $main-padding-mobile;
+  }
+}
