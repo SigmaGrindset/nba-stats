@@ -305,7 +305,7 @@
 }
 .stats-table-wrapper table th,
 .stats-table-wrapper table td {
-  min-width: 55px;
+  min-width: 50px;
   white-space: nowrap;
 }
 .stats-table-wrapper table thead th {
@@ -315,6 +315,7 @@
   text-align: left;
 }
 .stats-table-wrapper table thead th:first-child {
+  padding-right: 2rem;
   padding-left: 1rem;
 }
 .stats-table-wrapper table tbody tr {
@@ -323,6 +324,7 @@
 .stats-table-wrapper table tbody tr td {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  font-size: 0.9rem;
   background-color: white;
 }
 .stats-table-wrapper table tbody tr td:first-child {
@@ -334,4 +336,12 @@
 .stats-table-wrapper table tbody tr td:last-child {
   border-top-right-radius: 0.65rem;
   border-bottom-right-radius: 0.65rem;
+}
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper .table-heading {
+    font-size: 0.9rem;
+  }
+  .stats-table-wrapper thead th {
+    font-size: 0.8rem;
+  }
 }
