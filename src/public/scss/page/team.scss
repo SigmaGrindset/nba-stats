@@ -1,0 +1,134 @@
+@use "../variables" as *;
+@use "../colors" as *;
+@use "../utils" as *;
+@use "../breakpoints" as *;
+@use "../components/nav" as *;
+@use "../components/stats_table" as *;
+
+
+.nav-wrapper {
+
+  @include pink-nav();
+}
+
+.team-profile-wrapper {
+  background-color: #008348;
+}
+
+.team-profile {
+  * {
+    font-family: poppins;
+  }
+
+  @include main-padding;
+
+  padding: {
+    top: 3rem;
+    bottom: 3em;
+  }
+
+  ;
+  display: flex;
+  // flex-wrap: wrap;
+  align-items: flex-start;
+
+  #team {
+    width: 300px;
+    height: auto;
+    margin-right: 2rem;
+  }
+
+  .name {
+    font-size: 2rem;
+    color: white;
+    font-weight: 700;
+  }
+
+  .desc {
+    font-size: 1rem;
+    color: #F5F5F5;
+    margin-bottom: 2rem;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+
+    .stat {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #E7F5EF;
+      margin-right: 2rem;
+      padding: 1rem 1.5rem;
+      border-radius: $border-radius;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .stat-name {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: black;
+    }
+
+    .stat-rank {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: black;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: black;
+    }
+  }
+
+  @include md() {
+    #team {
+      width: 220px;
+    }
+
+    .stats {
+      .stat {
+        margin-right: 1rem;
+        padding: 1rem 1.3rem;
+      }
+    }
+  }
+
+  @include sm() {
+    #team {
+      width: 160px;
+      margin-right: 1rem;
+    }
+
+    .name {
+      font-size: 1.75rem;
+    }
+
+    .desc {
+      font-size: .9rem;
+    }
+
+    .stats {
+
+      .stat {
+        padding: .8rem 1rem;
+
+        .stat-name,
+        .stat-value {
+          font-size: 1rem;
+        }
+
+        .stat-rank {
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}

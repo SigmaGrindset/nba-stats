@@ -257,6 +257,7 @@
 }
 
 .stats-table-wrapper {
+  margin-top: 4rem;
   max-width: 1440px;
   padding-left: 2rem;
   padding-right: 2rem;

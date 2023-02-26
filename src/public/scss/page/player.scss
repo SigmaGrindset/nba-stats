@@ -7,14 +7,7 @@
 
 .nav-wrapper {
 
-  @include nav-wrapper(black) {
-    background: linear-gradient(90deg, rgba(247, 37, 133, 0.2), rgba(247, 37, 133, 0.1));
-  }
-
-  .nav-item:hover,
-  .nav-heading:hover {
-    color: #35091b;
-  }
+  @include pink-nav();
 }
 
 
@@ -237,5 +230,6 @@
 
 
 .stats-table-wrapper {
+  margin-top: 4rem;
   @include stats-table-wrapper(black, #212121, white, white, white, black);
 }
