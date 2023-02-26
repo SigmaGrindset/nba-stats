@@ -1,0 +1,97 @@
+@use "../variables" as *;
+@use "../utils" as *;
+
+
+@mixin stats-table-wrapper($caption-bg, $content-bg, $cell-bg, $caption-col, $headers-col, $content-col ) {
+  @include main-padding();
+
+
+  $table-padding-horizontal: 1rem;
+  $table-padding-vertical: .75rem;
+  $border-radius: .65rem;
+  $first-column-padding-left: 1rem;
+
+  * {
+    font-family: poppins;
+  }
+
+  .table-heading {
+    padding: $table-padding-vertical $table-padding-horizontal;
+    color: $caption-col;
+    font-weight: 700;
+    font-size: 1rem;
+    border-top-right-radius: $border-radius;
+    border-top-left-radius: $border-radius;
+    text-align: left;
+    background-color: $caption-bg;
+  }
+
+  .stats-table-content-wrapper {
+    overflow-x: auto;
+    padding: $table-padding-vertical $table-padding-horizontal;
+    background-color: $content-bg;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
+
+  table {
+
+    overflow-x: scroll;
+    border-collapse: separate;
+    border-spacing: 0 .5rem;
+    width: 100%;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+
+    th,
+    td {
+      min-width: 55px;
+      white-space: nowrap;
+
+    }
+
+    thead {
+      th {
+        font-size: .9rem;
+        font-weight: 400;
+        color: $headers-col;
+        text-align: left;
+      }
+
+      th:first-child {
+        padding-left: $first-column-padding-left;
+      }
+    }
+
+
+    tbody {
+
+      tr {
+        background-color: transparent;
+
+        td {
+          padding: {
+            top: .5rem;
+            bottom: .5rem;
+          }
+
+          ;
+          background-color:$cell-bg;
+        }
+
+        td:first-child {
+          font-weight: 500;
+          padding-left: $first-column-padding-left;
+          border-top-left-radius: $border-radius;
+          border-bottom-left-radius: $border-radius;
+        }
+
+        td:last-child {
+          border-top-right-radius: $border-radius;
+          border-bottom-right-radius: $border-radius;
+        }
+
+      }
+    }
+  }
+}
