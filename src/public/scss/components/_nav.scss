@@ -3,83 +3,90 @@
 @use "../breakpoints" as *;
 
 
-.nav {
-  @include main-padding;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+@mixin nav-wrapper($font-color) {
+  @content;
 
-  padding: {
-    top: 2rem;
-    bottom: 2rem;
-  }
+  .nav {
+    @include main-padding;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  ;
-  max-width: $main-width-desktop;
-  margin: 0 auto;
-  font-family: montserrat;
-
-  .nav-heading {
-    font-size: 2rem;
-    font-weight: 500;
-  }
-
-  .nav-heading,
-  .nav-item {
-    color: white;
-  }
-
-
-  .nav-item {
-    font-size: 1.5rem;
-    margin-right: 1.5rem;
-  }
-
-  .nav-item:last-of-type {
-    margin-right: 0;
-  }
-
-  .nav-items {
-    margin-left: 8rem;
-    // margin-left: 4rem;
-    justify-self: center;
-  }
-
-  @include md() {
-    .nav-heading {
-      font-size: 1.75rem;
-    }
-
-    .nav-item {
-      font-size: 1.3rem;
-    }
-
-    .nav-items {
-      margin-left: 4rem;
-    }
 
     padding: {
-      top: 1.25rem;
-      bottom: 1.25rem;
+      top: 1.5rem;
+      bottom: 1.5rem;
     }
 
     ;
-  }
-
-  @include sm() {
+    max-width: $main-width-desktop;
+    margin: 0 auto;
+    font-family: montserrat;
 
     .nav-heading {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 500;
     }
+
+    .nav-heading,
+    .nav-item {
+      color: $font-color;
+      transition: color 0.09s ease-in;
+    }
+
 
     .nav-item {
       font-size: 1.2rem;
-      margin-right: 1rem;
+      margin-right: 1.5rem;
+      font-weight: 500;
+    }
+
+    .nav-item:last-of-type {
+      margin-right: 0;
     }
 
     .nav-items {
-      margin-left: 1rem;
+      margin-left: 8rem;
+      // margin-left: 4rem;
+      justify-self: center;
     }
 
+    @include md() {
+      .nav-heading {
+        font-size: 1.75rem;
+      }
+
+      .nav-item {
+        font-size: 1.3rem;
+      }
+
+      .nav-items {
+        margin-left: 4rem;
+      }
+
+      padding: {
+        top: 1.25rem;
+        bottom: 1.25rem;
+      }
+
+      ;
+    }
+
+    @include sm() {
+
+      .nav-heading {
+        font-size: 1.5rem;
+      }
+
+      .nav-item {
+        font-size: 1.2rem;
+        margin-right: 1rem;
+      }
+
+      .nav-items {
+        margin-left: 1rem;
+      }
+
+    }
   }
 }

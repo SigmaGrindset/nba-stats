@@ -1,0 +1,177 @@
+.nav-wrapper {
+  background: linear-gradient(90deg, rgba(247, 37, 133, 0.2), rgba(247, 37, 133, 0.1));
+}
+.nav-wrapper .nav {
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  font-family: montserrat;
+}
+@media screen and (max-width: 1024px) {
+  .nav-wrapper .nav {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .nav-wrapper .nav {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.nav-wrapper .nav .nav-heading {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+.nav-wrapper .nav .nav-heading,
+.nav-wrapper .nav .nav-item {
+  color: black;
+  transition: color 0.09s ease-in;
+}
+.nav-wrapper .nav .nav-item {
+  font-size: 1.2rem;
+  margin-right: 1.5rem;
+  font-weight: 500;
+}
+.nav-wrapper .nav .nav-item:last-of-type {
+  margin-right: 0;
+}
+.nav-wrapper .nav .nav-items {
+  margin-left: 8rem;
+  justify-self: center;
+}
+@media screen and (max-width: 1024px) {
+  .nav-wrapper .nav {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+  .nav-wrapper .nav .nav-heading {
+    font-size: 1.75rem;
+  }
+  .nav-wrapper .nav .nav-item {
+    font-size: 1.3rem;
+  }
+  .nav-wrapper .nav .nav-items {
+    margin-left: 4rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .nav-wrapper .nav .nav-heading {
+    font-size: 1.5rem;
+  }
+  .nav-wrapper .nav .nav-item {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+  }
+  .nav-wrapper .nav .nav-items {
+    margin-left: 1rem;
+  }
+}
+.nav-wrapper .nav-item:hover,
+.nav-wrapper .nav-heading:hover {
+  color: #35091b;
+}
+
+.profile-wrapper {
+  background-color: #008348;
+}
+
+.profile {
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  padding-top: 3rem;
+}
+.profile * {
+  font-family: poppins;
+}
+@media screen and (max-width: 1024px) {
+  .profile {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .profile {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.profile .images {
+  margin-right: 1rem;
+  display: flex;
+}
+.profile .images #player {
+  width: 350px;
+  height: auto;
+  align-self: flex-end;
+}
+.profile .images #team {
+  width: 120px;
+  height: auto;
+  align-self: flex-start;
+}
+.profile .main-info .name {
+  font-size: 2rem;
+  color: white;
+}
+.profile .main-info .desc {
+  font-size: 1rem;
+  color: #F5F5F5;
+  margin-bottom: 2rem;
+}
+.profile .main-info .stat {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(231, 245, 239);
+  border-radius: 44rem;
+  padding: 0.5rem 1rem;
+  max-width: 100px;
+}
+.profile .main-info .stat .stat-value,
+.profile .main-info .stat .stat-name {
+  color: black;
+}
+.profile .main-info .stat .stat-value {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+.profile .main-info .stat .stat-name {
+  font-size: 1rem;
+}
+.profile .other-info .info {
+  display: flex;
+  align-items: center;
+}
+.profile .other-info .info-icon {
+  width: 40px;
+  height: auto;
+  fill: white;
+  margin-right: 0.4rem;
+}
+.profile .other-info .info-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 20px;
+}
+.profile .other-info .info-text .info-name {
+  color: #F5F5F5;
+  font-size: 0.9rem;
+}
+.profile .other-info .info-text .info-value {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+}

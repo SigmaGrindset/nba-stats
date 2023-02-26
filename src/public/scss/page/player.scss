@@ -1,0 +1,129 @@
+@use "../variables" as *;
+@use "../colors" as *;
+@use "../utils" as *;
+@use "../breakpoints" as *;
+@use "../components/nav" as *;
+
+.nav-wrapper {
+
+  @include nav-wrapper(black) {
+    background: linear-gradient(90deg, rgba(247, 37, 133, 0.2), rgba(247, 37, 133, 0.1));
+  }
+
+  .nav-item:hover,
+  .nav-heading:hover {
+    color: #35091b;
+  }
+}
+
+
+.profile-wrapper {
+  background-color: #008348;
+
+}
+
+.profile {
+  * {
+    font-family: poppins
+  }
+
+  @include main-padding;
+  display: flex;
+
+  padding: {
+    top: 3rem;
+  }
+
+  ;
+
+  .images {
+    margin-right: 1rem;
+    display: flex;
+
+
+    #player {
+      width: 350px;
+      height: auto;
+      align-self: flex-end;
+    }
+
+    #team {
+      width: 120px;
+      height: auto;
+      align-self: flex-start;
+    }
+
+  }
+
+  .main-info {
+    .name {
+      font-size: 2rem;
+      color: white;
+    }
+
+    .desc {
+      font-size: 1rem;
+      color: #F5F5F5;
+      margin-bottom: 2rem;
+    }
+
+    .main-stats {}
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      background-color: rgba(231, 245, 239, 1);
+      border-radius: 44rem;
+      padding: .5rem 1rem;
+      max-width: 100px;
+
+      .stat-value,
+      .stat-name {
+        color: black;
+      }
+
+      .stat-value {
+        font-weight: 500;
+        font-size: 1.1rem;
+      }
+
+      .stat-name {
+        font-size: 1rem;
+      }
+    }
+
+  }
+
+  .other-info {
+
+    .info {
+      display: flex;
+      align-items: center;
+    }
+
+    .info-icon {
+      width: 40px;
+      height: auto;
+      fill: white;
+      margin-right: .4rem;
+    }
+
+    .info-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 20px;
+
+      .info-name {
+        color: #F5F5F5;
+        font-size: .9rem;
+      }
+
+      .info-value {
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+
+  }
+}
