@@ -1,5 +1,6 @@
 @use "../variables" as *;
 @use "../utils" as *;
+@use "../breakpoints" as *;
 
 
 @mixin stats-table-wrapper($caption-bg, $content-bg, $cell-bg, $caption-col, $headers-col, $content-col ) {
@@ -45,7 +46,7 @@
 
     th,
     td {
-      min-width: 55px;
+      min-width: 50px;
       white-space: nowrap;
 
     }
@@ -59,6 +60,7 @@
       }
 
       th:first-child {
+        padding-right: 2rem;
         padding-left: $first-column-padding-left;
       }
     }
@@ -75,7 +77,7 @@
             bottom: .5rem;
           }
 
-          ;
+          font-size: .9rem;
           background-color:$cell-bg;
         }
 
@@ -91,6 +93,18 @@
           border-bottom-right-radius: $border-radius;
         }
 
+      }
+    }
+  }
+
+  @include sm() {
+    .table-heading {
+      font-size: .9rem;
+    }
+
+    thead {
+      th {
+        font-size: .8rem;
       }
     }
   }
