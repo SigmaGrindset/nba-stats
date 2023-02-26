@@ -56,9 +56,12 @@
   }
 
   .main-info {
+    margin-right: 5rem;
+
     .name {
       font-size: 2rem;
       color: white;
+      font-weight: 700;
     }
 
     .desc {
@@ -67,11 +70,16 @@
       margin-bottom: 2rem;
     }
 
-    .main-stats {}
+    .main-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .5rem;
+    }
 
     .stat {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       background-color: rgba(231, 245, 239, 1);
       border-radius: 44rem;
       padding: .5rem 1rem;
@@ -95,14 +103,22 @@
   }
 
   .other-info {
+    width: 30%;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
 
     .info {
+      margin-bottom: 2rem;
+      margin-right: 2rem;
+      align-self: center;
       display: flex;
       align-items: center;
     }
 
     .info-icon {
-      width: 40px;
+      width: 30px;
       height: auto;
       fill: white;
       margin-right: .4rem;
@@ -125,5 +141,95 @@
       }
     }
 
+  }
+
+  @include md() {
+    flex-wrap: wrap;
+
+    .main-info {
+      margin-right: 0;
+    }
+
+    .name {
+      font-size: 1.5rem;
+    }
+
+    .desc {
+      font-size: .8rem;
+    }
+
+    .images {
+
+      #player {
+        width: 250px;
+      }
+
+      #team {
+        width: 100px;
+      }
+    }
+
+    .stats {
+
+      .stat {
+        max-width: 200px;
+
+        .stat-name {
+          font-size: .9rem;
+        }
+
+        .stat-value {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .other-info {
+      margin-top: 2rem;
+      width: unset;
+    }
+  }
+
+  @include sm() {
+    .images {
+      #player {
+        width: 190px;
+      }
+
+      #team {
+        width: 90px;
+      }
+    }
+
+    .main-stats {
+      .stat {
+        padding: .4rem .9rem;
+        max-width: 80px;
+
+        .stat-name {
+          font-size: .85rem;
+        }
+
+        .stat-value {
+          font-size: .95rem;
+        }
+      }
+    }
+
+    .other-info {
+      .info {
+        .info-icon {
+          width: 27px;
+        }
+
+        .info-name {
+          font-size: .85rem;
+        }
+
+        .info-value {
+          font-size: .95rem;
+        }
+      }
+    }
   }
 }
