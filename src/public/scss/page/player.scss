@@ -3,6 +3,7 @@
 @use "../utils" as *;
 @use "../breakpoints" as *;
 @use "../components/nav" as *;
+@use "../components/stats_table" as *;
 
 .nav-wrapper {
 
@@ -232,4 +233,9 @@
       }
     }
   }
+}
+
+
+.stats-table-wrapper {
+  @include stats-table-wrapper(black, #212121, white, white, white, black);
 }
