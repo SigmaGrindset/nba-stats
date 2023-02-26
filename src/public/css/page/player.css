@@ -123,18 +123,28 @@
   height: auto;
   align-self: flex-start;
 }
+.profile .main-info {
+  margin-right: 5rem;
+}
 .profile .main-info .name {
   font-size: 2rem;
   color: white;
+  font-weight: 700;
 }
 .profile .main-info .desc {
   font-size: 1rem;
   color: #F5F5F5;
   margin-bottom: 2rem;
 }
+.profile .main-info .main-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
 .profile .main-info .stat {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background-color: rgb(231, 245, 239);
   border-radius: 44rem;
   padding: 0.5rem 1rem;
@@ -151,12 +161,22 @@
 .profile .main-info .stat .stat-name {
   font-size: 1rem;
 }
+.profile .other-info {
+  width: 30%;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
 .profile .other-info .info {
+  margin-bottom: 2rem;
+  margin-right: 2rem;
+  align-self: center;
   display: flex;
   align-items: center;
 }
 .profile .other-info .info-icon {
-  width: 40px;
+  width: 30px;
   height: auto;
   fill: white;
   margin-right: 0.4rem;
@@ -174,4 +194,64 @@
   color: white;
   font-size: 1rem;
   font-weight: 500;
+}
+@media screen and (max-width: 1024px) {
+  .profile {
+    flex-wrap: wrap;
+  }
+  .profile .main-info {
+    margin-right: 0;
+  }
+  .profile .name {
+    font-size: 1.5rem;
+  }
+  .profile .desc {
+    font-size: 0.8rem;
+  }
+  .profile .images #player {
+    width: 250px;
+  }
+  .profile .images #team {
+    width: 100px;
+  }
+  .profile .stats .stat {
+    max-width: 200px;
+  }
+  .profile .stats .stat .stat-name {
+    font-size: 0.9rem;
+  }
+  .profile .stats .stat .stat-value {
+    font-size: 1rem;
+  }
+  .profile .other-info {
+    margin-top: 2rem;
+    width: unset;
+  }
+}
+@media screen and (max-width: 578px) {
+  .profile .images #player {
+    width: 190px;
+  }
+  .profile .images #team {
+    width: 90px;
+  }
+  .profile .main-stats .stat {
+    padding: 0.4rem 0.9rem;
+    max-width: 80px;
+  }
+  .profile .main-stats .stat .stat-name {
+    font-size: 0.85rem;
+  }
+  .profile .main-stats .stat .stat-value {
+    font-size: 0.95rem;
+  }
+  .profile .other-info .info .info-icon {
+    width: 27px;
+  }
+  .profile .other-info .info .info-name {
+    font-size: 0.85rem;
+  }
+  .profile .other-info .info .info-value {
+    font-size: 0.95rem;
+  }
 }
