@@ -3,91 +3,101 @@
 @use "../utils" as *;
 
 @mixin info-cards-wrapper() {
-    @include main-padding;
-    display: flex;
-    overflow-x: auto;
-    justify-content: flex-start;
+  @include main-padding;
+  display: flex;
+  overflow-x: auto;
+  justify-content: flex-start;
 }
 
-@mixin info-card($bg-color) {
-    min-width: 280px;
-    background: linear-gradient(180deg, $bg-color, darken($bg-color, 5%));
-    padding: 1.25rem 1.5rem;
-    border-radius: $border-radius;
-    * {
-        font-family: poppins;
-    }
-    display: flex;
-    flex-direction: column;
-    color: white;
+@mixin info-card($bg-color, $fg-color) {
+  min-width: 280px;
+  background: linear-gradient(180deg, $bg-color, darken($bg-color, 5%));
+  padding: 1.25rem 1.5rem;
+  border-radius: $border-radius;
 
-    .heading {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-left: 1rem;
+  * {
+    font-family: poppins;
+  }
+
+  display: flex;
+  flex-direction: column;
+  color: $fg-color;
+
+  .heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-left: 1rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+    align-items: center;
+    display: flex;
+  }
+
+  table {
+    color: $fg-color;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0rem .75rem;
+
+    th {
+      vertical-align: top;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0;
+      margin: 0;
     }
+
+    td {
+      padding: 0;
+      margin: 0;
+      vertical-align: top;
+      font-size: 1rem;
+    }
+  }
+
+  .icon {
+    width: 35px;
+    height: auto;
+    fill: $fg-color;
+  }
+
+  @include md() {
+    padding: 1rem 1.25rem;
+    min-width: 280px;
 
     .header {
-        margin-bottom: 1rem;
-        align-items: center;
-        display: flex;
+      .heading {
+        font-size: 1.3rem;
+      }
     }
 
     table {
-        color: white;
-        text-align: left;
-        border-collapse: separate;
-        border-spacing: 0rem .75rem;
-        th {
-            vertical-align: top;
-            font-weight: 700;
-            font-size: 1rem;
-            padding: 0;
-            margin: 0;
-        }
-        td {
-            padding: 0;
-            margin: 0;
-            vertical-align: top;
-            font-size: 1rem;
-        }
+
+      th,
+      td {
+        font-size: .9rem;
+      }
+    }
+  }
+
+  @include sm() {
+    padding: .9rem .9rem;
+    min-width: 250px;
+
+    .header {
+      .heading {
+        font-size: 1.3rem;
+      }
     }
 
-    .icon {
-        width: 35px;
-        height: auto;
-        fill: white;
+    table {
+
+      th,
+      td {
+        font-size: .9rem;
+      }
     }
-
-    @include md() {
-        padding: 1rem 1.25rem;
-        min-width: 280px;
-        .header {
-            .heading {
-                font-size: 1.3rem;
-            }
-        }
-
-        table {
-            th, td {
-                font-size: .9rem;
-            }
-        }
-    }
-
-    @include sm() {
-        padding: .9rem .9rem;
-        min-width: 250px;
-        .header {
-            .heading {
-                font-size: 1.3rem;
-            }
-        }
-
-        table {
-            th, td {
-                font-size: .9rem;
-            }
-        }
-    }
+  }
 }

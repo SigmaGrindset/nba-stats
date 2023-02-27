@@ -1,5 +1,6 @@
 .gradient-wrapper {
-  background: linear-gradient(180deg, rgba(14, 4, 38, 0.31), rgb(14, 4, 38));
+  position: relative;
+  background: linear-gradient(180deg, hsla(258, 81%, 8%, 0.31), hsl(258, 81%, 8%));
 }
 
 .nav-wrapper .nav {
@@ -80,7 +81,8 @@
 
 .other-info {
   padding-top: 4rem;
-  background: red;
+  padding-bottom: 8rem;
+  background-color: #0E0426;
 }
 
 .game-info {
@@ -90,7 +92,7 @@
   margin-left: auto;
   margin-right: auto;
   padding-top: 8rem;
-  padding-bottom: 8rem;
+  padding-bottom: 10rem;
   display: flex;
   align-items: center;
 }
@@ -109,7 +111,8 @@
 .game-info * {
   font-family: poppins;
 }
-.game-info #team1, .game-info #team2 {
+.game-info #team1,
+.game-info #team2 {
   width: 300px;
   height: auto;
 }
@@ -130,7 +133,8 @@
   color: #F5F5F5;
 }
 @media screen and (max-width: 1024px) {
-  .game-info #team1, .game-info #team2 {
+  .game-info #team1,
+  .game-info #team2 {
     width: 20%;
   }
   .game-info .summary {
@@ -159,6 +163,7 @@
 }
 
 .stats-table-wrapper {
+  margin-bottom: 4rem;
   max-width: 1440px;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -193,7 +198,7 @@
 .stats-table-wrapper .stats-table-content-wrapper {
   overflow-x: auto;
   padding: 0.75rem 1rem;
-  background: linear-gradient(0deg, rgb(43, 40, 48), rgb(28, 17, 54));
+  background: linear-gradient(180deg, #2B2830, #1C1136);
   border-bottom-left-radius: 0.65rem;
   border-bottom-right-radius: 0.65rem;
 }
@@ -246,4 +251,115 @@
   .stats-table-wrapper thead th {
     font-size: 0.8rem;
   }
+}
+
+.info-card {
+  min-width: 280px;
+  background: linear-gradient(180deg, white, #f2f2f2);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  color: black;
+  background: linear-gradient(0deg, #FFF, #D7F5FF);
+}
+.info-card * {
+  font-family: poppins;
+}
+.info-card .heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 1rem;
+}
+.info-card .header {
+  margin-bottom: 1rem;
+  align-items: center;
+  display: flex;
+}
+.info-card table {
+  color: black;
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0rem 0.75rem;
+}
+.info-card table th {
+  vertical-align: top;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+}
+.info-card table td {
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+  font-size: 1rem;
+}
+.info-card .icon {
+  width: 35px;
+  height: auto;
+  fill: black;
+}
+@media screen and (max-width: 1024px) {
+  .info-card {
+    padding: 1rem 1.25rem;
+    min-width: 280px;
+  }
+  .info-card .header .heading {
+    font-size: 1.3rem;
+  }
+  .info-card table th,
+  .info-card table td {
+    font-size: 0.9rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .info-card {
+    padding: 0.9rem 0.9rem;
+    min-width: 250px;
+  }
+  .info-card .header .heading {
+    font-size: 1.3rem;
+  }
+  .info-card table th,
+  .info-card table td {
+    font-size: 0.9rem;
+  }
+}
+
+.info-cards-wrapper {
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  overflow-x: auto;
+  justify-content: flex-start;
+}
+@media screen and (max-width: 1024px) {
+  .info-cards-wrapper {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .info-cards-wrapper {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+.spacer {
+  aspect-ratio: 900/100;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.layer-1 {
+  background-image: url("../../assets/wave-haikei.svg");
 }

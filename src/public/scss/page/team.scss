@@ -153,9 +153,10 @@
   margin-top: 2rem;
   @include info-cards-wrapper();
 }
+
 .info-card {
   margin-right: 2rem;
-  @include info-card(#008348);
+  @include info-card(#008348, white);
 }
 
 .stats-table-wrapper {
