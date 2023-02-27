@@ -1,0 +1,82 @@
+@use "../variables" as *;
+@use "../utils" as *;
+@use "../colors" as *;
+@use "../breakpoints" as *;
+@use "../components/nav" as *;
+
+
+.gradient-wrapper {
+    background: linear-gradient(180deg, rgba(14, 4, 38, 0.31), rgba(14, 4, 38, 1));
+}
+.nav-wrapper  {
+    @include nav-wrapper(white);
+}
+
+
+.game-info {
+
+    @include main-padding;
+    padding: {
+        top: 4rem;
+        bottom: 6rem;
+    };
+    display: flex;
+    align-items: center;
+
+    * {
+        font-family: poppins;
+    }
+    #team1, #team2 {
+        width: 300px;
+        height: auto;
+    }
+
+    
+    .summary {
+        font-size: 2rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    .result {
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: white;
+    }
+    .location {
+        font-size: .9rem;
+        color: $white-dark;
+    }
+    
+    @include md() {
+
+        #team1, #team2 {
+            width: 20%;
+        }
+        .summary {
+            font-size: 1.75rem;
+        }
+        .result {
+            font-size: 1.5rem;
+        }
+    }
+
+    @include sm() {
+        #summary {
+            font-size: 1.5rem;
+        }
+        .result {
+            font-size: 1.4rem;
+        }
+        #team1 {
+            order: 2;
+        }
+        #team2 {
+            order:3;
+        }
+        .text {
+            order: 1;
+        }
+    }
+}
