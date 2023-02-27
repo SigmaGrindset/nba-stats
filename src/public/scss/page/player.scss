@@ -232,4 +232,7 @@
 .stats-table-wrapper {
   margin-top: 4rem;
   @include stats-table-wrapper(black, #212121, white, white, white, black);
+  @include sm() {
+    margin-top: 2rem;
+  }
 }

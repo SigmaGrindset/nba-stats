@@ -202,3 +202,195 @@
     font-size: 1.1rem;
   }
 }
+
+.info-cards-wrapper {
+  margin-top: 2rem;
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  overflow-x: auto;
+  justify-content: flex-start;
+}
+@media screen and (max-width: 1024px) {
+  .info-cards-wrapper {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .info-cards-wrapper {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+.info-card {
+  margin-right: 2rem;
+  min-width: 280px;
+  background: linear-gradient(180deg, #008348, #006a3a);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+.info-card * {
+  font-family: poppins;
+}
+.info-card .heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 1rem;
+}
+.info-card .header {
+  margin-bottom: 1rem;
+  align-items: center;
+  display: flex;
+}
+.info-card table {
+  color: white;
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0rem 0.75rem;
+}
+.info-card table th {
+  vertical-align: top;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+}
+.info-card table td {
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+  font-size: 1rem;
+}
+.info-card .icon {
+  width: 35px;
+  height: auto;
+  fill: white;
+}
+@media screen and (max-width: 1024px) {
+  .info-card {
+    padding: 1rem 1.25rem;
+    min-width: 280px;
+  }
+  .info-card .header .heading {
+    font-size: 1.3rem;
+  }
+  .info-card table th, .info-card table td {
+    font-size: 0.9rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .info-card {
+    padding: 0.9rem 0.9rem;
+    min-width: 250px;
+  }
+  .info-card .header .heading {
+    font-size: 1.3rem;
+  }
+  .info-card table th, .info-card table td {
+    font-size: 0.9rem;
+  }
+}
+
+.stats-table-wrapper {
+  margin-top: 4rem;
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media screen and (max-width: 1024px) {
+  .stats-table-wrapper {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.stats-table-wrapper * {
+  font-family: poppins;
+}
+.stats-table-wrapper .table-heading {
+  padding: 0.75rem 1rem;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border-top-right-radius: 0.65rem;
+  border-top-left-radius: 0.65rem;
+  text-align: left;
+  background-color: black;
+}
+.stats-table-wrapper .stats-table-content-wrapper {
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  background-color: #212121;
+  border-bottom-left-radius: 0.65rem;
+  border-bottom-right-radius: 0.65rem;
+}
+.stats-table-wrapper table {
+  overflow-x: scroll;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  width: 100%;
+  border-bottom-left-radius: 0.65rem;
+  border-bottom-right-radius: 0.65rem;
+}
+.stats-table-wrapper table th,
+.stats-table-wrapper table td {
+  min-width: 50px;
+  white-space: nowrap;
+}
+.stats-table-wrapper table thead th {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: white;
+  text-align: left;
+}
+.stats-table-wrapper table thead th:first-child {
+  padding-right: 2rem;
+  padding-left: 1rem;
+}
+.stats-table-wrapper table tbody tr {
+  background-color: transparent;
+}
+.stats-table-wrapper table tbody tr td {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.9rem;
+  background-color: white;
+}
+.stats-table-wrapper table tbody tr td:first-child {
+  font-weight: 500;
+  padding-left: 1rem;
+  border-top-left-radius: 0.65rem;
+  border-bottom-left-radius: 0.65rem;
+}
+.stats-table-wrapper table tbody tr td:last-child {
+  border-top-right-radius: 0.65rem;
+  border-bottom-right-radius: 0.65rem;
+}
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper .table-heading {
+    font-size: 0.9rem;
+  }
+  .stats-table-wrapper thead th {
+    font-size: 0.8rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper {
+    margin-top: 2rem;
+  }
+}

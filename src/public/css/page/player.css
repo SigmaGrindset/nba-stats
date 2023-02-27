@@ -346,3 +346,8 @@
     font-size: 0.8rem;
   }
 }
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper {
+    margin-top: 2rem;
+  }
+}
