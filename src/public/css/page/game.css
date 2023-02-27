@@ -78,14 +78,19 @@
   }
 }
 
+.other-info {
+  padding-top: 4rem;
+  background: red;
+}
+
 .game-info {
   max-width: 1440px;
   padding-left: 2rem;
   padding-right: 2rem;
   margin-left: auto;
   margin-right: auto;
-  padding-top: 4rem;
-  padding-bottom: 6rem;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
   display: flex;
   align-items: center;
 }
@@ -150,5 +155,95 @@
   }
   .game-info .text {
     order: 1;
+  }
+}
+
+.stats-table-wrapper {
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media screen and (max-width: 1024px) {
+  .stats-table-wrapper {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.stats-table-wrapper * {
+  font-family: poppins;
+}
+.stats-table-wrapper .table-heading {
+  padding: 0.75rem 1rem;
+  color: black;
+  font-weight: 700;
+  font-size: 1rem;
+  border-top-right-radius: 0.65rem;
+  border-top-left-radius: 0.65rem;
+  text-align: left;
+  background-color: white;
+}
+.stats-table-wrapper .stats-table-content-wrapper {
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(0deg, rgb(43, 40, 48), rgb(28, 17, 54));
+  border-bottom-left-radius: 0.65rem;
+  border-bottom-right-radius: 0.65rem;
+}
+.stats-table-wrapper table {
+  overflow-x: scroll;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  width: 100%;
+  border-bottom-left-radius: 0.65rem;
+  border-bottom-right-radius: 0.65rem;
+}
+.stats-table-wrapper table th,
+.stats-table-wrapper table td {
+  min-width: 50px;
+  white-space: nowrap;
+}
+.stats-table-wrapper table thead th {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: white;
+  text-align: left;
+}
+.stats-table-wrapper table thead th:first-child {
+  padding-right: 2rem;
+  padding-left: 1rem;
+}
+.stats-table-wrapper table tbody tr {
+  background-color: transparent;
+}
+.stats-table-wrapper table tbody tr td {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.9rem;
+  background-color: white;
+}
+.stats-table-wrapper table tbody tr td:first-child {
+  font-weight: 500;
+  padding-left: 1rem;
+  border-top-left-radius: 0.65rem;
+  border-bottom-left-radius: 0.65rem;
+}
+.stats-table-wrapper table tbody tr td:last-child {
+  border-top-right-radius: 0.65rem;
+  border-bottom-right-radius: 0.65rem;
+}
+@media screen and (max-width: 578px) {
+  .stats-table-wrapper .table-heading {
+    font-size: 0.9rem;
+  }
+  .stats-table-wrapper thead th {
+    font-size: 0.8rem;
   }
 }

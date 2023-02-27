@@ -3,6 +3,7 @@
 @use "../colors" as *;
 @use "../breakpoints" as *;
 @use "../components/nav" as *;
+@use "../components/stats_table" as *;
 
 
 .gradient-wrapper {
@@ -12,13 +13,18 @@
     @include nav-wrapper(white);
 }
 
+.other-info {
+    padding-top: 4rem;
+    background: red
+}
+
 
 .game-info {
 
     @include main-padding;
     padding: {
-        top: 4rem;
-        bottom: 6rem;
+        top: 8rem;
+        bottom: 8rem;
     };
     display: flex;
     align-items: center;
@@ -79,4 +85,12 @@
             order: 1;
         }
     }
+}
+
+.stats-table-wrapper {
+    // margin-top: 4rem;
+    @include stats-table-wrapper(white, linear-gradient(0deg, rgba(43, 40, 48, 1), rgba(28, 17, 54, 1)), white, black, white, black);
+    @include sm() {
+    }
+  
 }

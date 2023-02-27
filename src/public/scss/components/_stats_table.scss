@@ -30,7 +30,7 @@
   .stats-table-content-wrapper {
     overflow-x: auto;
     padding: $table-padding-vertical $table-padding-horizontal;
-    background-color: $content-bg;
+    background: $content-bg;
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
   }
