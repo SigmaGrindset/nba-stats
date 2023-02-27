@@ -4,93 +4,134 @@
 @use "../breakpoints" as *;
 @use "../components/nav" as *;
 @use "../components/stats_table" as *;
+@use "../components/info_card" as *;
 
 
 .gradient-wrapper {
-    background: linear-gradient(180deg, rgba(14, 4, 38, 0.31), rgba(14, 4, 38, 1));
+  position: relative;
+  background: linear-gradient(180deg, hsla(258, 81%, 8%, 0.31), hsl(258, 81%, 8%));
 }
-.nav-wrapper  {
-    @include nav-wrapper(white);
+
+.nav-wrapper {
+  @include nav-wrapper(white);
 }
 
 .other-info {
-    padding-top: 4rem;
-    background: red
+  padding-top: 4rem;
+  padding-bottom: 8rem;
+  background-color: #0E0426;
 }
 
 
 .game-info {
 
-    @include main-padding;
-    padding: {
-        top: 8rem;
-        bottom: 8rem;
-    };
-    display: flex;
-    align-items: center;
+  @include main-padding;
 
-    * {
-        font-family: poppins;
-    }
-    #team1, #team2 {
-        width: 300px;
-        height: auto;
+  padding: {
+    top: 8rem;
+    bottom: 10rem;
+  }
+
+  ;
+  display: flex;
+  align-items: center;
+
+  * {
+    font-family: poppins;
+  }
+
+  #team1,
+  #team2 {
+    width: 300px;
+    height: auto;
+  }
+
+
+  .summary {
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .result {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: white;
+  }
+
+  .location {
+    font-size: .9rem;
+    color: $white-dark;
+  }
+
+  @include md() {
+
+    #team1,
+    #team2 {
+      width: 20%;
     }
 
-    
     .summary {
-        font-size: 2rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: white;
-        margin-bottom: 1rem;
+      font-size: 1.75rem;
     }
+
     .result {
-        font-weight: 700;
-        font-size: 1.6rem;
-        color: white;
+      font-size: 1.5rem;
     }
-    .location {
-        font-size: .9rem;
-        color: $white-dark;
-    }
-    
-    @include md() {
+  }
 
-        #team1, #team2 {
-            width: 20%;
-        }
-        .summary {
-            font-size: 1.75rem;
-        }
-        .result {
-            font-size: 1.5rem;
-        }
+  @include sm() {
+    #summary {
+      font-size: 1.5rem;
     }
 
-    @include sm() {
-        #summary {
-            font-size: 1.5rem;
-        }
-        .result {
-            font-size: 1.4rem;
-        }
-        #team1 {
-            order: 2;
-        }
-        #team2 {
-            order:3;
-        }
-        .text {
-            order: 1;
-        }
+    .result {
+      font-size: 1.4rem;
     }
+
+    #team1 {
+      order: 2;
+    }
+
+    #team2 {
+      order: 3;
+    }
+
+    .text {
+      order: 1;
+    }
+  }
 }
 
 .stats-table-wrapper {
-    // margin-top: 4rem;
-    @include stats-table-wrapper(white, linear-gradient(0deg, rgba(43, 40, 48, 1), rgba(28, 17, 54, 1)), white, black, white, black);
-    @include sm() {
-    }
-  
+  margin-bottom: 4rem;
+  @include stats-table-wrapper(white, linear-gradient(180deg, #2B2830, #1C1136), white, black, white, black);
+}
+
+.info-card {
+  @include info-card(white, black);
+  // mixin ne podrzava gradient pa overrideam bg-color
+  background: linear-gradient(0deg, #FFF, #D7F5FF);
+}
+
+.info-cards-wrapper {
+  @include info-cards-wrapper();
+}
+
+
+
+.spacer {
+  aspect-ratio: 900/100;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.layer-1 {
+  background-image: url("../../assets/wave-haikei.svg");
 }

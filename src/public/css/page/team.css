@@ -282,7 +282,8 @@
   .info-card .header .heading {
     font-size: 1.3rem;
   }
-  .info-card table th, .info-card table td {
+  .info-card table th,
+  .info-card table td {
     font-size: 0.9rem;
   }
 }
@@ -294,7 +295,8 @@
   .info-card .header .heading {
     font-size: 1.3rem;
   }
-  .info-card table th, .info-card table td {
+  .info-card table th,
+  .info-card table td {
     font-size: 0.9rem;
   }
 }
