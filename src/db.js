@@ -7,7 +7,7 @@ const PlayerGameStats = require("./models/PlayerGameStats");
 const Team = require("./models/Team");
 const TeamCurrentRoster = require("./models/TeamCurrentRoster");
 
-
+const { sleep } = require("./utils/scrape_utils");
 const { getTeamLinks, scrapeTeam } = require("./scrape/teams");
 const { getPlayerLinks, scrapePlayer, scrapePlayerStats, createLinkFromPlayerId, getPlayerStatsLink } = require("./scrape/players");
 const { getGameLinks, scrapeGame } = require("./scrape/games");
@@ -117,10 +117,6 @@ async function scrapeTeamWrapper() {
 }
 
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+
 
 scrapeTeamWrapper();

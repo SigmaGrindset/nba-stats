@@ -9,6 +9,14 @@ const playerSchema = new mongoose.Schema({
     unique: true,
     required: true
   },
+  pageColor: {
+    type: String,
+    required: true
+  },
+  imageURL: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true

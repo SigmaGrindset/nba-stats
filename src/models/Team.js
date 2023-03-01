@@ -11,6 +11,14 @@ const teamSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  pageColor: {
+    type: String,
+    required: true
+  },
+  imageURL: {
+    type: String,
+    required: true
+  },
   record: {
     type: String,
     required: true

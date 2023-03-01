@@ -116,7 +116,6 @@ playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playe
   // stats je {type, seasons:[]}
   if (stats) {
     stats.seasons.forEach(async (season) => {
-      console.log(stats.type, season);
       const existingSeasonStats = await this.findOne({ type: stats.type, player: playerId, season_id: season.season_id, team: season.team });
       if (!existingSeasonStats) {
         const newStats = await this.create({ ...season, player: playerId, type: stats.type });

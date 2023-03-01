@@ -3,7 +3,7 @@ const { JSDOM } = jsdom
 const fs = require("fs").promises;
 const axios = require("axios");
 const { axiosInstance } = require("./main");
-const { scrapePlayer, getPlayerLinks } = require("./players");
+const { getPlayerLinks } = require("./players");
 const { transformLabel } = require("../utils/scrape_utils");
 
 
@@ -68,6 +68,8 @@ async function scrapeTeam(link) {
 
   // general
   const id = parseInt(link.split("/").slice(-2, -1)[0]);
+  const imageURL = document.querySelector(".TeamHeader_teamLogoBW__s7vYd").getAttribute("src");
+  const pageColor = dom.window.getComputedStyle(document.querySelector(".Layout_mainContent__jXliI").querySelector("div"))["background-color"];
   const name = document.querySelector(".TeamHeader_name__MmHlP").textContent;
   const recordContainers = document.querySelector(".TeamHeader_record__wzofp").querySelectorAll("span")
   const record = recordContainers.item(0).textContent;
@@ -123,6 +125,8 @@ async function scrapeTeam(link) {
     record,
     players: playerIds,
     placementText,
+    imageURL,
+    pageColor,
     ranksData,
     coaching,
     achievements,
