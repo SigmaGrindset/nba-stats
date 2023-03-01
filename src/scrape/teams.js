@@ -2,9 +2,9 @@ const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const fs = require("fs").promises;
 const axios = require("axios");
-const { axiosInstance } = require("./main");
+const { axiosInstance, BASEURL } = require("./main");
 const { getPlayerLinks } = require("./players");
-const { transformLabel } = require("../utils/scrape_utils");
+const { transformLabel, loadDynamicPage } = require("../utils/scrape_utils");
 
 
 async function getTeamLinks() {
@@ -62,14 +62,21 @@ function scrapeInfoBox(infoBox) {
 
 
 async function scrapeTeam(link) {
-  const res = await axiosInstance.get(link);
-  const dom = new JSDOM(res.data);
-  const document = dom.window.document
+  // const res = await axiosInstance.get(link);
+  // const dom = new JSDOM(res.data);
+  // const document = dom.window.document;
+  const data = await loadDynamicPage(BASEURL.concat(link));
+  const dom = new JSDOM(data);
+  const document = dom.window.document;
 
   // general
   const id = parseInt(link.split("/").slice(-2, -1)[0]);
   const imageURL = document.querySelector(".TeamHeader_teamLogoBW__s7vYd").getAttribute("src");
-  const pageColor = dom.window.getComputedStyle(document.querySelector(".Layout_mainContent__jXliI").querySelector("div"))["background-color"];
+  const element = document.querySelector(".Layout_mainContent__jXliI").querySelector("div");
+  const pageColor = dom.window.getComputedStyle(element);
+  console.log(pageColor.getPropertyCSSValue("background-color"));
+  console.log(element.style);
+  console.log(pageColor.backgroundColor);
   const name = document.querySelector(".TeamHeader_name__MmHlP").textContent;
   const recordContainers = document.querySelector(".TeamHeader_record__wzofp").querySelectorAll("span")
   const record = recordContainers.item(0).textContent;
@@ -136,6 +143,7 @@ async function scrapeTeam(link) {
   return teamData;
 }
 
+scrapeTeam("/team/1610612738/celtics").then(val => console.log);
 
 
 module.exports.getTeamLinks = getTeamLinks;

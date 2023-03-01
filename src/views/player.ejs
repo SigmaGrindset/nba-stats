@@ -4,49 +4,149 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="../public/css/index.css">
-  <link rel="stylesheet" href="../public/css/page/game.css">
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/page/player.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <title>Document</title>
 </head>
 
 <body>
-  <div class="gradient-wrapper">
+  <div class="nav-wrapper">
 
-    <div class="nav-wrapper">
-
-      <nav class="nav">
-        <a class="nav-heading">statspage</a>
-        <div class="nav-items">
-          <a href="" class="nav-item">teams</a>
-          <a href="" class="nav-item">players</a>
-          <a href="" class="nav-item">game</a>
-        </div>
-      </nav>
-    </div>
-
-    <div class="game-info">
-      <img src="https://cdn.nba.com/logos/nba/1610612751/global/L/logo.svg" alt="team logo 1" id="team1">
-      <div class="text">
-        <div class="summary">
-          Tatum, brown lead celtics past hornets in preseason
-        </div>
-        <div class="result">132 - 96</div>
-        <div class="location">TD Garden, Boston</div>
+    <nav class="nav">
+      <a class="nav-heading">statspage</a>
+      <div class="nav-items">
+        <a href="" class="nav-item">teams</a>
+        <a href="" class="nav-item">players</a>
+        <a href="" class="nav-item">game</a>
       </div>
-      <img src="https://cdn.nba.com/logos/nba/1610612738/global/L/logo.svg" alt="team logo 2" id="team2">
-    </div>
-    <div class="spacer layer-1"></div>
+    </nav>
   </div>
 
+  <main>
 
-  <div class="other-info">
+    <div class="profile-wrapper">
+
+      <div class="profile">
+        <div class="images">
+          <img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628369.png" id="player" alt="player image">
+          <img src="/assets/logo.svg" id="team" alt="team image">
+        </div>
+
+        <div class="main-info">
+          <div class="name">Jayson Tatum</div>
+          <div class="desc">Boston Celtics · #0 · Forward-Guard</div>
+          <div class="main-stats">
+            <div class="stat">
+              <div class="stat-name">PPG</div>
+              <div class="stat-value">30.6</div>
+            </div>
+            <div class="stat">
+              <div class="stat-name">PPG</div>
+              <div class="stat-value">30.6</div>
+            </div>
+            <div class="stat">
+              <div class="stat-name">PPG</div>
+              <div class="stat-value">30.6</div>
+            </div>
+            <div class="stat">
+              <div class="stat-name">PPG</div>
+              <div class="stat-value">30.6</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="other-info">
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M200 936V256h343l19 86h238v370H544l-18.933-85H260v309h-60Zm300-452Zm95 168h145V402H511l-19-86H260v251h316l19 85Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M480 936 320 776l44-44 86 86V334l-86 86-44-44 160-160 160 160-44 44-86-86v484l86-86 44 44-160 160Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M217 876h526l-63-440H280l-63 440Zm263-500q25.5 0 42.75-17.25T540 316q0-25.5-17.25-42.75T480 256q-25.5 0-42.75 17.25T420 316q0 25.5 17.25 42.75T480 376Zm104 0h96q23.108 0 40.054 14.5T740 428l62 440q4 27-13.625 47.5T743 936H217q-27.75 0-45.375-20.5T158 868l62-440q3-23 19.946-37.5T280 376h96q-8-14-12-28.567-4-14.566-4-31.433 0-50 35-85t85-35q50 0 85 35t35 85q0 17-4 31.5T584 376ZM217 876h526-526Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M479 936 189 777V537L40 456l439-240 441 240v317h-60V491l-91 46v240L479 936Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127V573L479 696 249 571v170l230 127Zm1-240Zm-1 74Zm0 0Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M109.912 906Q81 906 60.5 885.411 40 864.823 40 835.911 40 807 60.494 786.5t49.273-20.5q5.233 0 10.233.5 5 .5 13 2.5l200-200q-2-8-2.5-13t-.5-10.233q0-28.779 20.589-49.273Q371.177 476 400.089 476 429 476 449.5 496.634t20.5 49.61Q470 548 467 569l110 110q8-2 13-2.5t10-.5q5 0 10 .5t13 2.5l160-160q-2-8-2.5-13t-.5-10.233q0-28.779 20.589-49.273Q821.177 426 850.089 426 879 426 899.5 446.589q20.5 20.588 20.5 49.5Q920 525 899.506 545.5T850.233 566Q845 566 840 565.5q-5-.5-13-2.5L667 723q2 8 2.5 13t.5 10.233q0 28.779-20.589 49.273Q628.823 816 599.911 816 571 816 550.5 795.506T530 746.233q0-5.233.5-10.233.5-5 2.5-13L423 613q-8 2-13 2.5t-10.25.5q-1.75 0-22.75-3L177 813q2 8 2.5 13t.5 10.233q0 28.779-20.589 49.273Q138.823 906 109.912 906ZM160 464l-20.253-43.747L96 400l43.747-20.253L160 336l20.253 43.747L224 400l-43.747 20.253L160 464Zm440-51-30.717-66.283L503 316l66.283-30.717L600 219l30.717 66.283L697 316l-66.283 30.717L600 413Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M160 976q-17 0-28.5-11.5T120 936V717q0-24.75 17.625-42.375T180 657h27V475q0-24.75 17.625-42.375T267 415h183v-64q-20-14-30.5-30.534T409 280.589q0-14.589 5.5-28.089Q420 239 430 229l50-53 50 53q10 10 16 23.5t6 28.089q0 23.343-11 39.877Q530 337 510 351v64h183q24.75 0 42.375 17.625T753 475v182h27q24.75 0 42.375 17.625T840 717v219q0 17-11.5 28.5T800 976H160Zm107-319h426V475H267v182Zm-87 259h600V717H180v199Zm87-259h426-426Zm-87 259h600-600Zm600-259H180h600Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M480 575q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160 896v-94q0-38 19-65t49-41q67-30 128.5-45T480 636q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800 764 800 802v94H160Zm60-60h520v-34q0-16-9.5-30.5T707 750q-64-31-117-42.5T480 696q-57 0-111 11.5T252 750q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570 425q0-39-25.5-64.5T480 335q-39 0-64.5 25.5T390 425q0 39 25.5 64.5T480 515Zm0-90Zm0 411Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+          <div class="info">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+              <path
+                d="M167 976V753h104v223H167Zm212 0V461q-54 24-81 67t-27 112h-60q0-122 73-189t198-67q109 0 167-40.5T707 200h60q0 95-43.5 153.5T590 433v543h-60V721h-91v255h-60Zm103.08-654q-30.08 0-51.58-21.42-21.5-21.421-21.5-51.5 0-30.08 21.42-51.58 21.421-21.5 51.5-21.5 30.08 0 51.58 21.42 21.5 21.421 21.5 51.5 0 30.08-21.42 51.58-21.421 21.5-51.5 21.5Z" />
+            </svg>
+            <div class="info-text">
+              <div class="info-name">Country</div>
+              <div class="info-value">USA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <div class="stats-table-wrapper">
       <div class="table-heading">Career Regular Season Stats</div>
@@ -360,45 +460,9 @@
       </div>
     </div>
 
-    <div class="info-cards-wrapper">
 
-      <div class="info-card">
+  </main>
 
-        <div class="header">
-          <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
-            <path
-              d="M450.37 778.63h65.26V536h-65.26v242.63Zm29.633-313.043q15.551 0 26.068-10.231 10.516-10.232 10.516-25.356 0-16.244-10.514-26.915-10.513-10.672-26.055-10.672-15.812 0-26.208 10.672-10.397 10.671-10.397 26.795 0 15.274 10.52 25.491 10.519 10.216 26.07 10.216Zm.296 516.391q-84.202 0-158.041-31.878-73.839-31.879-129.159-87.199-55.32-55.32-87.199-129.201-31.878-73.88-31.878-158.167t31.878-158.2q31.879-73.914 87.161-128.747 55.283-54.832 129.181-86.818 73.899-31.986 158.205-31.986 84.307 0 158.249 31.968 73.942 31.967 128.756 86.768 54.815 54.801 86.79 128.883 31.976 74.083 31.976 158.333 0 84.235-31.986 158.07t-86.818 128.942q-54.833 55.107-128.873 87.169-74.04 32.063-158.242 32.063Zm.201-68.13q140.543 0 238.946-98.752 98.402-98.752 98.402-239.596 0-140.543-98.215-238.946-98.215-98.402-239.753-98.402-140.163 0-238.945 98.215-98.783 98.215-98.783 239.753 0 140.163 98.752 238.945 98.752 98.783 239.596 98.783ZM480 576Z" />
-          </svg>
-          <div class="heading">General info</div>
-        </div>
-        <table>
-          <tbody>
-            <tr>
-              <th>Founded</th>
-              <td>1946</td>
-            </tr>
-            <tr>
-              <th>Head coach</th>
-              <td>Joe Mama</td>
-            </tr>
-            <tr>
-              <th>City</th>
-              <td>New York</td>
-            </tr>
-            <tr>
-              <th>General manager</th>
-              <td>Marko nikolić</td>
-            </tr>
-            <tr>
-              <th>Founded</th>
-              <td>1946</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
 
 </body>
 
