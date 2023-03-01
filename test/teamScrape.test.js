@@ -18,6 +18,7 @@ describe("team scrape", () => {
     expect(typeof teamData.record).toEqual("string");
     expect(typeof teamData.imageURL).toEqual("string");
     expect(typeof teamData.pageColor).toEqual("string");
+    expect(teamData.pageColor.length > 0).toBeTruthy();
     expect(typeof teamData.records).toBeDefined();
     expect(typeof teamData.achievements).toBeDefined();
     expect(typeof teamData.coaching).toBeDefined();

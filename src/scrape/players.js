@@ -29,6 +29,7 @@ async function scrapePlayer(link) {
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
   const playerId = parseInt(link.split("/").slice(-2, -1));
+  console.log(playerId);
   const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
   const headerInfoArr = headerInfo.textContent.split("|");
   const number = headerInfoArr[1].trim();
@@ -66,6 +67,8 @@ async function scrapePlayer(link) {
   };
   return playerData;
 }
+
+// scrapePlayer("/player/1628369/jayson-tatum").then(val => console.log(val));
 
 
 function createLinkFromPlayerId(playerId) {
