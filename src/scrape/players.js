@@ -29,7 +29,6 @@ async function scrapePlayer(link) {
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
   const playerId = parseInt(link.split("/").slice(-2, -1));
-
   const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
   const headerInfoArr = headerInfo.textContent.split("|");
   const number = headerInfoArr[1].trim();
@@ -46,6 +45,8 @@ async function scrapePlayer(link) {
     stats[label] = value;
   });
 
+  const pageColor = dom.window.getComputedStyle(document.querySelector(".PlayerSummary_summary__CGowU"))["background-color"];
+  const playerImageURL = document.querySelector(".PlayerSummary_playerImage__sysif").getAttribute("src");
   const playerInfo = {};
   const playerInfoMainContainer = document.querySelector(".PlayerSummary_hw__HNuGb");
   const playerInfoContainers = playerInfoMainContainer.querySelectorAll(".PlayerSummary_playerInfo__om2G4");
@@ -59,6 +60,8 @@ async function scrapePlayer(link) {
   const playerData = {
     id: playerId,
     name: playerName,
+    pageColor: pageColor,
+    imageURL: playerImageURL,
     number, position, stats, ...playerInfo
   };
   return playerData;
@@ -98,7 +101,6 @@ async function getPlayerStatsLink(settings) {
 
 
 async function scrapePlayerStatsTable(table) {
-  console.log(table);
   const theadRows = table.querySelector("thead").querySelectorAll("tr")
   const columns = theadRows.item(1).querySelectorAll("th");
   const tableName = theadRows.item(0).querySelector("th").textContent;
@@ -140,7 +142,6 @@ async function scrapePlayerStatsTable(table) {
 async function scrapePlayerStats(statsLink) {
   const pageContent = await loadDynamicPage(BASEURL.concat(statsLink));
   const dom = new JSDOM(pageContent);
-  console.log(statsLink);
 
 
   const statsTable = dom.window.document.querySelectorAll(".Crom_table__p1iZz");

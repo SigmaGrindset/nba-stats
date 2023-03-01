@@ -39,3 +39,8 @@ module.exports.loadDynamicPage = async function (fullLink) {
 
 }
 
+module.exports.sleep = function (ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
