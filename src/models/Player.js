@@ -11,7 +11,8 @@ const playerSchema = new mongoose.Schema({
   },
   pageColor: {
     type: String,
-    required: true
+    required: true,
+    default: "#000"
   },
   imageURL: {
     type: String,

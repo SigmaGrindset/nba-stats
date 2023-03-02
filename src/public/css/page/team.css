@@ -229,7 +229,8 @@
 
 .info-card {
   margin-right: 2rem;
-  min-width: 280px;
+  min-width: 380px;
+  max-width: 500px;
   background: linear-gradient(180deg, #008348, #006a3a);
   padding: 1.25rem 1.5rem;
   border-radius: 0.65rem;
@@ -254,7 +255,7 @@
   color: white;
   text-align: left;
   border-collapse: separate;
-  border-spacing: 0rem 0.75rem;
+  border-spacing: 1.5rem 0.75rem;
 }
 .info-card table th {
   vertical-align: top;

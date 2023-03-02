@@ -1,0 +1,130 @@
+.gradient-wrapper {
+  background: linear-gradient(180deg, rgba(247, 37, 133, 0.61), rgba(76, 201, 240, 0.58));
+  min-height: 100vh;
+}
+
+.nav-wrapper .nav {
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  font-family: montserrat;
+}
+@media screen and (max-width: 1024px) {
+  .nav-wrapper .nav {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .nav-wrapper .nav {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.nav-wrapper .nav .nav-heading {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+.nav-wrapper .nav .nav-heading,
+.nav-wrapper .nav .nav-item {
+  color: white;
+  transition: color 0.09s ease-in;
+}
+.nav-wrapper .nav .nav-item {
+  font-size: 1.2rem;
+  margin-right: 1.5rem;
+  font-weight: 500;
+}
+.nav-wrapper .nav .nav-item:last-of-type {
+  margin-right: 0;
+}
+.nav-wrapper .nav .nav-items {
+  margin-left: 8rem;
+  justify-self: center;
+}
+@media screen and (max-width: 1024px) {
+  .nav-wrapper .nav {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+  .nav-wrapper .nav .nav-heading {
+    font-size: 1.75rem;
+  }
+  .nav-wrapper .nav .nav-item {
+    font-size: 1.3rem;
+  }
+  .nav-wrapper .nav .nav-items {
+    margin-left: 4rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .nav-wrapper .nav .nav-heading {
+    font-size: 1.5rem;
+  }
+  .nav-wrapper .nav .nav-item {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+  }
+  .nav-wrapper .nav .nav-items {
+    margin-left: 1rem;
+  }
+}
+
+.error {
+  margin-top: 4rem;
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media screen and (max-width: 1024px) {
+  .error {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .error {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.error * {
+  font-family: poppins;
+}
+.error .heading {
+  text-transform: uppercase;
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+.error .desc {
+  color: white;
+  font-size: 1.5rem;
+}
+@media screen and (max-width: 1024px) {
+  .error .heading {
+    font-size: 2.2rem;
+  }
+  .error .desc {
+    font-size: 1.4rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .error .heading {
+    font-size: 2rem;
+  }
+  .error .desc {
+    font-size: 1.2rem;
+  }
+}

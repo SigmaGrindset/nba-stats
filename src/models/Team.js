@@ -4,7 +4,7 @@ const teamSchema = new mongoose.Schema({
   id: {
     type: String,
     unique: true,
-    requited: true
+    required: true
   },
   name: {
     unique: true,
@@ -13,7 +13,7 @@ const teamSchema = new mongoose.Schema({
   },
   pageColor: {
     type: String,
-    required: true
+    required: true,
   },
   imageURL: {
     type: String,

@@ -29,7 +29,6 @@ module.exports.loadDynamicPage = async function (fullLink) {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto(fullLink);
-
   await page.waitForSelector("#onetrust-accept-btn-handler");
   await page.click("#onetrust-accept-btn-handler");
 
@@ -38,6 +37,7 @@ module.exports.loadDynamicPage = async function (fullLink) {
   return content;
 
 }
+
 
 module.exports.sleep = function (ms) {
   return new Promise((resolve) => {

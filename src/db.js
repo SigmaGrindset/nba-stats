@@ -19,11 +19,11 @@ mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/
   .catch(err => console.log(err));
 
 
-async function addPlayer(playerId, teamId) {
+async function addPlayer(playerId, teamId, data) {
   const existingPlayer = await Player.findOne({ id: playerId });
   if (!existingPlayer) {
     const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
-    const player = await Player.create({ ...playerData });
+    const player = await Player.create({ ...playerData, pageColor: data.pageColor });
     console.log("player created", player.name);
   } else {
     console.log("player exists", existingPlayer.name);
@@ -95,7 +95,7 @@ async function scrapeTeamWrapper() {
   [teamLinks[0]].forEach(async (link) => {
     // const teamId = parseInt(link.split("/").slice(-2, -1));
     const teamData = await scrapeTeam(link);
-    await sleep(1000);
+    await sleep(5000);
     let team = await Team.findOne({ id: teamData.id });
     if (!team) {
       team = await Team.create({ ...teamData });
@@ -104,7 +104,7 @@ async function scrapeTeamWrapper() {
 
     for (playerId of teamData.players) {
       await sleep(1500);
-      await addPlayer(playerId, teamData.id);
+      await addPlayer(playerId, teamData.id, { pageColor: teamData.pageColor });
     }
 
     const teamGames = await getGameLinks(link);
@@ -118,5 +118,15 @@ async function scrapeTeamWrapper() {
 
 
 
-
+async function deleteDB() {
+  await BoxScoreStats.deleteMany();
+  await Game.deleteMany();
+  await Player.deleteMany();
+  await PlayerCareerStats.deleteMany();
+  await PlayerGameStats.deleteMany();
+  await Team.deleteMany();
+  await TeamCurrentRoster.deleteMany();
+  console.log("deleted");
+}
+// deleteDB();
 scrapeTeamWrapper();

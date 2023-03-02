@@ -1,0 +1,55 @@
+@use "../components/nav" as *;
+@use "../utils" as *;
+@use "../breakpoints" as *;
+
+
+.gradient-wrapper {
+  background: linear-gradient(180deg, rgba(247, 37, 133, 0.61), rgba(76, 201, 240, 0.58));
+  min-height: 100vh;
+}
+
+.nav-wrapper {
+  @include nav-wrapper(white);
+
+}
+
+.error {
+  margin-top: 4rem;
+  @include main-padding();
+
+  * {
+    font-family: poppins;
+  }
+
+  .heading {
+    text-transform: uppercase;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  .desc {
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  @include md() {
+    .heading {
+      font-size: 2.2rem;
+    }
+
+    .desc {
+      font-size: 1.4rem;
+    }
+  }
+
+  @include sm() {
+    .heading {
+      font-size: 2rem;
+    }
+
+    .desc {
+      font-size: 1.2rem;
+    }
+  }
+}

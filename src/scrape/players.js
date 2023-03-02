@@ -29,7 +29,7 @@ async function scrapePlayer(link) {
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
   const playerId = parseInt(link.split("/").slice(-2, -1));
-  console.log(playerId);
+  console.log("player id", playerId);
   const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
   const headerInfoArr = headerInfo.textContent.split("|");
   const number = headerInfoArr[1].trim();
@@ -46,8 +46,8 @@ async function scrapePlayer(link) {
     stats[label] = value;
   });
 
-  const pageColor = dom.window.getComputedStyle(document.querySelector(".PlayerSummary_summary__CGowU"))["background-color"];
   const playerImageURL = document.querySelector(".PlayerSummary_playerImage__sysif").getAttribute("src");
+
   const playerInfo = {};
   const playerInfoMainContainer = document.querySelector(".PlayerSummary_hw__HNuGb");
   const playerInfoContainers = playerInfoMainContainer.querySelectorAll(".PlayerSummary_playerInfo__om2G4");
@@ -61,14 +61,12 @@ async function scrapePlayer(link) {
   const playerData = {
     id: playerId,
     name: playerName,
-    pageColor: pageColor,
     imageURL: playerImageURL,
     number, position, stats, ...playerInfo
   };
   return playerData;
 }
 
-// scrapePlayer("/player/1628369/jayson-tatum").then(val => console.log(val));
 
 
 function createLinkFromPlayerId(playerId) {
