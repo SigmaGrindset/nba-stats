@@ -8,7 +8,9 @@ const playerCareerStatsSchema = new mongoose.Schema({
   },
   player: {
     type: Number,
-    ref: "Player"
+    ref: "Player",
+    required: true,
+    autopopulate: true
   },
   type: {
     type: String,
@@ -127,6 +129,7 @@ playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playe
 }
 
 playerCareerStatsSchema.index({ season_id: 1, team: 1, player: 1, type: 1 }, { unique: true });
+playerCareerStatsSchema.plugin(require("mongoose-autopopulate"));
 
 const PlayerCareerStats = mongoose.model("PlayerCareerStats", playerCareerStatsSchema);
 module.exports = PlayerCareerStats;
