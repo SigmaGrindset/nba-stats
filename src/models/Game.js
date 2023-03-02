@@ -1,30 +1,30 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true,
-    unique: true
-  },
+  _id: Number,
   homeTeam: {
     type: Number,
     ref: "Team",
-    required: true
+    required: true,
+    autopopulate: true,
   },
   awayTeam: {
     type: Number,
     ref: "Team",
-    required: true
+    required: true,
+    autopopulate: true,
   },
   homeTeamStats: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BoxScoreStats",
-    required: true
+    required: true,
+    autopopulate: true
   },
   awayTeamStats: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BoxScoreStats",
-    required: true
+    required: true,
+    autopopulate: true
   },
   date: {
     type: String,
@@ -44,6 +44,7 @@ const gameSchema = new mongoose.Schema({
   }
 });
 
+gameSchema.plugin(require("mongoose-autopopulate"));
 
 const Game = mongoose.model("Game", gameSchema);
 module.exports = Game;
