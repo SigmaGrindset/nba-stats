@@ -33,34 +33,35 @@
   <div class="team-profile-wrapper">
 
     <div class="team-profile">
-      <img src="https://cdn.nba.com/logos/nba/1610612738/global/L/logo.svg" alt="" id="team">
+      <img src="<%= team.imageURL %>" alt="" id="team">
 
       <!-- <div class="right"> -->
       <div class="info">
-        <div class="name">Boston Celtics</div>
-        <div class="desc">42 - 17 · 1st in Eastern</div>
+        <div class="name"><%= team.name %></div>
+        <div class="desc"><%= team.record %> | <%= team.placementText %></div>
       </div>
       <div class="stats">
         <div class="stat">
           <div class="stat-name">PPG</div>
-          <div class="stat-rank">4th</div>
-          <div class="stat-value">117.8</div>
+          <div class="stat-rank"><%= team.ranksData.ppg.placement %></div>
+          <div class="stat-value"><%= team.ranksData.ppg.value %></div>
         </div>
         <div class="stat">
-          <div class="stat-name">PPG</div>
-          <div class="stat-rank">4th</div>
-          <div class="stat-value">117.8</div>
+          <div class="stat-name">APG</div>
+          <div class="stat-rank"><%= team.ranksData.apg.placement %></div>
+          <div class="stat-value"><%= team.ranksData.apg.value %></div>
         </div>
         <div class="stat">
-          <div class="stat-name">PPG</div>
-          <div class="stat-rank">4th</div>
-          <div class="stat-value">117.8</div>
+          <div class="stat-name">RPG</div>
+          <div class="stat-rank"><%= team.ranksData.rpg.placement %></div>
+          <div class="stat-value"><%= team.ranksData.rpg.value %></div>
         </div>
         <div class="stat">
-          <div class="stat-name">PPG</div>
-          <div class="stat-rank">4th</div>
-          <div class="stat-value">117.8</div>
+          <div class="stat-name">OPPG</div>
+          <div class="stat-rank"><%= team.ranksData.oppg.placement %></div>
+          <div class="stat-value"><%= team.ranksData.oppg.value %></div>
         </div>
+
       </div>
       <!-- </div> -->
 
@@ -75,30 +76,15 @@
 
         <thead>
           <tr>
-            <th>SEASON</th>
-            <th>TEAM</th>
+            <th>PLAYER</th>
+            <th>#</th>
+            <th>POS</th>
+            <th>HEIGHT</th>
+            <th>WEIGHT</th>
+            <th>BIRTHDATE</th>
             <th>AGE</th>
-            <th>GP</th>
-            <th>GS</th>
-            <th>MIN</th>
-            <th>PTS</th>
-            <th>FGM</th>
-            <th>FGA</th>
-            <th>FG%</th>
-            <th>3PM</th>
-            <th>3PA</th>
-            <th>3P%</th>
-            <th>FTM</th>
-            <th>FTA</th>
-            <th>FT%</th>
-            <th>OREB</th>
-            <th>DREB</th>
-            <th>REB</th>
-            <th>AST</th>
-            <th>STL</th>
-            <th>BLK</th>
-            <th>TOV</th>
-            <th>PF</th>
+            <th>EXP</th>
+            <th>SCHOOL</th>
           </tr>
         </thead>
 
@@ -108,271 +94,14 @@
             <td>BOS</td>
             <td>24</td>
             <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
             <td>2022-23</td>
             <td>BOS</td>
             <td>24</td>
             <td>57</td>
             <td>57</td>
 
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
           </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
 
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
-          <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>54.3</td>
-            <td>21.94</td>
-            <td>2.24</td>
-            <td>-20.4</td>
-            <td>20.5</td>
-            <td>0.5</td>
-            <td>43.1</td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -380,6 +109,8 @@
 
 
   <div class="info-cards-wrapper">
+    <% [{name:"Coaching", data:team.coaching}, {name:"Records", data:team.records}, {name:"Background", data: team.background}, {name:"Achievements", data:team.achievements}].forEach(group => { %>
+
     <div class="info-card">
 
       <div class="header">
@@ -387,138 +118,29 @@
           <path
             d="M450.37 778.63h65.26V536h-65.26v242.63Zm29.633-313.043q15.551 0 26.068-10.231 10.516-10.232 10.516-25.356 0-16.244-10.514-26.915-10.513-10.672-26.055-10.672-15.812 0-26.208 10.672-10.397 10.671-10.397 26.795 0 15.274 10.52 25.491 10.519 10.216 26.07 10.216Zm.296 516.391q-84.202 0-158.041-31.878-73.839-31.879-129.159-87.199-55.32-55.32-87.199-129.201-31.878-73.88-31.878-158.167t31.878-158.2q31.879-73.914 87.161-128.747 55.283-54.832 129.181-86.818 73.899-31.986 158.205-31.986 84.307 0 158.249 31.968 73.942 31.967 128.756 86.768 54.815 54.801 86.79 128.883 31.976 74.083 31.976 158.333 0 84.235-31.986 158.07t-86.818 128.942q-54.833 55.107-128.873 87.169-74.04 32.063-158.242 32.063Zm.201-68.13q140.543 0 238.946-98.752 98.402-98.752 98.402-239.596 0-140.543-98.215-238.946-98.215-98.402-239.753-98.402-140.163 0-238.945 98.215-98.783 98.215-98.783 239.753 0 140.163 98.752 238.945 98.752 98.783 239.596 98.783ZM480 576Z" />
         </svg>
-        <div class="heading">General info</div>
+        <div class="heading"><%= group.name %></div>
       </div>
       <table>
         <tbody>
+          <% group.data.forEach(row => { %>
           <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
-          <tr>
-            <th>Head coach</th>
-            <td>Joe Mama</td>
-          </tr>
-          <tr>
-            <th>City</th>
-            <td>New York</td>
-          </tr>
-          <tr>
-            <th>General manager</th>
-            <td>Marko nikolić</td>
-          </tr>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="info-card">
+            <th><%= row[0] %></th>
+            <% row.slice(1).forEach(col => { %>
+            <% if (Array.isArray(col)) { %>
+            <td><%= col.join(", ") %></td>
+            <%} else { %>
+            <td><%= col %></td>
+            <% } %>
+            <%}) %>
 
-      <div class="header">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
-          <path
-            d="M450.37 778.63h65.26V536h-65.26v242.63Zm29.633-313.043q15.551 0 26.068-10.231 10.516-10.232 10.516-25.356 0-16.244-10.514-26.915-10.513-10.672-26.055-10.672-15.812 0-26.208 10.672-10.397 10.671-10.397 26.795 0 15.274 10.52 25.491 10.519 10.216 26.07 10.216Zm.296 516.391q-84.202 0-158.041-31.878-73.839-31.879-129.159-87.199-55.32-55.32-87.199-129.201-31.878-73.88-31.878-158.167t31.878-158.2q31.879-73.914 87.161-128.747 55.283-54.832 129.181-86.818 73.899-31.986 158.205-31.986 84.307 0 158.249 31.968 73.942 31.967 128.756 86.768 54.815 54.801 86.79 128.883 31.976 74.083 31.976 158.333 0 84.235-31.986 158.07t-86.818 128.942q-54.833 55.107-128.873 87.169-74.04 32.063-158.242 32.063Zm.201-68.13q140.543 0 238.946-98.752 98.402-98.752 98.402-239.596 0-140.543-98.215-238.946-98.215-98.402-239.753-98.402-140.163 0-238.945 98.215-98.783 98.215-98.783 239.753 0 140.163 98.752 238.945 98.752 98.783 239.596 98.783ZM480 576Z" />
-        </svg>
-        <div class="heading">General info</div>
-      </div>
-      <table>
-        <thead></thead>
-        <tbody>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
           </tr>
-          <tr>
-            <th>Head coach</th>
-            <td>Joe Mama</td>
-          </tr>
-          <tr>
-            <th>City</th>
-            <td>New York</td>
-          </tr>
-          <tr>
-            <th>General manager</th>
-            <td>Marko nikolić</td>
-          </tr>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
+          <% }) %>
         </tbody>
       </table>
     </div>
-    <div class="info-card">
+    <% }) %>
 
-      <div class="header">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
-          <path
-            d="M450.37 778.63h65.26V536h-65.26v242.63Zm29.633-313.043q15.551 0 26.068-10.231 10.516-10.232 10.516-25.356 0-16.244-10.514-26.915-10.513-10.672-26.055-10.672-15.812 0-26.208 10.672-10.397 10.671-10.397 26.795 0 15.274 10.52 25.491 10.519 10.216 26.07 10.216Zm.296 516.391q-84.202 0-158.041-31.878-73.839-31.879-129.159-87.199-55.32-55.32-87.199-129.201-31.878-73.88-31.878-158.167t31.878-158.2q31.879-73.914 87.161-128.747 55.283-54.832 129.181-86.818 73.899-31.986 158.205-31.986 84.307 0 158.249 31.968 73.942 31.967 128.756 86.768 54.815 54.801 86.79 128.883 31.976 74.083 31.976 158.333 0 84.235-31.986 158.07t-86.818 128.942q-54.833 55.107-128.873 87.169-74.04 32.063-158.242 32.063Zm.201-68.13q140.543 0 238.946-98.752 98.402-98.752 98.402-239.596 0-140.543-98.215-238.946-98.215-98.402-239.753-98.402-140.163 0-238.945 98.215-98.783 98.215-98.783 239.753 0 140.163 98.752 238.945 98.752 98.783 239.596 98.783ZM480 576Z" />
-        </svg>
-        <div class="heading">General info</div>
-      </div>
-      <table>
-        <thead></thead>
-        <tbody>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
-          <tr>
-            <th>Head coach</th>
-            <td>Joe Mama</td>
-          </tr>
-          <tr>
-            <th>City</th>
-            <td>New York</td>
-          </tr>
-          <tr>
-            <th>General manager</th>
-            <td>Marko nikolić</td>
-          </tr>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="info-card">
 
-      <div class="header">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
-          <path
-            d="M450.37 778.63h65.26V536h-65.26v242.63Zm29.633-313.043q15.551 0 26.068-10.231 10.516-10.232 10.516-25.356 0-16.244-10.514-26.915-10.513-10.672-26.055-10.672-15.812 0-26.208 10.672-10.397 10.671-10.397 26.795 0 15.274 10.52 25.491 10.519 10.216 26.07 10.216Zm.296 516.391q-84.202 0-158.041-31.878-73.839-31.879-129.159-87.199-55.32-55.32-87.199-129.201-31.878-73.88-31.878-158.167t31.878-158.2q31.879-73.914 87.161-128.747 55.283-54.832 129.181-86.818 73.899-31.986 158.205-31.986 84.307 0 158.249 31.968 73.942 31.967 128.756 86.768 54.815 54.801 86.79 128.883 31.976 74.083 31.976 158.333 0 84.235-31.986 158.07t-86.818 128.942q-54.833 55.107-128.873 87.169-74.04 32.063-158.242 32.063Zm.201-68.13q140.543 0 238.946-98.752 98.402-98.752 98.402-239.596 0-140.543-98.215-238.946-98.215-98.402-239.753-98.402-140.163 0-238.945 98.215-98.783 98.215-98.783 239.753 0 140.163 98.752 238.945 98.752 98.783 239.596 98.783ZM480 576Z" />
-        </svg>
-        <div class="heading">General info</div>
-      </div>
-      <table>
-        <thead></thead>
-        <tbody>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
-          <tr>
-            <th>Head coach</th>
-            <td>Joe Mama</td>
-          </tr>
-          <tr>
-            <th>City</th>
-            <td>New York</td>
-          </tr>
-          <tr>
-            <th>General manager</th>
-            <td>Marko nikolić</td>
-          </tr>
-          <tr>
-            <th>Founded</th>
-            <td>1946</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
   </div>
 

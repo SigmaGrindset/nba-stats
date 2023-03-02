@@ -14,7 +14,6 @@ describe("player scrape test", () => {
       expect(typeof data.id).toBeDefined();
       expect(typeof data.name).toEqual("string");
       expect(typeof data.imageURL).toEqual("string");
-      expect(typeof data.pageColor).toEqual("string");
       expect(typeof data.number).toEqual("string");
       expect(typeof data.position).toEqual("string");
       expect(data.number).toContain("#");

@@ -7,6 +7,39 @@ const { getPlayerLinks } = require("./players");
 const { transformLabel, loadDynamicPage } = require("../utils/scrape_utils");
 
 
+const teamColors = {
+  "ATL": "#e03a3e",
+  "BKN": "#000",
+  "BOS": "#008348",
+  "CHA": "#00788c",
+  "CHI": "#ce1141",
+  "CLE": "#6f263d",
+  "DAL": "#0053bc",
+  "DEN": "#0e2240",
+  "DET": "#1d428a",
+  "GSW": "#006bb6",
+  "HOU": "#ce1141",
+  "IND": "#002d62",
+  "LAC": "#c8102e",
+  "LAL": "#552583",
+  "MEM": "#5d76a9",
+  "MIA": "#98002e",
+  "MIL": "#00471b",
+  "MIN": "#0c2340",
+  "NOP": "#002b5c",
+  "NYK": "#006bb6",
+  "OKC": "#007ac1",
+  "ORL": "#0077c0",
+  "PHI": "#006bb6",
+  "PHX": "#1d1160",
+  "POR": "#e03a3e",
+  "SAC": "#5a2d81",
+  "SAS": "#000",
+  "TOR": "#000",
+  "UTA": "#002b5c",
+  "WAS": "#002b5c"
+};
+
 async function getTeamLinks() {
   // daje linkove svih timova
   const data = JSON.parse(await fs.readFile("./team_links.json"));
@@ -48,7 +81,7 @@ function scrapeInfoBox(infoBox) {
   const rows = blockContent.querySelectorAll("div").item(1).querySelectorAll("div");
   const data = [];
   rows.forEach(row => {
-    const name = transformLabel(row.querySelector("h3").textContent);
+    const name = row.querySelector("h3").textContent;
     const valuesArr = [];
     const values = row.querySelectorAll("li");
     values.forEach(value => {
@@ -62,21 +95,17 @@ function scrapeInfoBox(infoBox) {
 
 
 async function scrapeTeam(link) {
-  // const res = await axiosInstance.get(link);
-  // const dom = new JSDOM(res.data);
-  // const document = dom.window.document;
-  const data = await loadDynamicPage(BASEURL.concat(link));
-  const dom = new JSDOM(data);
+  const res = await axiosInstance.get(link);
+  const dom = new JSDOM(res.data);
   const document = dom.window.document;
 
   // general
-  const id = parseInt(link.split("/").slice(-2, -1)[0]);
+  const teamFollowBtn = document.querySelector(".TeamFollowButton_follow__bJdBf").querySelector("button");
+  const teamShortText = teamFollowBtn.getAttribute("data-content");
+  const pageColor = teamColors[teamShortText];
   const imageURL = document.querySelector(".TeamHeader_teamLogoBW__s7vYd").getAttribute("src");
-  const element = document.querySelector(".Layout_mainContent__jXliI").querySelector("div");
-  const pageColor = dom.window.getComputedStyle(element);
-  console.log(pageColor.getPropertyCSSValue("background-color"));
-  console.log(element.style);
-  console.log(pageColor.backgroundColor);
+
+  const id = parseInt(link.split("/").slice(-2, -1)[0]);
   const name = document.querySelector(".TeamHeader_name__MmHlP").textContent;
   const recordContainers = document.querySelector(".TeamHeader_record__wzofp").querySelectorAll("span")
   const record = recordContainers.item(0).textContent;
@@ -143,7 +172,6 @@ async function scrapeTeam(link) {
   return teamData;
 }
 
-scrapeTeam("/team/1610612738/celtics").then(val => console.log);
 
 
 module.exports.getTeamLinks = getTeamLinks;

@@ -10,7 +10,8 @@
 }
 
 @mixin info-card($bg-color, $fg-color) {
-  min-width: 280px;
+  min-width: 380px;
+  max-width: 500px;
   background: linear-gradient(180deg, $bg-color, darken($bg-color, 5%));
   padding: 1.25rem 1.5rem;
   border-radius: $border-radius;
@@ -39,7 +40,7 @@
     color: $fg-color;
     text-align: left;
     border-collapse: separate;
-    border-spacing: 0rem .75rem;
+    border-spacing: 1.5rem .75rem;
 
     th {
       vertical-align: top;
