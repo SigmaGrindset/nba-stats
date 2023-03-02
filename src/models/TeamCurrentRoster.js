@@ -5,10 +5,12 @@ const teamCurrentRosterSchema = new mongoose.Schema({
     type: Number,
     ref: "Player",
     required: true,
+    autopopulate: true,
     unique: true // jedan igrac moze biti samo u jednom timu
   },
   team: {
     type: Number,
+    autopopulate: true,
     ref: "Team",
     required: true
   }
@@ -33,6 +35,7 @@ teamCurrentRosterSchema.statics.assignPlayer = async function (playerId, teamId)
 
 };
 
+teamCurrentRosterSchema.plugin(require('mongoose-autopopulate'));
 
 const TeamCurrentRoster = mongoose.model("TeamCurrentRoster", teamCurrentRosterSchema);
 module.exports = TeamCurrentRoster;

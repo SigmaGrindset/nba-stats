@@ -4,11 +4,7 @@ const mongoose = require("mongoose");
 
 
 const playerSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    unique: true,
-    required: true
-  },
+  _id: Number,
   pageColor: {
     type: String,
     required: true,

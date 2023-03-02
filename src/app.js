@@ -28,10 +28,9 @@ app.get("/team/:teamId", async (req, res) => {
   const teamId = req.params.teamId;
   const team = await Team.findOne({ id: teamId });
   const teamPlayers = await TeamCurrentRoster.find({ team: team.id });
-  console.log(teamPlayers[0]);
-  // console.log(team);
+  console.log(teamPlayers);
   if (team) {
-    res.render("team.ejs", { team: team })
+    res.render("team.ejs", { team, teamPlayers })
   } else {
     res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
   }

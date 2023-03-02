@@ -89,18 +89,20 @@
         </thead>
 
         <tbody>
+          <% teamPlayers.forEach(player => { %>
           <tr>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>2022-23</td>
-            <td>BOS</td>
-            <td>24</td>
-            <td>57</td>
-            <td>57</td>
-
+            <td><%= player.player.name %></td>
+            <td><%= player.player.number %></td>
+            <td><%= player.player.position %></td>
+            <td><%= player.player.height %></td>
+            <td><%= player.player.weight %></td>
+            <td><%= player.player.birthdate %></td>
+            <td><%= player.player.age %></td>
+            <td><%= player.player.experience %></td>
+            <td><%= player.player.last_attended %></td>
           </tr>
+
+          <% })%>
 
         </tbody>
       </table>

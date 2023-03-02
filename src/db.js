@@ -20,10 +20,11 @@ mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/
 
 
 async function addPlayer(playerId, teamId, data) {
-  const existingPlayer = await Player.findOne({ id: playerId });
+  console.log("addPlayer", playerId);
+  const existingPlayer = await Player.findOne({ _id: playerId });
   if (!existingPlayer) {
     const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
-    const player = await Player.create({ ...playerData, pageColor: data.pageColor });
+    const player = await Player.create({ ...playerData, _id: playerId, pageColor: data.pageColor });
     console.log("player created", player.name);
   } else {
     console.log("player exists", existingPlayer.name);
@@ -96,9 +97,9 @@ async function scrapeTeamWrapper() {
     // const teamId = parseInt(link.split("/").slice(-2, -1));
     const teamData = await scrapeTeam(link);
     await sleep(5000);
-    let team = await Team.findOne({ id: teamData.id });
+    let team = await Team.findOne({ _id: teamData.id });
     if (!team) {
-      team = await Team.create({ ...teamData });
+      team = await Team.create({ ...teamData, _id: teamData.id });
       console.log("team created:", team.name)
     }
 
@@ -107,11 +108,11 @@ async function scrapeTeamWrapper() {
       await addPlayer(playerId, teamData.id, { pageColor: teamData.pageColor });
     }
 
-    const teamGames = await getGameLinks(link);
-    for (gameLink of teamGames) {
-      await sleep(3000);
-      await addGame(gameLink);
-    }
+    // const teamGames = await getGameLinks(link);
+    // for (gameLink of teamGames) {
+    //   await sleep(3000);
+    //   await addGame(gameLink);
+    // }
 
   });
 }
