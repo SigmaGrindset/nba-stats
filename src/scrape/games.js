@@ -37,8 +37,14 @@ async function scrapeGame(gameLink) {
     id: gameId
   };
 
-  const gameSummaryContainer = document.querySelector(".GameSummary_sumContainer__WBZiw").querySelector("section");
-  const infoCards = gameSummaryContainer.querySelectorAll(".InfoCard_row__FO1v_");
+  const gameSummaryText = document.querySelector(".GameHeroHeadline_headline__GYjHE").textContent;
+  const gameSummaryLocation = document.querySelector(".GameHeroLocation_location__Q_ID_").textContent;
+  console.log(gameSummaryText, gameSummaryLocation)
+  gameData.summaryText = gameSummaryText
+  gameData.summaryLocation = gameSummaryLocation
+
+  const gameInfoContainer = document.querySelector(".GameSummary_sumContainer__WBZiw").querySelector("section");
+  const infoCards = gameInfoContainer.querySelectorAll(".InfoCard_row__FO1v_");
   infoCards.forEach(card => {
     const columns = card.querySelectorAll("div");
     const label = transformLabel(columns.item(0).textContent);
@@ -150,6 +156,8 @@ async function scrapeGameStatsTable(table, teamId) {
 
   return boxScoreData;
 }
+
+// scrapeGame("/game/0022200264/").then(val => console.log(val));
 
 module.exports.scrapeGame = scrapeGame;
 module.exports.getGameLinks = getGameLinks;

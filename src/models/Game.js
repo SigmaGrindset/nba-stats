@@ -26,6 +26,14 @@ const gameSchema = new mongoose.Schema({
     required: true,
     autopopulate: true
   },
+  summaryText: {
+    type: String,
+    required: true
+  },
+  summaryLocation: {
+    type: String,
+    required: true
+  },
   date: {
     type: String,
     required: true

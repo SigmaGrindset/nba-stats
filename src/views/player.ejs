@@ -31,33 +31,33 @@
 
   <main>
 
-    <div class="profile-wrapper">
+    <div class="profile-wrapper" style="background-color: <%= player.pageColor %>;">
 
       <div class="profile">
         <div class="images">
-          <img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628369.png" id="player" alt="player image">
-          <img src="/assets/logo.svg" id="team" alt="team image">
+          <img src="<%= player.imageURL %>" id="player" alt="player image">
+          <img src="<%= team.imageURL.replace("primary", "global") %>" id="team" alt="team image">
         </div>
 
         <div class="main-info">
-          <div class="name">Jayson Tatum</div>
-          <div class="desc">Boston Celtics · #0 · Forward-Guard</div>
+          <div class="name"><%= player.name %></div>
+          <div class="desc"><%= team.name %> · <%= player.number %> · <%= player.position %></div>
           <div class="main-stats">
             <div class="stat">
               <div class="stat-name">PPG</div>
-              <div class="stat-value">30.6</div>
+              <div class="stat-value"><%=player.stats.ppg%></div>
             </div>
             <div class="stat">
-              <div class="stat-name">PPG</div>
-              <div class="stat-value">30.6</div>
+              <div class="stat-name">RPG</div>
+              <div class="stat-value"><%=player.stats.rpg%></div>
             </div>
             <div class="stat">
-              <div class="stat-name">PPG</div>
-              <div class="stat-value">30.6</div>
+              <div class="stat-name">APG</div>
+              <div class="stat-value"><%=player.stats.apg%></div>
             </div>
             <div class="stat">
-              <div class="stat-name">PPG</div>
-              <div class="stat-value">30.6</div>
+              <div class="stat-name">PIE</div>
+              <div class="stat-value"><%=player.stats.pie%></div>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@
             </svg>
             <div class="info-text">
               <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-value"><%=player.country%></div>
             </div>
           </div>
           <div class="info">
@@ -79,8 +79,8 @@
                 d="M480 936 320 776l44-44 86 86V334l-86 86-44-44 160-160 160 160-44 44-86-86v484l86-86 44 44-160 160Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Height</div>
+              <div class="info-value"><%=player.height%></div>
             </div>
           </div>
           <div class="info">
@@ -89,8 +89,8 @@
                 d="M217 876h526l-63-440H280l-63 440Zm263-500q25.5 0 42.75-17.25T540 316q0-25.5-17.25-42.75T480 256q-25.5 0-42.75 17.25T420 316q0 25.5 17.25 42.75T480 376Zm104 0h96q23.108 0 40.054 14.5T740 428l62 440q4 27-13.625 47.5T743 936H217q-27.75 0-45.375-20.5T158 868l62-440q3-23 19.946-37.5T280 376h96q-8-14-12-28.567-4-14.566-4-31.433 0-50 35-85t85-35q50 0 85 35t35 85q0 17-4 31.5T584 376ZM217 876h526-526Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Weight</div>
+              <div class="info-value"><%=player.weight%></div>
             </div>
           </div>
           <div class="info">
@@ -99,8 +99,8 @@
                 d="M479 936 189 777V537L40 456l439-240 441 240v317h-60V491l-91 46v240L479 936Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127V573L479 696 249 571v170l230 127Zm1-240Zm-1 74Zm0 0Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Last attended</div>
+              <div class="info-value"><%=player.last_attended%></div>
             </div>
           </div>
           <div class="info">
@@ -109,8 +109,8 @@
                 d="M109.912 906Q81 906 60.5 885.411 40 864.823 40 835.911 40 807 60.494 786.5t49.273-20.5q5.233 0 10.233.5 5 .5 13 2.5l200-200q-2-8-2.5-13t-.5-10.233q0-28.779 20.589-49.273Q371.177 476 400.089 476 429 476 449.5 496.634t20.5 49.61Q470 548 467 569l110 110q8-2 13-2.5t10-.5q5 0 10 .5t13 2.5l160-160q-2-8-2.5-13t-.5-10.233q0-28.779 20.589-49.273Q821.177 426 850.089 426 879 426 899.5 446.589q20.5 20.588 20.5 49.5Q920 525 899.506 545.5T850.233 566Q845 566 840 565.5q-5-.5-13-2.5L667 723q2 8 2.5 13t.5 10.233q0 28.779-20.589 49.273Q628.823 816 599.911 816 571 816 550.5 795.506T530 746.233q0-5.233.5-10.233.5-5 2.5-13L423 613q-8 2-13 2.5t-10.25.5q-1.75 0-22.75-3L177 813q2 8 2.5 13t.5 10.233q0 28.779-20.589 49.273Q138.823 906 109.912 906ZM160 464l-20.253-43.747L96 400l43.747-20.253L160 336l20.253 43.747L224 400l-43.747 20.253L160 464Zm440-51-30.717-66.283L503 316l66.283-30.717L600 219l30.717 66.283L697 316l-66.283 30.717L600 413Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Experience</div>
+              <div class="info-value"><%=player.experience%></div>
             </div>
           </div>
           <div class="info">
@@ -119,8 +119,8 @@
                 d="M160 976q-17 0-28.5-11.5T120 936V717q0-24.75 17.625-42.375T180 657h27V475q0-24.75 17.625-42.375T267 415h183v-64q-20-14-30.5-30.534T409 280.589q0-14.589 5.5-28.089Q420 239 430 229l50-53 50 53q10 10 16 23.5t6 28.089q0 23.343-11 39.877Q530 337 510 351v64h183q24.75 0 42.375 17.625T753 475v182h27q24.75 0 42.375 17.625T840 717v219q0 17-11.5 28.5T800 976H160Zm107-319h426V475H267v182Zm-87 259h600V717H180v199Zm87-259h426-426Zm-87 259h600-600Zm600-259H180h600Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Birthdate</div>
+              <div class="info-value"><%=player.birthdate%></div>
             </div>
           </div>
           <div class="info">
@@ -129,8 +129,8 @@
                 d="M480 575q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160 896v-94q0-38 19-65t49-41q67-30 128.5-45T480 636q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800 764 800 802v94H160Zm60-60h520v-34q0-16-9.5-30.5T707 750q-64-31-117-42.5T480 696q-57 0-111 11.5T252 750q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570 425q0-39-25.5-64.5T480 335q-39 0-64.5 25.5T390 425q0 39 25.5 64.5T480 515Zm0-90Zm0 411Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Age</div>
+              <div class="info-value"><%=player.age%></div>
             </div>
           </div>
           <div class="info">
@@ -139,8 +139,8 @@
                 d="M167 976V753h104v223H167Zm212 0V461q-54 24-81 67t-27 112h-60q0-122 73-189t198-67q109 0 167-40.5T707 200h60q0 95-43.5 153.5T590 433v543h-60V721h-91v255h-60Zm103.08-654q-30.08 0-51.58-21.42-21.5-21.421-21.5-51.5 0-30.08 21.42-51.58 21.421-21.5 51.5-21.5 30.08 0 51.58 21.42 21.5 21.421 21.5 51.5 0 30.08-21.42 51.58-21.421 21.5-51.5 21.5Z" />
             </svg>
             <div class="info-text">
-              <div class="info-name">Country</div>
-              <div class="info-value">USA</div>
+              <div class="info-name">Draft</div>
+              <div class="info-value"><%=player.draft%></div>
             </div>
           </div>
         </div>
@@ -148,8 +148,10 @@
 
     </div>
 
+
+    <% stats.forEach((stat) => { %>
     <div class="stats-table-wrapper">
-      <div class="table-heading">Career Regular Season Stats</div>
+      <div class="table-heading"><%=stat[0].type%></div>
       <div class="stats-table-content-wrapper">
 
 
@@ -185,280 +187,39 @@
           </thead>
 
           <tbody>
+            <% stat.forEach(seasonStats => { %>
             <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
+              <td><%= seasonStats.season_id %></td>
+              <td><%= seasonStats.team %></td>
+              <td><%= seasonStats.player_age %></td>
+              <td><%= seasonStats.gp %></td>
+              <td><%= seasonStats.gs %></td>
+              <td><%= seasonStats.min %></td>
+              <td><%= seasonStats.pts %></td>
+              <td><%= seasonStats.fgm %></td>
+              <td><%= seasonStats.fga %></td>
+              <td><%= seasonStats.fg_pct %></td>
+              <td><%= seasonStats.fg3m %></td>
+              <td><%= seasonStats.fg3a %></td>
+              <td><%= seasonStats.fg3_pct %></td>
+              <td><%= seasonStats.ftm %></td>
+              <td><%= seasonStats.fta %></td>
+              <td><%= seasonStats.ft_pct %></td>
+              <td><%= seasonStats.oreb %></td>
+              <td><%= seasonStats.dreb %></td>
+              <td><%= seasonStats.reb %></td>
+              <td><%= seasonStats.ast %></td>
+              <td><%= seasonStats.stl %></td>
+              <td><%= seasonStats.blk %></td>
+              <td><%= seasonStats.tov %></td>
+              <td><%= seasonStats.pf %></td>
             </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
-            <tr>
-              <td>2022-23</td>
-              <td>BOS</td>
-              <td>24</td>
-              <td>57</td>
-              <td>57</td>
-
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>54.3</td>
-              <td>21.94</td>
-              <td>2.24</td>
-              <td>-20.4</td>
-              <td>20.5</td>
-              <td>0.5</td>
-              <td>43.1</td>
-            </tr>
+            <% }) %>
           </tbody>
         </table>
       </div>
     </div>
+    <% }) %>
 
 
   </main>

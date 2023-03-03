@@ -29,9 +29,8 @@ app.get("/", (req, res) => {
 
 app.get("/team/:teamId", async (req, res) => {
   const teamId = req.params.teamId;
-  const team = await Team.findOne({ id: teamId });
+  const team = await Team.findOne({ _id: teamId });
   const teamPlayers = await TeamCurrentRoster.find({ team: team.id });
-  console.log(teamPlayers);
   if (team) {
     res.render("team.ejs", { team, teamPlayers })
   } else {
@@ -44,11 +43,43 @@ app.get("/error", async (req, res) => {
   res.render("errors/error.ejs", { error: { name: "error 404", desc: "page not found" } });
 });
 
-app.get("/player", (req, res) => {
-  res.render("player.ejs")
+app.get("/player/:playerId", async (req, res) => {
+  const playerId = req.params.playerId;
+  const player = await Player.findOne({ _id: playerId });
+  const regSeasonStats = await PlayerCareerStats.find({ type: "Career Regular Season Stats", player: player._id });
+  const playoffsStats = await PlayerCareerStats.find({ type: "Career Playoffs Stats", player: player._id });
+  const teamRoster = await TeamCurrentRoster.findOne({ player: player._id });
+  const stats = [regSeasonStats, playoffsStats];
+  if (player) {
+    res.render("player.ejs", { player, stats, team: teamRoster.team });
+  } else {
+    res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
+
+  }
 });
-app.get("/game", (req, res) => {
-  res.render("game.ejs")
+app.get("/game/:gameId", async (req, res) => {
+  const gameId = req.params.gameId;
+  const game = await Game.findOne({ _id: gameId });
+  const homeTeamStats = await PlayerGameStats.find({ game: gameId, team: game.homeTeam._id });
+  const awayTeamStats = await PlayerGameStats.find({ game: gameId, team: game.awayTeam._id });
+  console.log(homeTeamStats);
+  // console.log(awayTeamStats);
+  const teamStats = [
+    {
+      teamName: game.homeTeam.name,
+      stats: homeTeamStats
+    },
+    {
+      teamName: game.awayTeam.name,
+      stats: awayTeamStats
+    }
+  ];
+  // console.log(game);
+  if (game) {
+    res.render("game.ejs", { game, teams: teamStats });
+  } else {
+    res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
+  }
 });
 
 

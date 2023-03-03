@@ -1,0 +1,2 @@
+dodati game heading
+scrapeati primary team images

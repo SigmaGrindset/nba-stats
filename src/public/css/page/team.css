@@ -231,7 +231,6 @@
   margin-right: 2rem;
   min-width: 380px;
   max-width: 500px;
-  background: linear-gradient(180deg, #008348, #006a3a);
   padding: 1.25rem 1.5rem;
   border-radius: 0.65rem;
   display: flex;
@@ -242,7 +241,7 @@
   font-family: poppins;
 }
 .info-card .heading {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   margin-left: 1rem;
 }
@@ -271,7 +270,7 @@
   font-size: 1rem;
 }
 .info-card .icon {
-  width: 35px;
+  width: 32px;
   height: auto;
   fill: white;
 }
