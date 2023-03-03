@@ -20,7 +20,6 @@ mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/
 
 
 async function addPlayer(playerId, teamId, data) {
-  console.log("addPlayer", playerId);
   const existingPlayer = await Player.findOne({ _id: playerId });
   if (!existingPlayer) {
     const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
@@ -45,13 +44,13 @@ async function addPlayer(playerId, teamId, data) {
 async function addGame(gameLink) {
 
   const gameData = await scrapeGame(gameLink);
-  const existingGame = await Game.findOne({ id: gameData.id });
+  const existingGame = await Game.findOne({ _id: gameData.id });
   if (!existingGame) {
 
     const awayTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[0].playerStats.slice(-1)[0] });
     const homeTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[1].playerStats.slice(-1)[0] });
     const game = await Game.create({
-      id: gameData.id,
+      _id: gameData.id,
       date: gameData.date,
       location: gameData.location,
       attendance: gameData.attendance,
@@ -60,6 +59,7 @@ async function addGame(gameLink) {
       homeTeam: gameData.boxScore[1].teamId,
       homeTeamStats: homeTeamBoxScore._id,
       awayTeamStats: awayTeamBoxScore._id,
+      ...gameData
     });
     console.log("game created:", game.id);
     await addGameStats(gameData);
@@ -71,11 +71,11 @@ async function addGameStats(gameData) {
   for (teamStats of gameData.boxScore) {
     for (playerStats of teamStats.playerStats) {
       if (playerStats.player != "totals") {
-        const existingPlayer = await Player.findOne({ id: playerStats.player });
-        // if (!existingPlayer) {
+        const existingPlayer = await Player.findOne({ _id: playerStats.player });
+        if (!existingPlayer) {
         // ako je u gameu igrao igrač koji nije dodan u bazu podataka
-        // await addPlayer(playerStats.player);
-        // }
+        await addPlayer(playerStats.player);
+        }
         const stats = await BoxScoreStats.create({ ...playerStats });
         console.log("stats created:", stats)
         const gameStats = await PlayerGameStats.create({
@@ -90,31 +90,40 @@ async function addGameStats(gameData) {
 }
 
 
+async function addTeam(link) {
+  const teamData = await scrapeTeam(link);
+  await sleep(5000);
+  let team = await Team.findOne({ _id: teamData.id });
+  if (!team) {
+    team = await Team.create({ ...teamData, _id: teamData.id });
+    console.log("team created:", team.name)
+  }
+
+  for (playerId of teamData.players) {
+    console.log(playerId)
+    await sleep(2000);
+    await addPlayer(playerId, teamData.id, { pageColor: teamData.pageColor });
+  }
+
+}
+
 async function scrapeTeamWrapper() {
   const teamLinks = await getTeamLinks();
 
-  [teamLinks[0]].forEach(async (link) => {
+  for (link of teamLinks) {
     // const teamId = parseInt(link.split("/").slice(-2, -1));
-    const teamData = await scrapeTeam(link);
-    await sleep(5000);
-    let team = await Team.findOne({ _id: teamData.id });
-    if (!team) {
-      team = await Team.create({ ...teamData, _id: teamData.id });
-      console.log("team created:", team.name)
+    await addTeam(link);
+
+  };
+
+  // games
+  for (link of teamLinks) {
+    const teamGames = await getGameLinks(link);
+    for (gameLink of teamGames) {
+      await sleep(3000);
+      await addGame(gameLink);
     }
-
-    for (playerId of teamData.players) {
-      await sleep(1500);
-      await addPlayer(playerId, teamData.id, { pageColor: teamData.pageColor });
-    }
-
-    // const teamGames = await getGameLinks(link);
-    // for (gameLink of teamGames) {
-    //   await sleep(3000);
-    //   await addGame(gameLink);
-    // }
-
-  });
+  };
 }
 
 
@@ -130,4 +139,7 @@ async function deleteDB() {
   console.log("deleted");
 }
 // deleteDB();
-scrapeTeamWrapper();
+// scrapeTeamWrapper();
+// addTeam("/team/1610612751/nets")
+// addTeam("/team/1610612738/celtics")
+// addGame("/game/0022200346/");

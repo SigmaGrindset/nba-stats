@@ -30,10 +30,10 @@
     </nav>
   </div>
 
-  <div class="team-profile-wrapper">
+  <div class="team-profile-wrapper" style="background-color: <%= team.pageColor %>">
 
     <div class="team-profile">
-      <img src="<%= team.imageURL %>" alt="" id="team">
+      <img src="<%= team.imageURL.replace("primary", "global") %>" alt="" id="team">
 
       <!-- <div class="right"> -->
       <div class="info">
@@ -91,7 +91,11 @@
         <tbody>
           <% teamPlayers.forEach(player => { %>
           <tr>
-            <td><%= player.player.name %></td>
+            <td>
+              <a href="/player/<%= player.player["_id"] %>">
+                <%= player.player.name %>
+              </a>
+            </td>
             <td><%= player.player.number %></td>
             <td><%= player.player.position %></td>
             <td><%= player.player.height %></td>
@@ -113,7 +117,7 @@
   <div class="info-cards-wrapper">
     <% [{name:"Coaching", data:team.coaching}, {name:"Records", data:team.records}, {name:"Background", data: team.background}, {name:"Achievements", data:team.achievements}].forEach(group => { %>
 
-    <div class="info-card">
+    <div class="info-card" style='background-color: <%= team.pageColor %>'>
 
       <div class="header">
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
