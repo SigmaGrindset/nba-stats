@@ -20,11 +20,11 @@ const playerSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    required: true
+    default: ""
   },
   position: {
     type: String,
-    required: true
+    default: ""
   },
   stats: new mongoose.Schema({
     ppg: {

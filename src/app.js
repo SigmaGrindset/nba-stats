@@ -60,21 +60,23 @@ app.get("/player/:playerId", async (req, res) => {
 app.get("/game/:gameId", async (req, res) => {
   const gameId = req.params.gameId;
   const game = await Game.findOne({ _id: gameId });
-  const homeTeamStats = await PlayerGameStats.find({ game: gameId, team: game.homeTeam._id });
+  const allPlayerStats = await PlayerGameStats.find({ game: gameId });
   const awayTeamStats = await PlayerGameStats.find({ game: gameId, team: game.awayTeam._id });
-  console.log(homeTeamStats);
-  // console.log(awayTeamStats);
+  const homeTeamStats = await PlayerGameStats.find({ game: gameId, team: game.homeTeam._id });
+
   const teamStats = [
     {
       teamName: game.homeTeam.name,
-      stats: homeTeamStats
+      stats: homeTeamStats,
+      teamBoxScore: game.homeTeamStats
     },
     {
       teamName: game.awayTeam.name,
-      stats: awayTeamStats
+      stats: awayTeamStats,
+      teamBoxScore: game.awayTeamStats
     }
   ];
-  // console.log(game);
+  console.log(game.awayTeamStats);
   if (game) {
     res.render("game.ejs", { game, teams: teamStats });
   } else {

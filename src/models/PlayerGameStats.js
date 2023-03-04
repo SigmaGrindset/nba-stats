@@ -13,6 +13,12 @@ const playerGameStatsSchema = new mongoose.Schema({
     required: true,
     autopopulate: true
   },
+  team: {
+    type: Number,
+    ref: "Team",
+    required: true,
+    autopopulate: true
+  },
 
   stats: {
     type: mongoose.Types.ObjectId,

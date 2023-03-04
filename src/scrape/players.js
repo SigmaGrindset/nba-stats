@@ -30,9 +30,14 @@ async function scrapePlayer(link) {
   const document = dom.window.document;
   const playerId = parseInt(link.split("/").slice(-2, -1));
   const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
-  const headerInfoArr = headerInfo.textContent.split("|");
-  const number = headerInfoArr[1].trim();
-  const position = headerInfoArr[2].trim();
+  let number;
+  let position;
+  if (headerInfo) {
+    // retired igraci nemaju headerInfo
+    const headerInfoArr = headerInfo.textContent.split("|");
+    number = headerInfoArr[1].trim();
+    position = headerInfoArr[2].trim();
+  }
   const playerNameContainers = document.querySelectorAll(".PlayerSummary_playerNameText___MhqC");
   const playerName = playerNameContainers.item(0).textContent.concat(" ", playerNameContainers.item(1).textContent);
 
