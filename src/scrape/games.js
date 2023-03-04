@@ -39,7 +39,6 @@ async function scrapeGame(gameLink) {
 
   const gameSummaryText = document.querySelector(".GameHeroHeadline_headline__GYjHE").textContent;
   const gameSummaryLocation = document.querySelector(".GameHeroLocation_location__Q_ID_").textContent;
-  console.log(gameSummaryText, gameSummaryLocation)
   gameData.summaryText = gameSummaryText
   gameData.summaryLocation = gameSummaryLocation
 

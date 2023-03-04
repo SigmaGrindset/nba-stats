@@ -86,10 +86,63 @@
 
           <tbody>
             <% teamStats.stats.forEach(playerStats => { %>
+
+            <% if(playerStats.stats.status) { %>
+            <!-- ako nije igrao utakmicu -->
             <tr>
-              <td><%= playerStats.player %></td>
+              <td><%= playerStats.player.name %></td>
+              <td><%= playerStats.stats.status %></td>
             </tr>
+            <%} else { %>
+            <tr>
+              <td><%= playerStats.player.name %></td>
+              <td><%= playerStats.stats.min %></td>
+              <td><%= playerStats.stats.fgm %></td>
+              <td><%= playerStats.stats.fga %></td>
+              <td><%= playerStats.stats.fg_pct %></td>
+              <td><%= playerStats.stats.fg3m %></td>
+              <td><%= playerStats.stats.fg3a %></td>
+              <td><%= playerStats.stats.fg3_pct %></td>
+              <td><%= playerStats.stats.ftm %></td>
+              <td><%= playerStats.stats.fta %></td>
+              <td><%= playerStats.stats.ft_pct %></td>
+              <td><%= playerStats.stats.oreb %></td>
+              <td><%= playerStats.stats.dreb %></td>
+              <td><%= playerStats.stats.dreb %></td>
+              <td><%= playerStats.stats.ast %></td>
+              <td><%= playerStats.stats.stl %></td>
+              <td><%= playerStats.stats.blk %></td>
+              <td><%= playerStats.stats.to %></td>
+              <td><%= playerStats.stats.pf %></td>
+              <td><%= playerStats.stats.pts %></td>
+              <td><%= playerStats.stats.plus_minus %></td>
+            </tr>
+            <%} %>
             <% }) %>
+
+            <tr>
+              <td>TOTALS</td>
+              <td></td>
+              <td><%= teamStats.teamBoxScore.fgm %></td>
+              <td><%= teamStats.teamBoxScore.fga %></td>
+              <td><%= teamStats.teamBoxScore.fg_pct %></td>
+              <td><%= teamStats.teamBoxScore.fg3m %></td>
+              <td><%= teamStats.teamBoxScore.fg3a %></td>
+              <td><%= teamStats.teamBoxScore.fg3_pct %></td>
+              <td><%= teamStats.teamBoxScore.ftm %></td>
+              <td><%= teamStats.teamBoxScore.fta %></td>
+              <td><%= teamStats.teamBoxScore.ft_pct %></td>
+              <td><%= teamStats.teamBoxScore.oreb %></td>
+              <td><%= teamStats.teamBoxScore.dreb %></td>
+              <td><%= teamStats.teamBoxScore.reb %></td>
+              <td><%= teamStats.teamBoxScore.ast %></td>
+              <td><%= teamStats.teamBoxScore.stl %></td>
+              <td><%= teamStats.teamBoxScore.blk %></td>
+              <td><%= teamStats.teamBoxScore.to %></td>
+              <td><%= teamStats.teamBoxScore.pf %></td>
+              <td><%= teamStats.teamBoxScore.pts %></td>
+              <td><%= teamStats.teamBoxScore.plus_minus %></td>
+            </tr>
           </tbody>
         </table>
       </div>

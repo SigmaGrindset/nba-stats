@@ -45,10 +45,13 @@ async function addGame(gameLink) {
 
   const gameData = await scrapeGame(gameLink);
   const existingGame = await Game.findOne({ _id: gameData.id });
+  console.log(gameData, existingGame);
   if (!existingGame) {
 
     const awayTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[0].playerStats.slice(-1)[0] });
     const homeTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[1].playerStats.slice(-1)[0] });
+    console.log("home team boxscore", homeTeamBoxScore);
+    console.log("away team boxscore", awayTeamBoxScore);
     const game = await Game.create({
       _id: gameData.id,
       date: gameData.date,
@@ -72,16 +75,18 @@ async function addGameStats(gameData) {
     for (playerStats of teamStats.playerStats) {
       if (playerStats.player != "totals") {
         const existingPlayer = await Player.findOne({ _id: playerStats.player });
+        console.log("existing player", existingPlayer);
         if (!existingPlayer) {
-        // ako je u gameu igrao igrač koji nije dodan u bazu podataka
-        await addPlayer(playerStats.player);
+          // ako je u gameu igrao igrač koji nije dodan u bazu podataka
+          await addPlayer(playerStats.player, undefined, {});
         }
         const stats = await BoxScoreStats.create({ ...playerStats });
-        console.log("stats created:", stats)
+        console.log(teamStats)
         const gameStats = await PlayerGameStats.create({
           game: gameData.id,
           player: playerStats.player,
-          stats: stats._id
+          stats: stats._id,
+          team: teamStats.teamId
         });
         console.log("player game stats created:", gameStats);
       }
@@ -138,8 +143,14 @@ async function deleteDB() {
   await TeamCurrentRoster.deleteMany();
   console.log("deleted");
 }
-// deleteDB();
-// scrapeTeamWrapper();
-// addTeam("/team/1610612751/nets")
-// addTeam("/team/1610612738/celtics")
-// addGame("/game/0022200346/");
+
+(async function () {
+  // deleteDB();
+  // scrapeTeamWrapper();
+  // await addTeam("/team/1610612751/nets")
+  // await addTeam("/team/1610612738/celtics")
+  // await addTeam("/team/1610612742/mavericks")
+  // await addTeam("team/1610612756/suns")
+  // await addTeam("/team/1610612758/kings")
+  await addGame("/game/0022200346/");
+})();
