@@ -3,3 +3,4 @@ margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uv
 dodati slike kod linkova za igrace
 random curves za game page
 dodati curves ili slicno na druge stranice
+dodati druge career statistike za igrace (college...)

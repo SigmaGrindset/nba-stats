@@ -36,8 +36,12 @@ async function addPlayer(playerId, teamId, data) {
   // career stats;
   const playerStatsLink = await getPlayerStatsLink({ playerId });
   const careerStats = await scrapePlayerStats(playerStatsLink);
-  await PlayerCareerStats.handlePlayerStats(careerStats.regSeason, playerId);
-  await PlayerCareerStats.handlePlayerStats(careerStats.playoffs, playerId);
+  if (careerStats.regSeason) {
+    await PlayerCareerStats.handlePlayerStats(careerStats.regSeason, playerId);
+  }
+  if (careerStats.playoffs) {
+    await PlayerCareerStats.handlePlayerStats(careerStats.playoffs, playerId);
+  }
 }
 
 
@@ -45,13 +49,9 @@ async function addGame(gameLink) {
 
   const gameData = await scrapeGame(gameLink);
   const existingGame = await Game.findOne({ _id: gameData.id });
-  console.log(gameData, existingGame);
   if (!existingGame) {
-
     const awayTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[0].playerStats.slice(-1)[0] });
     const homeTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[1].playerStats.slice(-1)[0] });
-    console.log("home team boxscore", homeTeamBoxScore);
-    console.log("away team boxscore", awayTeamBoxScore);
     const game = await Game.create({
       _id: gameData.id,
       date: gameData.date,
@@ -66,6 +66,9 @@ async function addGame(gameLink) {
     });
     console.log("game created:", game.id);
     await addGameStats(gameData);
+    return false;
+  } else {
+    return true;
   }
 }
 
@@ -80,14 +83,18 @@ async function addGameStats(gameData) {
           await addPlayer(playerStats.player, undefined, {});
         }
         const stats = await BoxScoreStats.create({ ...playerStats });
-        console.log(teamStats)
-        const gameStats = await PlayerGameStats.create({
-          game: gameData.id,
-          player: playerStats.player,
-          stats: stats._id,
-          team: teamStats.teamId
-        });
-        console.log("player game stats created:");
+        const existingStats = await PlayerGameStats.findOne({ game: gameData.id, player: playerStats.player });
+        if (!existingStats) {
+          const gameStats = await PlayerGameStats.create({
+            game: gameData.id,
+            player: playerStats.player,
+            stats: stats._id,
+            team: teamStats.teamId
+          });
+          console.log("player game stats created for player: ", playerStats.player);
+        } else {
+          console.log("player game stats already exist for player: ", playerStats.player);
+        }
       }
     }
   }
@@ -122,10 +129,15 @@ async function populateDB() {
 
   // games
   for (link of teamLinks) {
+    console.log(link);
     const teamGames = await getGameLinks(link);
-    for (gameLink of teamGames) {
-      await sleep(3000);
-      await addGame(gameLink);
+    for (gameLink of teamGames.reverse()) {
+      // ide od novijih prema starijima
+      await sleep(750);
+      const gameAlreadyExists = await addGame(gameLink);
+      if (gameAlreadyExists) {
+        break;
+      }
     }
   };
 }
@@ -152,6 +164,7 @@ async function deleteDB() {
 (async function () {
   // deleteDB();
   populateDB();
+  // await addPlayer("1631128", "1610612743", "blue");
   // await addTeam("/team/1610612751/nets")
   // await addTeam("/team/1610612738/celtics")
   // await addTeam("/team/1610612742/mavericks")

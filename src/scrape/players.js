@@ -36,7 +36,10 @@ async function scrapePlayer(link) {
     // retired igraci nemaju headerInfo
     const headerInfoArr = headerInfo.textContent.split("|");
     number = headerInfoArr[1].trim();
-    position = headerInfoArr[2].trim();
+    if (headerInfoArr[2]) {
+      // nekim igracima ne pise broj
+      position = headerInfoArr[2].trim();
+    }
   }
   const playerNameContainers = document.querySelectorAll(".PlayerSummary_playerNameText___MhqC");
   const playerName = playerNameContainers.item(0).textContent.concat(" ", playerNameContainers.item(1).textContent);
@@ -150,15 +153,24 @@ async function scrapePlayerStats(statsLink) {
 
 
   const statsTable = dom.window.document.querySelectorAll(".Crom_table__p1iZz");
-  const regSeasonStats = await scrapePlayerStatsTable(statsTable.item(0));
-  let playoffStats = undefined;
-  if (statsTable.item(1).querySelector(".Crom_colgroup__qYrzI").textContent.toLowerCase().includes("playoffs")) {
-    playoffStats = await scrapePlayerStatsTable(statsTable.item(1));
+  const stats = {
+    regSeason: undefined,
+    playoffs: undefined
   }
-  return {
-    regSeason: regSeasonStats,
-    playoffs: playoffStats
-  };
+  // neki igraci nemaju statistiku
+  if (statsTable.item(0)) {
+    if (statsTable.item(0).querySelector(".Crom_colgroup__qYrzI").textContent.toLowerCase().includes("regular season")) {
+      const regSeasonStats = await scrapePlayerStatsTable(statsTable.item(0));
+      stats.regSeason = regSeasonStats;
+    }
+  }
+  if (statsTable.item(1)) {
+    if (statsTable.item(1).querySelector(".Crom_colgroup__qYrzI").textContent.toLowerCase().includes("playoffs")) {
+      playoffStats = await scrapePlayerStatsTable(statsTable.item(1));
+      stats.playoffs = playoffStats
+    }
+  }
+  return stats;
 }
 
 

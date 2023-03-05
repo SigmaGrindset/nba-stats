@@ -40,7 +40,7 @@ const playerSchema = new mongoose.Schema({
       type: String
     },
     pie: {
-      required: true,
+      required: false, // zbog jednog igraca
       type: String
     },
   }),
