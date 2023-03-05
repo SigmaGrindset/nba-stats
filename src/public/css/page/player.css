@@ -275,6 +275,11 @@
 .stats-table-wrapper * {
   font-family: poppins;
 }
+.stats-table-wrapper a,
+.stats-table-wrapper a:visited,
+.stats-table-wrapper a:active {
+  color: #0268d6;
+}
 .stats-table-wrapper .table-heading {
   padding: 0.75rem 1rem;
   color: white;

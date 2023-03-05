@@ -1,2 +1,5 @@
-dodati game heading
 scrapeati primary team images
+margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar
+dodati slike kod linkova za igrace
+random curves za game page
+dodati curves ili slicno na druge stranice

@@ -1,6 +1,7 @@
 @use "../variables" as *;
 @use "../utils" as *;
 @use "../breakpoints" as *;
+@use "../colors" as *;
 
 
 @mixin stats-table-wrapper($caption-bg, $content-bg, $cell-bg, $caption-col, $headers-col, $content-col ) {
@@ -14,6 +15,12 @@
 
   * {
     font-family: poppins;
+  }
+
+  a,
+  a:visited,
+  a:active {
+    color: $link-color;
   }
 
   .table-heading {

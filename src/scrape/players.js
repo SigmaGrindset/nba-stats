@@ -1,7 +1,7 @@
 const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const { axiosInstance, BASEURL } = require("./main");
-const { mergeColumnRow, transformLabel, loadDynamicPage } = require("../utils/scrape_utils");
+const { mergeColumnRow, transformLabel, loadDynamicPage, scrapeUntilSuccessful } = require("../utils/scrape_utils");
 
 
 
@@ -163,8 +163,8 @@ async function scrapePlayerStats(statsLink) {
 
 
 
-module.exports.getPlayerLinks = getPlayerLinks;
-module.exports.scrapePlayer = scrapePlayer;
-module.exports.scrapePlayerStats = scrapePlayerStats;
-module.exports.getPlayerStatsLink = getPlayerStatsLink;
+module.exports.getPlayerLinks = scrapeUntilSuccessful(getPlayerLinks);
+module.exports.scrapePlayer = scrapeUntilSuccessful(scrapePlayer);
+module.exports.scrapePlayerStats = scrapeUntilSuccessful(scrapePlayerStats);
+module.exports.getPlayerStatsLink = scrapeUntilSuccessful(getPlayerStatsLink);
 module.exports.createLinkFromPlayerId = createLinkFromPlayerId;

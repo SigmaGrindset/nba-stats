@@ -4,7 +4,7 @@ const fs = require("fs").promises;
 const axios = require("axios");
 const { axiosInstance, BASEURL } = require("./main");
 const { getPlayerLinks } = require("./players");
-const { transformLabel, loadDynamicPage } = require("../utils/scrape_utils");
+const { transformLabel, loadDynamicPage, scrapeUntilSuccessful } = require("../utils/scrape_utils");
 
 
 const teamColors = {
@@ -174,5 +174,5 @@ async function scrapeTeam(link) {
 
 
 
-module.exports.getTeamLinks = getTeamLinks;
-module.exports.scrapeTeam = scrapeTeam;
+module.exports.getTeamLinks = scrapeUntilSuccessful(getTeamLinks);
+module.exports.scrapeTeam = scrapeUntilSuccessful(scrapeTeam);
