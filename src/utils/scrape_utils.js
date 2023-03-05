@@ -39,8 +39,24 @@ module.exports.loadDynamicPage = async function (fullLink) {
 }
 
 
-module.exports.sleep = function (ms) {
+function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+module.exports.sleep = sleep;
+
+module.exports.scrapeUntilSuccessful = function (wrapped) {
+  return async function () {
+    while (true) {
+      try {
+        const data = await wrapped.apply(this, arguments);
+        return data;
+      } catch (err) {
+        console.log(err);
+        await sleep(1000);
+      }
+    }
+  }
 }

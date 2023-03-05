@@ -75,7 +75,6 @@ async function addGameStats(gameData) {
     for (playerStats of teamStats.playerStats) {
       if (playerStats.player != "totals") {
         const existingPlayer = await Player.findOne({ _id: playerStats.player });
-        console.log("existing player", existingPlayer);
         if (!existingPlayer) {
           // ako je u gameu igrao igrač koji nije dodan u bazu podataka
           await addPlayer(playerStats.player, undefined, {});
@@ -88,7 +87,7 @@ async function addGameStats(gameData) {
           stats: stats._id,
           team: teamStats.teamId
         });
-        console.log("player game stats created:", gameStats);
+        console.log("player game stats created:");
       }
     }
   }
@@ -112,7 +111,7 @@ async function addTeam(link) {
 
 }
 
-async function scrapeTeamWrapper() {
+async function populateDB() {
   const teamLinks = await getTeamLinks();
 
   for (link of teamLinks) {
@@ -133,6 +132,11 @@ async function scrapeTeamWrapper() {
 
 
 
+
+
+
+
+
 async function deleteDB() {
   await BoxScoreStats.deleteMany();
   await Game.deleteMany();
@@ -144,13 +148,14 @@ async function deleteDB() {
   console.log("deleted");
 }
 
+
 (async function () {
   // deleteDB();
-  // scrapeTeamWrapper();
+  populateDB();
   // await addTeam("/team/1610612751/nets")
   // await addTeam("/team/1610612738/celtics")
   // await addTeam("/team/1610612742/mavericks")
   // await addTeam("team/1610612756/suns")
   // await addTeam("/team/1610612758/kings")
-  await addGame("/game/0022200346/");
+  // await addGame("/game/0022200346/");
 })();

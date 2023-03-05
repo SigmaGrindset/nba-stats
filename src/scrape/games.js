@@ -3,7 +3,7 @@ const { JSDOM } = jsdom
 const fs = require("fs").promises;
 const axios = require("axios");
 const { axiosInstance, BASEURL } = require("./main");
-const { transformLabel, loadDynamicPage, mergeColumnRow } = require("../utils/scrape_utils");
+const { transformLabel, loadDynamicPage, mergeColumnRow, scrapeUntilSuccessful } = require("../utils/scrape_utils");
 const { boxScore } = require("nba/src/data");
 
 
@@ -158,5 +158,5 @@ async function scrapeGameStatsTable(table, teamId) {
 
 // scrapeGame("/game/0022200264/").then(val => console.log(val));
 
-module.exports.scrapeGame = scrapeGame;
-module.exports.getGameLinks = getGameLinks;
+module.exports.scrapeGame = scrapeUntilSuccessful(scrapeGame);
+module.exports.getGameLinks = scrapeUntilSuccessful(getGameLinks);
