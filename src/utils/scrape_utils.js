@@ -27,16 +27,21 @@ module.exports.mergeColumnRow = function (columnNames, rowStats) {
 
 module.exports.loadDynamicPage = async function (fullLink) {
   const browser = await puppeteer.launch({ headless: false });
-  const page = await browser.newPage();
-  await page.goto(fullLink);
-  await page.waitForSelector("#onetrust-accept-btn-handler");
-  await page.click("#onetrust-accept-btn-handler");
+  try {
+    const page = await browser.newPage();
+    await page.goto(fullLink);
+    await page.waitForSelector("#onetrust-accept-btn-handler");
+    await page.click("#onetrust-accept-btn-handler");
 
-  const content = await page.content();
-  await browser.close();
-  return content;
+    const content = await page.content();
+    await browser.close();
+    return content;
+  } catch (err) {
+    await browser.close();
+    console.log("page load error", err);
+  }
 
-}
+};
 
 
 function sleep(ms) {

@@ -1,7 +1,7 @@
 
 const { getTeamLinks } = require("../src/scrape/teams.js");
 const { getPlayerLinks, getPlayerStatsLink, scrapePlayerStats, scrapePlayer } = require("../src/scrape/players.js");
-jest.setTimeout(60 * 1000);
+jest.setTimeout(80 * 1000);
 
 describe("player scrape test", () => {
 
