@@ -46,10 +46,10 @@ async function addPlayer(playerId, teamId, data) {
 
 
 async function addGame(gameLink) {
-
-  const gameData = await scrapeGame(gameLink);
-  const existingGame = await Game.findOne({ _id: gameData.id });
+  const gameId = gameLink.split("/").slice(-2)[0];
+  const existingGame = await Game.findOne({ _id: gameId });
   if (!existingGame) {
+    const gameData = await scrapeGame(gameLink);
     const awayTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[0].playerStats.slice(-1)[0] });
     const homeTeamBoxScore = await BoxScoreStats.create({ ...gameData.boxScore[1].playerStats.slice(-1)[0] });
     const game = await Game.create({
@@ -68,6 +68,7 @@ async function addGame(gameLink) {
     await addGameStats(gameData);
     return false;
   } else {
+    console.log("game exists", gameId);
     return true;
   }
 }
@@ -133,10 +134,9 @@ async function populateDB() {
     const teamGames = await getGameLinks(link);
     for (gameLink of teamGames.reverse()) {
       // ide od novijih prema starijima
-      await sleep(750);
-      const gameAlreadyExists = await addGame(gameLink);
-      if (gameAlreadyExists) {
-        break;
+      const gameExists = await addGame(gameLink)
+      if (!gameExists) {
+        await sleep(750);
       }
     }
   };
