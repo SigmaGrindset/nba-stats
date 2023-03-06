@@ -26,7 +26,13 @@ module.exports.mergeColumnRow = function (columnNames, rowStats) {
 }
 
 module.exports.loadDynamicPage = async function (fullLink) {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: false, args: [
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding'
+    ]
+  });
   try {
     const page = await browser.newPage();
     await page.goto(fullLink);
