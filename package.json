@@ -4,7 +4,8 @@
   "description": "stats for nba season 2022-23",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:open": "cypress open"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,9 @@
   "homepage": "https://github.com/SigmaGrindset/nba-stats#readme",
   "dependencies": {
     "axios": "^1.3.2",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "cypress": "^12.7.0",
     "dart-sass": "^1.25.0",
     "ejs": "^3.1.8",
     "express": "^4.18.2",

@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const Team = require("./models/Team");
 const Player = require("./models/Player");
@@ -18,6 +19,7 @@ const app = express();
 app.use(morgan("dev"))
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -83,6 +85,16 @@ app.get("/game/:gameId", async (req, res) => {
     res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
   }
 });
+
+
+const {player_get, game_get, team_get, playercareerstats_get, playergamestats_get} = require("./controllers/apiController");
+const {requireBody} = require("./middleware/apiMiddleware");
+
+app.get("/api/player",app.use(express.urlencoded({ extended: false })) ,requireBody, player_get);
+app.get("/api/game",app.use(express.urlencoded({ extended: false })) ,requireBody, game_get);
+app.get("/api/team",app.use(express.urlencoded({ extended: false })) ,requireBody, team_get);
+app.get("/api/player-career-stats",app.use(express.urlencoded({ extended: false })) ,requireBody, playercareerstats_get);
+app.get("/api/player-game-stats",app.use(express.urlencoded({ extended: false })) ,requireBody, playergamestats_get);
 
 
 mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
