@@ -121,11 +121,11 @@ async function addTeam(link) {
 async function populateDB() {
   const teamLinks = await getTeamLinks();
 
-  for (link of teamLinks) {
-    // const teamId = parseInt(link.split("/").slice(-2, -1));
-    await addTeam(link);
+  // for (link of teamLinks) {
+  //   // const teamId = parseInt(link.split("/").slice(-2, -1));
+  //   await addTeam(link);
 
-  };
+  // };
 
   // games
   for (link of teamLinks) {
