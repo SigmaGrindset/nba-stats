@@ -23,8 +23,10 @@
     "cors": "^2.8.5",
     "cypress": "^12.7.0",
     "dart-sass": "^1.25.0",
+    "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-purgecss": "^5.0.0",
@@ -38,6 +40,7 @@
     "morgan": "^1.10.0",
     "nba": "^4.15.0",
     "puppeteer": "^19.6.3",
-    "sass": "^1.58.3"
+    "sass": "^1.58.3",
+    "winston": "^3.8.2"
   }
 }

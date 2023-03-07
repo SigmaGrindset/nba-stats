@@ -5,7 +5,7 @@ const axios = require("axios");
 const { axiosInstance, BASEURL } = require("./main");
 const { getPlayerLinks } = require("./players");
 const { transformLabel, loadDynamicPage, scrapeUntilSuccessful } = require("../utils/scrape_utils");
-
+const logger = require("../config/logger");
 
 const teamColors = {
   "ATL": "#e03a3e",
@@ -49,7 +49,7 @@ async function getTeamLinks() {
     data.links = links;
     await fs.writeFile("./team_links.json", JSON.stringify(data), err => {
       if (err) {
-        console.log(err);
+        logger.error(err);
       }
     });
   }
