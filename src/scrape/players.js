@@ -24,10 +24,17 @@ async function getPlayerLinks(teamLink) {
 
 
 
+
 async function scrapePlayer(link) {
+  console.log("player link: ", link);
   const res = await axiosInstance.get(link);
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
+
+  if (res.request.res.responseUrl == "https://www.nba.com/players") {
+    // redirectalo nas je na /players jer stranica za igraca ne postoji
+    return {};
+  }
   const playerId = parseInt(link.split("/").slice(-2, -1));
   const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
   let number;

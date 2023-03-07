@@ -23,8 +23,12 @@ async function addPlayer(playerId, teamId, data) {
   const existingPlayer = await Player.findOne({ _id: playerId });
   if (!existingPlayer) {
     const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
-    const player = await Player.create({ ...playerData, _id: playerId, pageColor: data.pageColor });
-    console.log("player created", player.name);
+    if (Object.values(playerData).length != 0) {
+      const player = await Player.create({ ...playerData, _id: playerId, pageColor: data.pageColor });
+      console.log("player created", player.name);
+    } else {
+      console.log("player page doesnt exist")
+    }
   } else {
     console.log("player exists", existingPlayer.name);
   }
@@ -164,6 +168,7 @@ async function deleteDB() {
 (async function () {
   // deleteDB();
   populateDB();
+  // await addGame("/game/0012200002/");
   // await addPlayer("1631128", "1610612743", "blue");
   // await addTeam("/team/1610612751/nets")
   // await addTeam("/team/1610612738/celtics")
@@ -171,4 +176,5 @@ async function deleteDB() {
   // await addTeam("team/1610612756/suns")
   // await addTeam("/team/1610612758/kings")
   // await addGame("/game/0022200346/");
+  console.log("done");
 })();
