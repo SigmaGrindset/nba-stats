@@ -11,12 +11,12 @@ const { sleep } = require("./utils/scrape_utils");
 const { getTeamLinks, scrapeTeam } = require("./scrape/teams");
 const { getPlayerLinks, scrapePlayer, scrapePlayerStats, createLinkFromPlayerId, getPlayerStatsLink } = require("./scrape/players");
 const { getGameLinks, scrapeGame } = require("./scrape/games");
-
+const logger = require("./config/logger");
 
 
 mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
-  .then(console.log("connected to db"))
-  .catch(err => console.log(err));
+  .then(logger.info("connected to db"))
+  .catch(err => logger.error(err));
 
 
 async function addPlayer(playerId, teamId, data) {
@@ -25,12 +25,12 @@ async function addPlayer(playerId, teamId, data) {
     const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
     if (Object.values(playerData).length != 0) {
       const player = await Player.create({ ...playerData, _id: playerId, pageColor: data.pageColor });
-      console.log("player created", player.name);
+      logger.info("player created", player.name);
     } else {
-      console.log("player page doesnt exist")
+      logger.info("player page doesnt exist")
     }
   } else {
-    console.log("player exists", existingPlayer.name);
+    logger.info("player exists", existingPlayer.name);
   }
   if (teamId) {
     // ako je retired igrac onda nece biti u timu
@@ -68,11 +68,11 @@ async function addGame(gameLink) {
       awayTeamStats: awayTeamBoxScore._id,
       ...gameData
     });
-    console.log("game created:", game.id);
+    logger.info("game created:", game.id);
     await addGameStats(gameData);
     return false;
   } else {
-    console.log("game exists", gameId);
+    logger.info("game exists", gameId);
     return true;
   }
 }
@@ -96,9 +96,9 @@ async function addGameStats(gameData) {
             stats: stats._id,
             team: teamStats.teamId
           });
-          console.log("player game stats created for player: ", playerStats.player);
+          logger.info("player game stats created for player: ", playerStats.player);
         } else {
-          console.log("player game stats already exist for player: ", playerStats.player);
+          logger.info("player game stats already exist for player: ", playerStats.player);
         }
       }
     }
@@ -112,11 +112,11 @@ async function addTeam(link) {
   let team = await Team.findOne({ _id: teamData.id });
   if (!team) {
     team = await Team.create({ ...teamData, _id: teamData.id });
-    console.log("team created:", team.name)
+    logger.info("team created:", team.name)
   }
 
   for (playerId of teamData.players) {
-    console.log(playerId)
+    logger.info(playerId)
     await sleep(2000);
     await addPlayer(playerId, teamData.id, { pageColor: teamData.pageColor });
   }
@@ -134,7 +134,7 @@ async function populateDB() {
 
   // games
   for (link of teamLinks) {
-    console.log(link);
+    logger.info(link);
     const teamGames = await getGameLinks(link);
     for (gameLink of teamGames.reverse()) {
       // ide od novijih prema starijima
@@ -161,13 +161,13 @@ async function deleteDB() {
   await PlayerGameStats.deleteMany();
   await Team.deleteMany();
   await TeamCurrentRoster.deleteMany();
-  console.log("deleted");
+  logger.info("deleted");
 }
 
 
 (async function () {
   // deleteDB();
-  populateDB();
+  // populateDB();
   // await addGame("/game/0012200002/");
   // await addPlayer("1631128", "1610612743", "blue");
   // await addTeam("/team/1610612751/nets")
@@ -176,5 +176,5 @@ async function deleteDB() {
   // await addTeam("team/1610612756/suns")
   // await addTeam("/team/1610612758/kings")
   // await addGame("/game/0022200346/");
-  console.log("done");
+  logger.info("done");
 })();

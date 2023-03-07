@@ -156,7 +156,6 @@ async function scrapeGameStatsTable(table, teamId) {
   return boxScoreData;
 }
 
-// scrapeGame("/game/0022200264/").then(val => console.log(val));
 
 module.exports.scrapeGame = scrapeUntilSuccessful(scrapeGame);
 module.exports.getGameLinks = scrapeUntilSuccessful(getGameLinks);

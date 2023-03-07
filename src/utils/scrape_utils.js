@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const puppeteer = require("puppeteer");
+const logger = require("../config/logger");
 
 module.exports.transformLabel = function (label) {
   label = label.toLowerCase();
@@ -44,7 +45,7 @@ module.exports.loadDynamicPage = async function (fullLink) {
     return content;
   } catch (err) {
     await browser.close();
-    console.log("page load error", err);
+    logger.error("page load error", err);
   }
 
 };
@@ -65,7 +66,7 @@ module.exports.scrapeUntilSuccessful = function (wrapped) {
         const data = await wrapped.apply(this, arguments);
         return data;
       } catch (err) {
-        console.log(err);
+        logger.error(err);
         await sleep(1000);
       }
     }

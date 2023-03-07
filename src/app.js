@@ -4,16 +4,18 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+require("dotenv").config();
 
+const logger = require("./config/logger");
 const Team = require("./models/Team");
 const Player = require("./models/Player");
 const Game = require("./models/Game");
 const TeamCurrentRoster = require("./models/TeamCurrentRoster");
 const PlayerCareerStats = require("./models/PlayerCareerStats");
 const PlayerGameStats = require("./models/PlayerGameStats");
-const BoxScoreStats = require("./models/BoxScoreStats");
 
+
+const port = process.env.PORT || 3000;
 const app = express();
 // app.use(helmet());
 app.use(morgan("dev"))
@@ -78,7 +80,7 @@ app.get("/game/:gameId", async (req, res) => {
       teamBoxScore: game.awayTeamStats
     }
   ];
-  console.log(game.awayTeamStats);
+  logger.info(game.awayTeamStats);
   if (game) {
     res.render("game.ejs", { game, teams: teamStats });
   } else {
@@ -87,21 +89,16 @@ app.get("/game/:gameId", async (req, res) => {
 });
 
 
-const {player_get, game_get, team_get, playercareerstats_get, playergamestats_get} = require("./controllers/apiController");
-const {requireBody} = require("./middleware/apiMiddleware");
 
-app.get("/api/player",app.use(express.urlencoded({ extended: false })) ,requireBody, player_get);
-app.get("/api/game",app.use(express.urlencoded({ extended: false })) ,requireBody, game_get);
-app.get("/api/team",app.use(express.urlencoded({ extended: false })) ,requireBody, team_get);
-app.get("/api/player-career-stats",app.use(express.urlencoded({ extended: false })) ,requireBody, playercareerstats_get);
-app.get("/api/player-game-stats",app.use(express.urlencoded({ extended: false })) ,requireBody, playergamestats_get);
+const apiRouter = require("./routes/apiRoutes.js");
+app.use(apiRouter);
 
 
 mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
   .then(() => {
-    app.listen(3000);
-    console.log("app listening on port 3000");
+    app.listen(port);
+    logger.info(`app listening on port ${port}`);
   })
-  .catch(err => console.log(err));
+  .catch(err => logger.error(err));
 
 

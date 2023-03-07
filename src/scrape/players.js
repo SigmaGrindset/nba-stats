@@ -26,7 +26,6 @@ async function getPlayerLinks(teamLink) {
 
 
 async function scrapePlayer(link) {
-  console.log("player link: ", link);
   const res = await axiosInstance.get(link);
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
