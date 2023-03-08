@@ -23,7 +23,7 @@ module.exports.gamedetails_get = async (req, res) => {
   ];
   logger.info(game.awayTeamStats);
   if (game) {
-    res.render("game.ejs", { game, teams: teamStats });
+    res.render("game_details.ejs", { game, teams: teamStats });
   } else {
     res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
   }
