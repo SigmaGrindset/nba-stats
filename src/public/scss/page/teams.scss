@@ -1,0 +1,19 @@
+@use "../variables" as *;
+@use "../colors" as *;
+@use "../utils" as *;
+@use "../breakpoints" as *;
+@use "../components/nav" as *;
+
+.gradient-wrapper {
+  background: linear-gradient(180deg, rgba(247, 37, 133, 0.61), rgba(76, 201, 240, 0.58));
+  min-height: 100vh;
+}
+
+.nav-wrapper {
+  @include nav-wrapper(white);
+
+  .nav-item:hover,
+  .nav-heading:hover {
+    color: rgb(246, 246, 246);
+  }
+}

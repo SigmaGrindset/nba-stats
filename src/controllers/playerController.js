@@ -11,7 +11,7 @@ module.exports.playerdetails_get = async (req, res) => {
   const teamRoster = await TeamCurrentRoster.findOne({ player: player._id });
   const stats = [regSeasonStats, playoffsStats];
   if (player) {
-    res.render("player.ejs", { player, stats, team: teamRoster.team });
+    res.render("player_details.ejs", { player, stats, team: teamRoster.team });
   } else {
     res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
 
