@@ -7,17 +7,26 @@ const cors = require("cors");
 require("dotenv").config();
 
 const logger = require("./config/logger");
-const Team = require("./models/Team");
-const Player = require("./models/Player");
-const Game = require("./models/Game");
-const TeamCurrentRoster = require("./models/TeamCurrentRoster");
-const PlayerCareerStats = require("./models/PlayerCareerStats");
-const PlayerGameStats = require("./models/PlayerGameStats");
+require("./models/Team");
+require("./models/Player");
+require("./models/Game");
+require("./models/BoxScoreStats");
+require("./models/TeamCurrentRoster");
+require("./models/PlayerCareerStats");
+require("./models/PlayerGameStats");
 
 
 const port = process.env.PORT || 3000;
 const app = express();
 // app.use(helmet());
+mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
+  .then(() => {
+    app.listen(port);
+    logger.info(`app listening on port ${port}`);
+  })
+  .catch(err => logger.error(err));
+
+
 app.use(morgan("dev"))
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
@@ -31,74 +40,20 @@ app.get("/", (req, res) => {
   res.render("home.ejs")
 });
 
-app.get("/team/:teamId", async (req, res) => {
-  const teamId = req.params.teamId;
-  const team = await Team.findOne({ _id: teamId });
-  const teamPlayers = await TeamCurrentRoster.find({ team: team.id });
-  if (team) {
-    res.render("team.ejs", { team, teamPlayers })
-  } else {
-    res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
-  }
-
-});
-
 app.get("/error", async (req, res) => {
   res.render("errors/error.ejs", { error: { name: "error 404", desc: "page not found" } });
 });
 
-app.get("/player/:playerId", async (req, res) => {
-  const playerId = req.params.playerId;
-  const player = await Player.findOne({ _id: playerId });
-  const regSeasonStats = await PlayerCareerStats.find({ type: "Career Regular Season Stats", player: player._id });
-  const playoffsStats = await PlayerCareerStats.find({ type: "Career Playoffs Stats", player: player._id });
-  const teamRoster = await TeamCurrentRoster.findOne({ player: player._id });
-  const stats = [regSeasonStats, playoffsStats];
-  if (player) {
-    res.render("player.ejs", { player, stats, team: teamRoster.team });
-  } else {
-    res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
-
-  }
-});
-app.get("/game/:gameId", async (req, res) => {
-  const gameId = req.params.gameId;
-  const game = await Game.findOne({ _id: gameId });
-  const allPlayerStats = await PlayerGameStats.find({ game: gameId });
-  const awayTeamStats = await PlayerGameStats.find({ game: gameId, team: game.awayTeam._id });
-  const homeTeamStats = await PlayerGameStats.find({ game: gameId, team: game.homeTeam._id });
-
-  const teamStats = [
-    {
-      teamName: game.homeTeam.name,
-      stats: homeTeamStats,
-      teamBoxScore: game.homeTeamStats
-    },
-    {
-      teamName: game.awayTeam.name,
-      stats: awayTeamStats,
-      teamBoxScore: game.awayTeamStats
-    }
-  ];
-  logger.info(game.awayTeamStats);
-  if (game) {
-    res.render("game.ejs", { game, teams: teamStats });
-  } else {
-    res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
-  }
-});
-
-
 
 const apiRouter = require("./routes/apiRoutes.js");
+const teamRouter = require("./routes/teamRoutes.js");
+const gameRouter = require("./routes/gameRoutes.js");
+const playerRouter = require("./routes/playerRoutes.js");
 app.use(apiRouter);
+app.use(teamRouter);
+app.use(gameRouter);
+app.use(playerRouter);
 
 
-mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
-  .then(() => {
-    app.listen(port);
-    logger.info(`app listening on port ${port}`);
-  })
-  .catch(err => logger.error(err));
 
 
