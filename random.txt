@@ -1,7 +1,7 @@
 scrapeati primary team images
 
 proxy
-loadtesting
+load testing
 
 
 margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar
