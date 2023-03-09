@@ -82,3 +82,77 @@
 .nav-wrapper .nav-heading:hover {
   color: rgb(246, 246, 246);
 }
+
+.divisions-container {
+  margin-top: 4rem;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.divisions-container * {
+  font-family: poppins;
+}
+@media screen and (max-width: 1024px) {
+  .divisions-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .divisions-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.divisions-container .division {
+  width: 33.33%;
+  margin-bottom: 3rem;
+}
+.divisions-container .division .heading {
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.divisions-container .team {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.divisions-container .name {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: black;
+}
+.divisions-container .team-image {
+  width: 50px;
+  height: auto;
+  margin-right: 1rem;
+}
+@media screen and (max-width: 1024px) {
+  .divisions-container .division {
+    width: 50%;
+  }
+  .divisions-container .division .team-image {
+    margin-right: 0.75rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .divisions-container .division {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  .divisions-container .division .heading {
+    font-size: 1.25rem;
+  }
+  .divisions-container .division .team {
+    margin-bottom: 0.75rem;
+  }
+  .divisions-container .division .team .name {
+    font-size: 1.1rem;
+  }
+}
