@@ -85,7 +85,8 @@
             <!-- ako nije igrao utakmicu -->
             <tr>
               <td>
-                <a href="/player/<%=playerStats.player._id%>">
+                <a class="player-link" href="/player/<%=playerStats.player._id%>">
+                  <img src="<%= playerStats.player.imageURL %>" alt="player image" class="player-image">
                   <%= playerStats.player.name %>
                 </a>
               </td>
@@ -94,7 +95,8 @@
             <%} else { %>
             <tr>
               <td>
-                <a href="/player/<%=playerStats.player._id%>">
+                <a class="player-link" href="/player/<%=playerStats.player._id%>">
+                  <img src="<%= playerStats.player.imageURL %>" alt="player image" class="player-image">
                   <%= playerStats.player.name %>
                 </a>
               </td>

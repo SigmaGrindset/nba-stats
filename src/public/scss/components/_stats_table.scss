@@ -43,7 +43,6 @@
   }
 
   table {
-
     overflow-x: scroll;
     border-collapse: separate;
     border-spacing: 0 .5rem;
@@ -74,6 +73,21 @@
 
 
     tbody {
+
+      .player-link {
+        display: flex;
+        align-items: center;
+
+        .player-image {
+          margin-right: .5rem;
+          background-color: rgb(211, 211, 211);
+          border-radius: 4444rem;
+          $size: 25px;
+          height: $size;
+          width: $size;
+          object-fit: cover;
+        }
+      }
 
       tr {
         background-color: transparent;
