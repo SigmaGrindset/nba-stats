@@ -81,6 +81,10 @@
   color: #35091b;
 }
 
+main {
+  padding-bottom: 4rem;
+}
+
 .profile {
   max-width: 1440px;
   padding-left: 2rem;

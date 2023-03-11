@@ -26,12 +26,19 @@
       <div class="profile">
         <div class="images">
           <img src="<%= player.imageURL %>" id="player" alt="player image">
+          <% if (team) { %>
           <img src="<%= team.imageURL.replace("primary", "global") %>" id="team" alt="team image">
+          <% }  %>
+
         </div>
 
         <div class="main-info">
           <div class="name"><%= player.name %></div>
+          <% if (team) { %>
           <div class="desc"><%= team.name %> · <%= player.number %> · <%= player.position %></div>
+          <% } else { %>
+          <div class="desc"><%= player.number %> · <%= player.position %></div>
+          <%}  %>
           <div class="main-stats">
             <div class="stat">
               <div class="stat-name">PPG</div>
@@ -141,6 +148,7 @@
 
     <% stats.forEach((stat) => { %>
     <div class="stats-table-wrapper">
+      <% if (stat.length != 0) {%>
       <div class="table-heading"><%=stat[0].type%></div>
       <div class="stats-table-content-wrapper">
 
@@ -208,6 +216,8 @@
           </tbody>
         </table>
       </div>
+
+      <%}%>
     </div>
     <% }) %>
 
