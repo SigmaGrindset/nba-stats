@@ -2,12 +2,18 @@ scrapeati primary team images
 
 proxy
 load testing
+API - api management
+TESTS - ui i api
+continous deployment, cont. delievery, cont. integration, devops
+nginx
+
+
+
 
 
 margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar
-dodati slike kod linkova za igrace
 random curves za game page
 dodati curves ili slicno na druge stranice
 dodati druge career statistike za igrace (college...)
 ako id pocinje sa nulama script makne sve nule sa pocetka, ali mozda ne uvijek
-
+vrijednosti polja za apg, rpg... igraca bude NaN zbog scrapeanja
