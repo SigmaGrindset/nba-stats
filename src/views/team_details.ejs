@@ -82,7 +82,8 @@
           <% teamPlayers.forEach(player => { %>
           <tr>
             <td>
-              <a href="/player/<%= player.player["_id"] %>">
+              <a class="player-link" href="/player/<%= player.player["_id"] %>">
+                <img class="player-image" src="<%= player.player.imageURL %>" alt="lol">
                 <%= player.player.name %>
               </a>
             </td>

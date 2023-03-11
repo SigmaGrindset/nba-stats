@@ -7,9 +7,9 @@ const cors = require("cors");
 require("dotenv").config();
 
 const logger = require("./config/logger");
-require("./models/Team");
-require("./models/Player");
-require("./models/Game");
+const Team = require("./models/Team");
+const Player = require("./models/Player");
+const Game = require("./models/Game");
 require("./models/BoxScoreStats");
 require("./models/TeamCurrentRoster");
 require("./models/PlayerCareerStats");
@@ -49,11 +49,11 @@ const apiRouter = require("./routes/apiRoutes.js");
 const teamRouter = require("./routes/teamRoutes.js");
 const gameRouter = require("./routes/gameRoutes.js");
 const playerRouter = require("./routes/playerRoutes.js");
+const searchRouter = require("./routes/searchRoutes");
 app.use(apiRouter);
 app.use(teamRouter);
 app.use(gameRouter);
 app.use(playerRouter);
-
-
+app.use(searchRouter);
 
 
