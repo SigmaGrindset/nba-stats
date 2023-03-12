@@ -1,3 +1,79 @@
+.menu-container * {
+  font-family: poppins;
+}
+.menu-container .menu-options-container {
+  background-color: white;
+  border-bottom: 1px solid black;
+}
+.menu-container .menu-options {
+  max-width: 1440px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+}
+@media screen and (max-width: 1024px) {
+  .menu-container .menu-options {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media screen and (max-width: 578px) {
+  .menu-container .menu-options {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+.menu-container .menu-options .menu-option {
+  background-color: unset;
+  border: unset;
+  outline: unset;
+  padding: 0.65rem;
+  margin-right: 1rem;
+  font-size: 1rem;
+}
+.menu-container .menu-options .menu-option:hover {
+  cursor: pointer;
+}
+.menu-container .menu-options .menu-option:first-of-type {
+  padding-left: 0 !important;
+}
+.menu-container .menu-options .menu-option-selected {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.menu-container .menu-content-hidden {
+  animation-name: disappear;
+  animation-duration: 1s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  display: none;
+}
+.menu-container .menu-content-shown {
+  animation-name: appear;
+  animation-duration: 1s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  display: block;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes disappear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 .nav-wrapper {
   background: linear-gradient(90deg, rgba(247, 37, 133, 0.2), rgba(247, 37, 133, 0.1));
 }
@@ -211,7 +287,6 @@
 }
 
 .info-cards-wrapper {
-  margin-top: 2rem;
   max-width: 1440px;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -220,6 +295,11 @@
   display: flex;
   overflow-x: auto;
   justify-content: flex-start;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
 }
 @media screen and (max-width: 1024px) {
   .info-cards-wrapper {
@@ -232,6 +312,19 @@
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
+}
+.info-cards-wrapper::-webkit-scrollbar {
+  height: 5px;
+}
+.info-cards-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.info-cards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 4444rem;
+  background: #888;
+}
+.info-cards-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .info-card {
@@ -310,6 +403,7 @@
 
 .stats-table-wrapper {
   margin-top: 4rem;
+  margin-bottom: 2rem;
   max-width: 1440px;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -376,17 +470,20 @@
   padding-right: 2rem;
   padding-left: 1rem;
 }
-.stats-table-wrapper table tbody .player-link {
+.stats-table-wrapper table tbody .table-link {
   display: flex;
   align-items: center;
 }
-.stats-table-wrapper table tbody .player-link .player-image {
+.stats-table-wrapper table tbody .table-link .table-image {
   margin-right: 0.5rem;
-  background-color: rgb(211, 211, 211);
   border-radius: 4444rem;
   height: 25px;
+  background-color: rgb(211, 211, 211);
   width: 25px;
   object-fit: cover;
+}
+.stats-table-wrapper table tbody .table-link .team-image {
+  background-color: unset;
 }
 .stats-table-wrapper table tbody tr {
   background-color: transparent;

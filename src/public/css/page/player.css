@@ -324,17 +324,20 @@ main {
   padding-right: 2rem;
   padding-left: 1rem;
 }
-.stats-table-wrapper table tbody .player-link {
+.stats-table-wrapper table tbody .table-link {
   display: flex;
   align-items: center;
 }
-.stats-table-wrapper table tbody .player-link .player-image {
+.stats-table-wrapper table tbody .table-link .table-image {
   margin-right: 0.5rem;
-  background-color: rgb(211, 211, 211);
   border-radius: 4444rem;
   height: 25px;
+  background-color: rgb(211, 211, 211);
   width: 25px;
   object-fit: cover;
+}
+.stats-table-wrapper table tbody .table-link .team-image {
+  background-color: unset;
 }
 .stats-table-wrapper table tbody tr {
   background-color: transparent;

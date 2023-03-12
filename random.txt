@@ -1,4 +1,3 @@
-scrapeati primary team images
 
 proxy
 load testing
@@ -8,9 +7,14 @@ continous deployment, cont. delievery, cont. integration, devops
 nginx
 
 
+team page:
+zadnjih pet gameova
+player page:
+zadnjih pet gameova u kojima je igrac igrao
 
-
-
+dodati upcoming games za teams
+time kada je bio game da se mogu sortirati
+scrapeati primary team images
 margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar
 random curves za game page
 dodati curves ili slicno na druge stranice

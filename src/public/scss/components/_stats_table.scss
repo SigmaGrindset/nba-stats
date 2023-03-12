@@ -7,7 +7,6 @@
 @mixin stats-table-wrapper($caption-bg, $content-bg, $cell-bg, $caption-col, $headers-col, $content-col ) {
   @include main-padding();
 
-
   $table-padding-horizontal: 1rem;
   $table-padding-vertical: .75rem;
 
@@ -74,19 +73,24 @@
 
     tbody {
 
-      .player-link {
+      .table-link {
         display: flex;
         align-items: center;
 
-        .player-image {
+        .table-image {
           margin-right: .5rem;
-          background-color: rgb(211, 211, 211);
           border-radius: 4444rem;
           $size: 25px;
           height: $size;
+          background-color: rgb(211, 211, 211);
           width: $size;
           object-fit: cover;
         }
+
+        .team-image {
+          background-color: unset;
+        }
+
       }
 
       tr {
