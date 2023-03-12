@@ -230,17 +230,20 @@
   padding-right: 2rem;
   padding-left: 1rem;
 }
-.stats-table-wrapper table tbody .player-link {
+.stats-table-wrapper table tbody .table-link {
   display: flex;
   align-items: center;
 }
-.stats-table-wrapper table tbody .player-link .player-image {
+.stats-table-wrapper table tbody .table-link .table-image {
   margin-right: 0.5rem;
-  background-color: rgb(211, 211, 211);
   border-radius: 4444rem;
   height: 25px;
+  background-color: rgb(211, 211, 211);
   width: 25px;
   object-fit: cover;
+}
+.stats-table-wrapper table tbody .table-link .team-image {
+  background-color: unset;
 }
 .stats-table-wrapper table tbody tr {
   background-color: transparent;
@@ -353,6 +356,11 @@
   display: flex;
   overflow-x: auto;
   justify-content: flex-start;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
 }
 @media screen and (max-width: 1024px) {
   .info-cards-wrapper {
@@ -365,6 +373,19 @@
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
+}
+.info-cards-wrapper::-webkit-scrollbar {
+  height: 5px;
+}
+.info-cards-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.info-cards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 4444rem;
+  background: #888;
+}
+.info-cards-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .spacer {

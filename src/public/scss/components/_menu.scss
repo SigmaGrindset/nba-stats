@@ -1,0 +1,83 @@
+@use "../variables" as *;
+@use "../breakpoints" as *;
+@use "../utils" as *;
+
+
+.menu-container {
+  * {
+    font-family: poppins;
+  }
+
+  .menu-options-container {
+    background-color: white;
+    border-bottom: 1px solid black;
+
+  }
+
+  .menu-options {
+    @include main-padding();
+    display: flex;
+
+    .menu-option {
+      &:hover {
+        cursor: pointer;
+      }
+
+      background-color: unset;
+      border: unset;
+      outline: unset;
+      padding: .65rem;
+      margin-right: 1rem;
+      font-size: 1rem;
+
+      &:first-of-type {
+        padding-left: 0 !important;
+      }
+    }
+
+    .menu-option-selected {
+      font-weight: 700;
+      text-decoration: underline;
+    }
+  }
+
+
+  .menu-content-hidden {
+    animation-name: disappear;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+    display: none;
+
+  }
+
+  .menu-content-shown {
+    animation-name: appear;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+    display: block;
+  }
+
+}
+
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes disappear {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
