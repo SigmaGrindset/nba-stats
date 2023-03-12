@@ -5,7 +5,7 @@ API - api management
 TESTS - ui i api
 continous deployment, cont. delievery, cont. integration, devops
 nginx
-
+docker?
 
 team page:
 zadnjih pet gameova
