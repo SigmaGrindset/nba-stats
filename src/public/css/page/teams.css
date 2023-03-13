@@ -110,11 +110,11 @@
 }
 .divisions-container .division {
   width: 33.33%;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 .divisions-container .division .heading {
   text-transform: uppercase;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -124,7 +124,7 @@
   margin-bottom: 1rem;
 }
 .divisions-container .name {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: black;
 }
