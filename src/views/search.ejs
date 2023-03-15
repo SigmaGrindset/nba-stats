@@ -24,7 +24,11 @@
     <div class="results">
 
       <div class="info-text">
+        <% if(queryResults[0].length == 0 && queryResults[1].length == 0)  { %>
+        <div class="main">No matching results for&nbsp</div>
+        <% } else { %>
         <div class="main">Showing results for&nbsp</div>
+        <%} %>
         <div class="query"><%= query %></div>
       </div>
 
