@@ -12,6 +12,7 @@ zadnjih pet gameova
 player page:
 zadnjih pet gameova u kojima je igrac igrao
 
+makniti special html characters kod scrapeanja
 dodati upcoming games za teams
 time kada je bio game da se mogu sortirati
 scrapeati primary team images

@@ -53,7 +53,7 @@ module.exports.game_get = async function (req, res) {
       }
     } else if (req.body.teamId) {
       const games = [];
-      const homeGames = await Game.find({ home: req.body.teamId });
+      const homeGames = await Game.find({ homeTeam: req.body.teamId });
       const awayGames = await Game.find({ awayTeam: req.body.teamId });
       games.push(...homeGames);
       games.push(...awayGames);

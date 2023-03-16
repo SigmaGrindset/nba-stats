@@ -76,7 +76,7 @@
           <div class="stats-table-content-wrapper">
 
 
-            <table class="stats-table">
+            <table id="players-table" class="stats-table">
 
               <thead>
                 <tr>
@@ -122,7 +122,7 @@
         <div class="info-cards-wrapper">
           <% [{name:"Coaching", data:team.coaching}, {name:"Records", data:team.records}, {name:"Background", data: team.background}, {name:"Achievements", data:team.achievements}].forEach(group => { %>
 
-          <div class="info-card" style='background-color: <%= team.pageColor %>'>
+          <div id="<%= group.name.toLowerCase() %>" class="info-card" style='background-color: <%= team.pageColor %>'>
 
             <div class="header">
               <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
@@ -163,7 +163,7 @@
           <div class="stats-table-content-wrapper">
 
 
-            <table class="stats-table">
+            <table id="games-table" class="stats-table">
 
               <thead>
                 <tr>
@@ -177,11 +177,11 @@
 
               <tbody>
                 <% games.forEach(game => { %>
-                <tr>
+                <tr data-gameId=<%= game._id %>>
                   <td>
                     <a class="table-link" href="/team/<%= game.homeTeam._id %>">
                       <img src="<%= game.homeTeam.imageURL %>" alt="" class="table-image team-image">
-                      <%= game.homeTeam.name %>
+                      <%= game.homeTeam.name.replaceAll(/\u00a0/g, ' ').replaceAll("&nbsp;", "").replaceAll("\n", "") %>
                     </a>
                   </td>
                   <td>
@@ -191,7 +191,7 @@
                   <td>
                     <a class="table-link" href="/team/<%= game.awayTeam._id %>">
                       <img src="<%= game.awayTeam.imageURL %>" alt="" class="table-image team-image">
-                      <%= game.awayTeam.name %>
+                      <%= game.awayTeam.name.replaceAll(/\u00a0/g, ' ').replaceAll("&nbsp;", "").replaceAll("\n", "") %>
                     </a>
                   </td>
                   <td><%= game.summaryLocation %></td>
