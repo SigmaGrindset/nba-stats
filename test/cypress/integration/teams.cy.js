@@ -29,4 +29,13 @@ describe("teams page", function () {
 
   });
 
+
+  it("click link", function () {
+    cy.visit("/teams");
+    cy.contains("Boston Celtics").click();
+    cy.url().then($url => {
+      expect($url).to.contain("/team");
+    });
+  });
+
 });
