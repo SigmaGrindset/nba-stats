@@ -128,6 +128,25 @@ playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playe
   }
 }
 
+playerCareerStatsSchema.statics.findGroup = async function (query, groupId) {
+  // reg season - 0
+  // playoffs - 1
+  let groupShortName;
+  if (groupId == 0) {
+    query.type = "Career Regular Season Stats";
+    groupShortName = "Regular Season"
+    // mozda staviti da ide u bazu podataka dok se bude scrapealo
+  } else if (groupId == 1) {
+    query.type = "Career Playoffs Stats";
+    groupShortName = "Playoffs"
+  }
+  const data = await this.find(query);
+  return {
+    statsGroupName: groupShortName,
+    data: data
+  };
+}
+
 playerCareerStatsSchema.index({ season_id: 1, team: 1, player: 1, type: 1 }, { unique: true });
 playerCareerStatsSchema.plugin(require("mongoose-autopopulate"));
 
