@@ -13,6 +13,7 @@ const Player = require("../../../src/models/Player");
 const Game = require("../../../src/models/Game");
 const BoxScoreStats = require("../../../src/models/BoxScoreStats");
 const PlayerGameStats = require("../../../src/models/PlayerGameStats");
+const PlayerCareerStats = require("../../../src/models/PlayerCareerStats");
 
 mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
   .then(() => {
@@ -36,6 +37,17 @@ module.exports = (on, config) => {
       return players;
     },
 
+    async teamRosterQuery(query) {
+      const roster = await TeamCurrentRoster.find(query);
+      return roster;
+    },
+
+    async careerStatsQuery(query) {
+      const regSeasonStats = await PlayerCareerStats.findGroup(query, 0);
+      const playoffsStats = await PlayerCareerStats.findGroup(query, 1);
+      return [regSeasonStats, playoffsStats];
+    },
+
     async getTeamGames({ teamId }) {
       const games = [];
       const homeGames = await Game.find({ homeTeam: teamId });
@@ -52,6 +64,11 @@ module.exports = (on, config) => {
     async getTeamPlayersGameStats({ gameId, teamId }) {
       const playerStats = await PlayerGameStats.find({ game: gameId, team: teamId });
       return playerStats;
+    },
+
+    async getPlayer({ playerId }) {
+      const player = await Player.findOne({ _id: playerId });
+      return player;
     }
 
   });
