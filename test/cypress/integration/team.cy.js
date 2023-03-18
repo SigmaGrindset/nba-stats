@@ -97,7 +97,6 @@ describe("team page", function () {
       const team = $teams[0];
       cy.task("getTeamGames", { teamId: team._id }).then(games => {
 
-        console.log(games);
         cy.visit(`/team/${team._id}`);
         cy.contains("Games played").click();
         cy.get("#games-table tbody tr").then($rows => {
@@ -105,10 +104,19 @@ describe("team page", function () {
             cy.wrap($rows[row]).within(() => {
               for (let game of games) {
                 if ($rows[row].dataset.gameid == game._id) {
-                  cy.contains(game.homeTeam.name.replaceAll(/\u00a0/g, ' '));
-                  cy.contains(game.awayTeam.name.replaceAll(/\u00a0/g, ' '));
-                  cy.contains(game.awayTeamStats.pts);
-                  cy.contains(game.homeTeamStats.pts);
+                  cy.url().then($mainUrl => {
+                    cy.contains(game.homeTeamStats.pts);
+                    cy.contains(game.awayTeamStats.pts).then($link => {
+                      expect($link[0].href).to.include(`game/${game._id}`);
+                    });
+                    cy.contains(game.homeTeam.name.replaceAll(/\u00a0/g, ' ')).then($link => {
+                      expect($link[0].href).to.include(`team/${game.homeTeam._id}`);
+                    });
+                    cy.contains(game.awayTeam.name.replaceAll(/\u00a0/g, ' ')).then($link => {
+                      expect($link[0].href).to.include(`team/${game.awayTeam._id}`);
+                    });
+
+                  })
                 }
               }
             });

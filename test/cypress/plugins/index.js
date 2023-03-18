@@ -12,6 +12,7 @@ const TeamCurrentRoster = require("../../../src/models/TeamCurrentRoster");
 const Player = require("../../../src/models/Player");
 const Game = require("../../../src/models/Game");
 const BoxScoreStats = require("../../../src/models/BoxScoreStats");
+const PlayerGameStats = require("../../../src/models/PlayerGameStats");
 
 mongoose.connect("mongodb+srv://sanji:diablejambe@nba-stats.9dwaife.mongodb.net/nba-stats?retryWrites=true&w=majority")
   .then(() => {
@@ -44,9 +45,16 @@ module.exports = (on, config) => {
 
       return games;
     },
+    async getGame() {
+      const game = await Game.findOne({});
+      return game;
+    },
+    async getTeamPlayersGameStats({ gameId, teamId }) {
+      const playerStats = await PlayerGameStats.find({ game: gameId, team: teamId });
+      return playerStats;
+    }
 
-
-  })
+  });
 
 
 }

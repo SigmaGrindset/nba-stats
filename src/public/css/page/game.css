@@ -135,7 +135,7 @@
 @media screen and (max-width: 1024px) {
   .game-info #team1,
   .game-info #team2 {
-    width: 20%;
+    width: 80%;
   }
   .game-info .summary {
     font-size: 1.75rem;
@@ -151,11 +151,11 @@
   .game-info .result {
     font-size: 1.4rem;
   }
-  .game-info #team1 {
-    order: 2;
+  .game-info #team1-link {
+    order: 4;
   }
-  .game-info #team2 {
-    order: 3;
+  .game-info #team2-link {
+    order: 5;
   }
   .game-info .text {
     order: 1;

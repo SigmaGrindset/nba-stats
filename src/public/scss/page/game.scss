@@ -68,9 +68,10 @@
 
   @include md() {
 
+
     #team1,
     #team2 {
-      width: 20%;
+      width: 80%;
     }
 
     .summary {
@@ -83,6 +84,8 @@
   }
 
   @include sm() {
+
+
     #summary {
       font-size: 1.5rem;
     }
@@ -91,17 +94,19 @@
       font-size: 1.4rem;
     }
 
-    #team1 {
-      order: 2;
+    #team1-link {
+      order: 4;
     }
 
-    #team2 {
-      order: 3;
+    #team2-link {
+      order: 5;
     }
 
     .text {
       order: 1;
     }
+
+
   }
 }
 

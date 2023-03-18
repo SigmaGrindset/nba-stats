@@ -23,6 +23,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "cypress": "^12.7.0",
+    "cypress-wait-until": "^1.7.2",
     "dart-sass": "^1.25.0",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
