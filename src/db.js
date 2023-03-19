@@ -109,15 +109,16 @@ async function addGameStats(gameData) {
 
 async function addTeam(link) {
   const teamData = await scrapeTeam(link);
-  await sleep(5000);
+  await sleep(4000);
   let team = await Team.findOne({ _id: teamData.id });
   if (!team) {
     team = await Team.create({ ...teamData, _id: teamData.id });
     logger.info("team created:", team.name)
   }
+  // update ako postoji
 
   for (playerId of teamData.players) {
-    logger.info(playerId)
+    logger.info("adding player: ", playerId);
     await sleep(2000);
     await addPlayer(playerId, teamData.id, { pageColor: teamData.pageColor });
   }
@@ -127,17 +128,19 @@ async function addTeam(link) {
 async function populateDB() {
   const teamLinks = await getTeamLinks();
 
-  // for (link of teamLinks) {
-  //   // const teamId = link.split("/").slice(-2, -1);
-  //   await addTeam(link);
-  // };
+  logger.info("\n scraping teams \n");
+  for (link of teamLinks) {
+    logger.info(`scraping team: ${link}`)
+    await addTeam(link);
+  };
 
   // games
+  logger.info("\n scraping games \n");
   for (link of teamLinks) {
-    logger.info(`team link: ${link}`);
+    logger.info(`\n scraping games for team: ${link} \n`);
     const teamGames = await getGameLinks(link);
     for (gameLink of teamGames.reverse()) {
-      logger.info(`game link: ${gameLink}`);
+      logger.info(`scraping game: ${gameLink}`);
       // ide od novijih prema starijima
       const gameExists = await addGame(gameLink)
       if (!gameExists) {
@@ -167,7 +170,6 @@ async function deleteDB() {
 
 
 (async function () {
-  // await deleteDB();
   await populateDB();
   // await addTeam("/team/1610612738/celtics");
   // await addTeam("/team/1610612766/hornets");

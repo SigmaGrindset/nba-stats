@@ -12,7 +12,7 @@ module.exports.teamdetails_get = async (req, res) => {
     .find({
       $or: [{ awayTeam: team._id }, { homeTeam: team._id }]
     })
-    .sort({ date: 1 });
+    .sort({ dateEpoch: 1 });
   if (team) {
     res.render("team_details.ejs", { team, teamPlayers, games })
   } else {
