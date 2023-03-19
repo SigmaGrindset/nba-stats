@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  _id: Number,
+  _id: String,
   homeTeam: {
     type: Number,
     ref: "Team",
@@ -36,6 +36,10 @@ const gameSchema = new mongoose.Schema({
   },
   date: {
     type: String,
+    required: true
+  },
+  dateEpoch: {
+    type: Number,
     required: true
   },
   location: {

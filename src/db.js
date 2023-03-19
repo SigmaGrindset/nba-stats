@@ -59,6 +59,7 @@ async function addGame(gameLink) {
     const game = await Game.create({
       _id: gameData.id,
       date: gameData.date,
+      dateEpoch: gameData.dateEpoch,
       location: gameData.location,
       attendance: gameData.attendance,
       officials: gameData.officials,
@@ -129,14 +130,14 @@ async function populateDB() {
   // for (link of teamLinks) {
   //   // const teamId = parseInt(link.split("/").slice(-2, -1));
   //   await addTeam(link);
-
   // };
 
   // games
   for (link of teamLinks) {
-    logger.info(link);
+    logger.info(`team link: ${link}`);
     const teamGames = await getGameLinks(link);
     for (gameLink of teamGames.reverse()) {
+      logger.info(`game link: ${gameLink}`);
       // ide od novijih prema starijima
       const gameExists = await addGame(gameLink)
       if (!gameExists) {
@@ -166,12 +167,13 @@ async function deleteDB() {
 
 
 (async function () {
-  // deleteDB();
-  // populateDB();
-  // await addGame("/game/0012200002/");
+  // await deleteDB();
+  await populateDB();
+  // await addTeam("/team/1610612738/celtics");
+  // await addTeam("/team/1610612766/hornets");
+  // await addGame("/game/0012200005/");
   // await addPlayer("1631128", "1610612743", "blue");
-  // await addTeam("/team/1610612751/nets")
-  // await addTeam("/team/1610612738/celtics")
+
   // await addTeam("/team/1610612742/mavericks")
   // await addTeam("team/1610612756/suns")
   // await addTeam("/team/1610612758/kings")

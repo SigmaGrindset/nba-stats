@@ -23,7 +23,7 @@
 
     <div class="game-info">
       <a id="team1-link" href="/team/<%= game.homeTeam._id %>">
-        <img src="<%= game.homeTeam.imageURL.replace("primary", "global") %>" alt="home team logo" id="team1">
+        <img src="<%= game.homeTeam.globalImageURL %>" alt="home team logo" id="team1">
       </a>
       <div class="text">
         <div class="summary">
@@ -33,7 +33,7 @@
         <div class="location"><%= game.summaryLocation %></div>
       </div>
       <a id="team2-link" href="/team/<%= game.awayTeam._id %>">
-        <img src="<%= game.awayTeam.imageURL.replace("primary", "global") %>" alt="away team logo" id="team2">
+        <img src="<%= game.awayTeam.globalImageURL %>" alt="away team logo" id="team2">
       </a>
     </div>
     <div class="spacer layer-1"></div>

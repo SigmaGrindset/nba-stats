@@ -11,6 +11,10 @@ const teamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  globalImageURL: {
+    type: String,
+    required: true
+  },
   imageURL: {
     type: String,
     required: true

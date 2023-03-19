@@ -48,7 +48,7 @@ async function scrapePlayer(link) {
     }
   }
   const playerNameContainers = document.querySelectorAll(".PlayerSummary_playerNameText___MhqC");
-  const playerName = playerNameContainers.item(0).textContent.concat(" ", playerNameContainers.item(1).textContent);
+  const playerName = playerNameContainers.item(0).textContent.concat(" ", playerNameContainers.item(1).textContent).replaceAll("\n", "");
 
   const statsContainers = document.querySelectorAll(".PlayerSummary_playerStat__rmEOP");
   const stats = {};

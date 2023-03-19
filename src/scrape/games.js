@@ -13,11 +13,12 @@ async function getGameLinks(teamLink) {
   const dom = new JSDOM(res.data);
   const document = dom.window.document;
   const links = [];
-
   const gameContainers = document.querySelectorAll(".TeamScheduleTable_game__STLzU");
   gameContainers.forEach(container => {
     const result = container.querySelectorAll(".Crom_text__NpR1_").item(2);
-    if (result.textContent.toUpperCase().includes("W") || result.textContent.toUpperCase().includes("L")) {
+    if (!result.textContent.toUpperCase().includes("LIVE") &&
+      (result.textContent.toUpperCase().includes("L")
+        | result.textContent.toUpperCase().includes("W"))) {
       links.push(result.querySelector("a").getAttribute("href"));
     }
   });
@@ -37,7 +38,7 @@ async function scrapeGame(gameLink) {
     id: gameId
   };
 
-  const gameSummaryText = document.querySelector(".GameHeroHeadline_headline__GYjHE").textContent;
+  const gameSummaryText = document.querySelector(".GameHeroHeadline_headline__GYjHE").textContent.replaceAll("\n");
   const gameSummaryLocation = document.querySelector(".GameHeroLocation_location__Q_ID_").textContent;
   gameData.summaryText = gameSummaryText
   gameData.summaryLocation = gameSummaryLocation
@@ -58,6 +59,7 @@ async function scrapeGame(gameLink) {
     .querySelector("a").getAttribute("href");
   const boxScoreData = await scrapeBoxScore(boxScoreLink);
   gameData.boxScore = boxScoreData;
+  gameData.dateEpoch = Date.parse(gameData.date);
   return gameData;
 }
 
@@ -156,6 +158,7 @@ async function scrapeGameStatsTable(table, teamId) {
   return boxScoreData;
 }
 
+// scrapeGame("/game/0012200005/").then(data => console.log(data));
 
 module.exports.scrapeGame = scrapeUntilSuccessful(scrapeGame);
 module.exports.getGameLinks = scrapeUntilSuccessful(getGameLinks);
