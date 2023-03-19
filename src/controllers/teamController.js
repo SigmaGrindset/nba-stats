@@ -8,11 +8,19 @@ module.exports.teamdetails_get = async (req, res) => {
   const team = await Team.findOne({ _id: teamId });
   const teamPlayers = await TeamCurrentRoster.find({ team: team.id });
 
-  const games = await Game
+  const allGames = await Game
     .find({
-      $or: [{ awayTeam: team._id }, { homeTeam: team._id }]
+      $or: [{ awayTeam: team._id }, { homeTeam: team._id }],
     })
     .sort({ dateEpoch: 1 });
+  const games = [];
+
+  allGames.forEach(game => {
+    if (game.awayTeam) {
+      games.push(game);
+    }
+  });
+
   if (team) {
     res.render("team_details.ejs", { team, teamPlayers, games })
   } else {

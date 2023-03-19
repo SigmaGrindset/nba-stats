@@ -51,7 +51,7 @@ module.exports.search_get = async (req, res) => {
   return res.render("search.ejs", { query, queryResults: [players, teams] });
 }
 module.exports.search_post = async (req, res) => {
-  console.log(req.body);
+  logger.info(req.body);
   return res.redirect(`/search/${req.body.query}`);
 
 }
