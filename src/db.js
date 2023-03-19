@@ -128,7 +128,7 @@ async function populateDB() {
   const teamLinks = await getTeamLinks();
 
   // for (link of teamLinks) {
-  //   // const teamId = parseInt(link.split("/").slice(-2, -1));
+  //   // const teamId = link.split("/").slice(-2, -1);
   //   await addTeam(link);
   // };
 
