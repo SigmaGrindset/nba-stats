@@ -25,12 +25,12 @@ async function addPlayer(playerId, teamId, data) {
     const playerData = await scrapePlayer(createLinkFromPlayerId(playerId));
     if (Object.values(playerData).length != 0) {
       const player = await Player.create({ ...playerData, _id: playerId, pageColor: data.pageColor });
-      logger.info("player created", player.name);
+      logger.info("player created: ", player.name);
     } else {
-      logger.info("player page doesnt exist")
+      logger.info(`player page for player ${playerId} doesnt exist`);
     }
   } else {
-    logger.info("player exists", existingPlayer.name);
+    logger.info("player exists: ", existingPlayer.name);
   }
   if (teamId) {
     // ako je retired igrac onda nece biti u timu
@@ -69,11 +69,11 @@ async function addGame(gameLink) {
       awayTeamStats: awayTeamBoxScore._id,
       ...gameData
     });
-    logger.info("game created:", game.id);
+    logger.info("game created: ", game.id);
     await addGameStats(gameData);
     return false;
   } else {
-    logger.info("game exists", gameId);
+    logger.info("game exists: ", gameId);
     return true;
   }
 }
@@ -97,9 +97,9 @@ async function addGameStats(gameData) {
             stats: stats._id,
             team: teamStats.teamId
           });
-          logger.info("player game stats created for player: ", playerStats.player);
+          logger.info("player game stats created for player: ", playerStats.player.name);
         } else {
-          logger.info("player game stats already exist for player: ", playerStats.player);
+          logger.info("player game stats already exist for player: ", playerStats.player.name);
         }
       }
     }
@@ -128,11 +128,11 @@ async function addTeam(link) {
 async function populateDB() {
   const teamLinks = await getTeamLinks();
 
-  logger.info("\n scraping teams \n");
-  for (link of teamLinks) {
-    logger.info(`scraping team: ${link}`)
-    await addTeam(link);
-  };
+  // logger.info("\n scraping teams \n");
+  // for (link of teamLinks) {
+  //   logger.info(`scraping team: ${link}`)
+  //   await addTeam(link);
+  // };
 
   // games
   logger.info("\n scraping games \n");
@@ -157,16 +157,16 @@ async function populateDB() {
 
 
 
-async function deleteDB() {
-  await BoxScoreStats.deleteMany();
-  await Game.deleteMany();
-  await Player.deleteMany();
-  await PlayerCareerStats.deleteMany();
-  await PlayerGameStats.deleteMany();
-  await Team.deleteMany();
-  await TeamCurrentRoster.deleteMany();
-  logger.info("deleted");
-}
+// async function deleteDB() {
+//   await BoxScoreStats.deleteMany();
+//   await Game.deleteMany();
+//   await Player.deleteMany();
+//   await PlayerCareerStats.deleteMany();
+//   await PlayerGameStats.deleteMany();
+//   await Team.deleteMany();
+//   await TeamCurrentRoster.deleteMany();
+//   logger.info("deleted");
+// }
 
 
 (async function () {

@@ -26,7 +26,10 @@ const boxScoreStatsSchema = new mongoose.Schema({
   to: stat,
   pf: stat,
   pts: stat,
-  plus_minus: stat,
+  plus_minus: {
+    type: String,
+    default: "-"
+  },
   status: {
     type: String
   }
