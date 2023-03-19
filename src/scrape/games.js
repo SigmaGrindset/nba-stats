@@ -18,7 +18,7 @@ async function getGameLinks(teamLink) {
     const result = container.querySelectorAll(".Crom_text__NpR1_").item(2);
     if (!result.textContent.toUpperCase().includes("LIVE") &&
       (result.textContent.toUpperCase().includes("L")
-        | result.textContent.toUpperCase().includes("W"))) {
+        || result.textContent.toUpperCase().includes("W"))) {
       links.push(result.querySelector("a").getAttribute("href"));
     }
   });
@@ -29,7 +29,7 @@ async function getGameLinks(teamLink) {
 async function scrapeGame(gameLink) {
   // gameLink - /game/game-id/
 
-  const gameId = parseInt(gameLink.split("/").slice(-2, -1));
+  const gameId = gameLink.split("/").slice(-2, -1)[0];
   const pageContent = await loadDynamicPage(BASEURL.concat(gameLink));
   const dom = new JSDOM(pageContent);
   const document = dom.window.document;
@@ -70,7 +70,7 @@ function getTeamIdFromImageUrl(imageURL) {
   arr.pop();
   arr.pop();
   arr.pop();
-  return parseInt(arr.pop());
+  return arr.pop();
 }
 
 async function scrapeBoxScore(boxScoreLink) {

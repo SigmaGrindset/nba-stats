@@ -18,7 +18,7 @@ describe("game scrape", () => {
     const gameLinks = await getGameLinks(teamLinks[0]);
     const gameData = await scrapeGame(gameLinks[0]);
 
-    expect(gameData.id).toBeDefined();
+    expect(typeof gameData.id).toEqual("string");
     expect(gameData.attendance).toBeDefined();
     expect(gameData.officials).toBeDefined();
     expect(gameData.location).toBeDefined();
