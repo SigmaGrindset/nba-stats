@@ -1,3 +1,8 @@
+scrapeati primary team images
+time kada je bio game da se mogu sortirati
+makniti special html characters kod scrapeanja
+vrijednosti polja za apg, rpg... igraca bude NaN zbog scrapeanja
+zadnjih pet gameova za player i team
 
 proxy
 load testing
@@ -7,18 +12,10 @@ continous deployment, cont. delievery, cont. integration, devops
 nginx
 docker?
 
-team page:
-zadnjih pet gameova
-player page:
-zadnjih pet gameova u kojima je igrac igrao
 
-makniti special html characters kod scrapeanja
 dodati upcoming games za teams
-time kada je bio game da se mogu sortirati
-scrapeati primary team images
 margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar
 random curves za game page
 dodati curves ili slicno na druge stranice
 dodati druge career statistike za igrace (college...)
 ako id pocinje sa nulama script makne sve nule sa pocetka, ali mozda ne uvijek
-vrijednosti polja za apg, rpg... igraca bude NaN zbog scrapeanja

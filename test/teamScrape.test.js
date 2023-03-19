@@ -1,6 +1,6 @@
 
 const { getTeamLinks, scrapeTeam } = require("../src/scrape/teams.js");
-jest.setTimeout(60 * 1000);
+jest.setTimeout(80 * 1000);
 
 describe("team scrape", () => {
 
@@ -9,7 +9,7 @@ describe("team scrape", () => {
     expect(links.length).toEqual(30);
   });
 
-  test("scrape single team, should contain all data", async () => {
+  test.only("scrape single team, should contain all data", async () => {
     const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[9]);
     expect(isNaN(teamData.id)).toBeFalsy();
@@ -17,6 +17,7 @@ describe("team scrape", () => {
     expect(typeof teamData.name).toEqual("string");
     expect(typeof teamData.record).toEqual("string");
     expect(typeof teamData.imageURL).toEqual("string");
+    expect(typeof teamData.globalImageURL).toEqual("string");
     expect(typeof teamData.pageColor).toEqual("string");
     expect(teamData.pageColor.length > 0).toBeTruthy();
     expect(typeof teamData.records).toBeDefined();

@@ -23,6 +23,7 @@ describe("game scrape", () => {
     expect(gameData.officials).toBeDefined();
     expect(gameData.location).toBeDefined();
     expect(gameData.date).toBeDefined();
+    expect(gameData.dateEpoch).toBeDefined();
     expect(gameData.boxScore).toBeDefined();
     const boxScore = gameData.boxScore;
     expect(boxScore.length).toEqual(2);
