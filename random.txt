@@ -1,6 +1,3 @@
-scrapeati primary team images
-time kada je bio game da se mogu sortirati
-makniti special html characters kod scrapeanja
 vrijednosti polja za apg, rpg... igraca bude NaN zbog scrapeanja
 zadnjih pet gameova za player i team
 

@@ -317,7 +317,7 @@
   height: 5px;
 }
 .info-cards-wrapper::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 .info-cards-wrapper::-webkit-scrollbar-thumb {
   border-radius: 4444rem;
@@ -446,6 +446,22 @@
   background: #212121;
   border-bottom-left-radius: 0.65rem;
   border-bottom-right-radius: 0.65rem;
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
+}
+.stats-table-wrapper .stats-table-content-wrapper::-webkit-scrollbar {
+  height: 5px;
+}
+.stats-table-wrapper .stats-table-content-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.stats-table-wrapper .stats-table-content-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 4444rem;
+  background: #888;
+}
+.stats-table-wrapper .stats-table-content-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 .stats-table-wrapper table {
   overflow-x: scroll;
@@ -503,6 +519,7 @@
 .stats-table-wrapper table tbody tr td:last-child {
   border-top-right-radius: 0.65rem;
   border-bottom-right-radius: 0.65rem;
+  padding-right: 1rem;
 }
 @media screen and (max-width: 578px) {
   .stats-table-wrapper .table-heading {

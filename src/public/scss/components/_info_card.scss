@@ -1,6 +1,7 @@
 @use "../variables" as *;
 @use "../breakpoints" as *;
 @use "../utils" as *;
+@use "../components/scrollbar" as *;
 
 @mixin info-cards-wrapper() {
   @include main-padding;
@@ -10,25 +11,7 @@
   padding-bottom: .5rem;
   margin-bottom: 2rem;
 
-  &::-webkit-scrollbar {
-    height: 5px;
-  }
-
-  /* Track */
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4444rem;
-    background: #888;
-  }
-
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+  @include scrollbar();
 }
 
 @mixin info-card($bg-color, $fg-color) {
