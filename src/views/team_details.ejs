@@ -72,6 +72,54 @@
       <div class="menu-content menu-content-shown" id="info">
 
         <div class="stats-table-wrapper">
+          <div class="table-heading">Last 5 Games</div>
+          <div class="stats-table-content-wrapper">
+
+
+            <table id="games-table" class="stats-table">
+
+              <thead>
+                <tr>
+                  <th>Home Team</th>
+                  <th>Score</th>
+                  <th>Away Team</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% games.slice(-5).reverse().forEach(game => { %>
+                <tr data-gameId=<%= game._id %>>
+                  <td>
+                    <a class="table-link" href="/team/<%= game.homeTeam._id %>">
+                      <img src="<%= game.homeTeam.imageURL %>" alt="" class="table-image team-image">
+                      <%= game.homeTeam.name.replaceAll(/\u00a0/g, ' ').replaceAll("&nbsp;", "").replaceAll("\n", "") %>
+                    </a>
+                  </td>
+                  <td>
+                    <a class="table-link" href="/game/<%= game._id %>"><%= game.homeTeamStats.pts %> -
+                      <%= game.awayTeamStats.pts %></a>
+                  </td>
+                  <td>
+                    <a class="table-link" href="/team/<%= game.awayTeam._id %>">
+                      <img src="<%= game.awayTeam.imageURL %>" alt="" class="table-image team-image">
+                      <%= game.awayTeam.name.replaceAll(/\u00a0/g, ' ').replaceAll("&nbsp;", "").replaceAll("\n", "") %>
+                    </a>
+                  </td>
+                  <td><%= game.summaryLocation %></td>
+                  <td><%= game.date %></td>
+                </tr>
+
+                <% })%>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <div class="stats-table-wrapper">
           <div class="table-heading">Players</div>
           <div class="stats-table-content-wrapper">
 
@@ -115,7 +163,9 @@
 
               </tbody>
             </table>
+            
           </div>
+
         </div>
 
 

@@ -1,5 +1,4 @@
 vrijednosti polja za apg, rpg... igraca bude NaN zbog scrapeanja
-zadnjih pet gameova za player i team
 
 proxy
 load testing
@@ -9,6 +8,7 @@ continous deployment, cont. delievery, cont. integration, devops
 nginx
 docker?
 
+u playergamestats stavlja int za game id pa fale dvije nule na pocetku
 
 dodati upcoming games za teams
 margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar

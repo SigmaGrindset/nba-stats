@@ -2,6 +2,7 @@
 const logger = require("../config/logger");
 const Player = require("../models/Player");
 const PlayerCareerStats = require("../models/PlayerCareerStats");
+const PlayerGameStats = require("../models/PlayerGameStats");
 const TeamCurrentRoster = require("../models/TeamCurrentRoster");
 
 module.exports.playerdetails_get = async (req, res) => {
@@ -9,6 +10,7 @@ module.exports.playerdetails_get = async (req, res) => {
   const player = await Player.findOne({ _id: playerId });
   const regSeasonStats = await PlayerCareerStats.find({ type: "Career Regular Season Stats", player: player._id });
   const playoffsStats = await PlayerCareerStats.find({ type: "Career Playoffs Stats", player: player._id });
+  const gamesStats = await PlayerGameStats.find({player:playerId}).limit(5);
   let team = await TeamCurrentRoster.findOne({ player: player._id });
   if (team) {
     team = team.team;
