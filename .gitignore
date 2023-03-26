@@ -129,6 +129,3 @@ dmypy.json
 .pyre/
 
 /node_modules
-
-
-/logs

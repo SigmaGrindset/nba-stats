@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const playerGameStatsSchema = new mongoose.Schema({
   game: {
-    type: Number,
+    type: String,
     ref: "Game",
     required: true,
     autopopulate: true

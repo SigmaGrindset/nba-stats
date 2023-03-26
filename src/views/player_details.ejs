@@ -33,6 +33,7 @@
         </div>
 
         <div class="main-info">
+
           <div class="name"><%= player.name %></div>
           <% if (team) { %>
           <div class="desc"><%= team.name %> · <%= player.number %> · <%= player.position %></div>
@@ -40,22 +41,32 @@
           <div class="desc"><%= player.number %> · <%= player.position %></div>
           <%}  %>
           <div class="main-stats">
+            <% if (player.stats.ppg) { %>
             <div class="stat">
               <div class="stat-name">PPG</div>
               <div class="stat-value"><%=player.stats.ppg%></div>
             </div>
+            <% } %>
+            <% if (player.stats.rpg) { %>
             <div class="stat">
               <div class="stat-name">RPG</div>
               <div class="stat-value"><%=player.stats.rpg%></div>
             </div>
+            <% } %>
+            <% if (player.stats.apg) { %>
             <div class="stat">
               <div class="stat-name">APG</div>
               <div class="stat-value"><%=player.stats.apg%></div>
             </div>
+            <% } %>
+            <% if (player.stats.pie) { %>
             <div class="stat">
               <div class="stat-name">PIE</div>
               <div class="stat-value"><%=player.stats.pie%></div>
             </div>
+
+            <% } %>
+
           </div>
         </div>
 
