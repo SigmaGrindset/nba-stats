@@ -18,9 +18,9 @@ describe("team page", function () {
       cy.get(".name").should("include.text", team.name);
       cy.get(".desc").should("include.text", team.record);
       cy.get(".desc").should("include.text", team.placementText);
-      // cy.get("#team").then($image => {
-      // expect($image[0].currentSrc).to.equal(team.imageURL);
-      // });
+      cy.get("#team").then($image => {
+        expect($image[0].currentSrc).to.equal(team.globalImageURL);
+      });
       // kada promjenim scrape u vezi global linka za image
 
       cy.contains("PPG").parent().as("ppg-container");
@@ -79,9 +79,11 @@ describe("team page", function () {
       cy.visit(`/team/${team._id}`)
       cy.get("#games-table").should("not.be.visible");
       cy.get("#players-table").should("be.visible");
+      cy.get("#recent-games-table").should("be.visible");
       cy.contains("Games played").click();
       cy.contains("Games played").click();
       cy.contains("Games played").click();
+      cy.get("#recent-games-table").should("not.be.visible");
       cy.get("#players-table").should("not.be.visible");
       cy.get("#games-table").should("be.visible");
       cy.contains("Info").click();

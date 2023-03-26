@@ -1,18 +1,14 @@
-vrijednosti polja za apg, rpg... igraca bude NaN zbog scrapeanja
 
 proxy
-load testing
-API - api management
-TESTS - ui i api
+stress testing
+load balancer, nginx
+API, api management
 continous deployment, cont. delievery, cont. integration, devops
-nginx
 docker?
 
-u playergamestats stavlja int za game id pa fale dvije nule na pocetku
 
 dodati upcoming games za teams
 margin s desne strane infoa na player pageu da bude dinamican kako bi spacing uvijek bio dobar
 random curves za game page
 dodati curves ili slicno na druge stranice
 dodati druge career statistike za igrace (college...)
-ako id pocinje sa nulama script makne sve nule sa pocetka, ali mozda ne uvijek
