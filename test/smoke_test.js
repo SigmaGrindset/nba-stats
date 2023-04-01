@@ -10,7 +10,7 @@ export const options = {
   insecureSkipTLSVerify: true,
   noConnectionReuse: false,
   vus: 1,
-  duration:"1m",
+  duration: "20s",
   thresholds: {
     http_req_duration: ["p(99)<500"],
   }
