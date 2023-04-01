@@ -25,5 +25,5 @@ services:
     volumes:
       - "./test:/test"
     environment:
-      - K6_OUT=influxdb=http://influxdb:8086/k6
+      - --out influxdb=http://influxdb:8086/k6
     command: "version"
