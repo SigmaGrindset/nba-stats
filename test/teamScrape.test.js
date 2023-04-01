@@ -13,7 +13,7 @@ describe("team scrape", () => {
     const links = await getTeamLinks();
     const teamData = await scrapeTeam(links[9]);
     expect(isNaN(teamData.id)).toBeFalsy();
-    expect(typeof teamData.id).toEqual("string");
+    expect(typeof teamData.id).toEqual("number");
     expect(typeof teamData.name).toEqual("string");
     expect(typeof teamData.record).toEqual("string");
     expect(typeof teamData.imageURL).toEqual("string");
