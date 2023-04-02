@@ -2,8 +2,10 @@
   "name": "nba-stats",
   "version": "1.0.0",
   "description": "stats for nba season 2022-23",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
+    "start:prod": "pm2 start processes.json PORT=3000 NODE_ENV=production",
+    "start:dev": "pm2 start processes.json PORT=3000 NODE_ENV=development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
@@ -22,6 +24,7 @@
     "@types/k6": "^0.43.2",
     "axios": "^1.3.2",
     "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
     "cors": "^2.8.5",
     "cypress": "^12.8.1",
     "cypress-wait-until": "^1.7.2",
@@ -43,7 +46,6 @@
     "mongoose": "^6.9.1",
     "mongoose-autopopulate": "^1.0.0",
     "morgan": "^1.10.0",
-    "nba": "^4.15.0",
     "pm2": "^5.3.0",
     "puppeteer": "^19.6.3",
     "reflect-metadata": "^0.1.13",

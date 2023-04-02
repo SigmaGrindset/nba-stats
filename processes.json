@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "script": "src/app.js",
+      "name": "app",
+      "exec_mode": "cluster"
+    }
+  ]
+}
