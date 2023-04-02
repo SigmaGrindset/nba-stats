@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
+const compression = require("compression");
 require("dotenv").config();
 
 const logger = require("./config/logger");
@@ -31,6 +32,7 @@ app.use(morgan("dev"))
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(compression());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

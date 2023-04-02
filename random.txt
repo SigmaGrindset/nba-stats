@@ -1,10 +1,8 @@
 
-proxy
-stress testing
-load balancer, nginx
+load balancer, reverse proxy, nginx
 API, api management
 continous deployment, cont. delievery, cont. integration, devops
-docker?
+docker
 
 
 dodati upcoming games za teams

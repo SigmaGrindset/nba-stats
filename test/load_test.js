@@ -26,8 +26,8 @@ const baseURL = "http://localhost:3000";
 export default () => {
 
   http.batch([
-    ["GET", `${baseURL}`],
-    ["GET", `${baseURL}/teams`],
+    // ["GET", `${baseURL}`],
+    // ["GET", `${baseURL}/teams`],
     ["GET", `${baseURL}/team/1610612738`],
     ["GET", `${baseURL}/player/1628369`],
 
