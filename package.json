@@ -4,8 +4,8 @@
   "description": "stats for nba season 2022-23",
   "main": "src/app.js",
   "scripts": {
-    "start:prod": "pm2 start processes.json PORT=3000 NODE_ENV=production",
-    "start:dev": "pm2 start processes.json PORT=3000 NODE_ENV=development",
+    "start:prod": "pm2 start ecosystem.config.js --env production",
+    "start:dev": "pm2 start ecosystem.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
