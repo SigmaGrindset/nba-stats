@@ -17,4 +17,5 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["pm2-runtime", "ecosystem.config.js"]
+# CMD ["pm2-runtime", "ecosystem.config.js"]
+CMD ["npm", "run", "start:prod"]
