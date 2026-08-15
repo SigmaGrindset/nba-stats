@@ -7,6 +7,12 @@ const teamSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // three-letter tricode (BOS, LAL), used when labelling career stats rows
+  abbreviation: {
+    type: String,
+    required: true,
+    default: "NBA"
+  },
   pageColor: {
     type: String,
     required: true,

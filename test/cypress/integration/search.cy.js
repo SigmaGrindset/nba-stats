@@ -11,10 +11,9 @@ describe("search for player", function () {
     cy.get(".info-text").should("contain.text", "Showing results");
     cy.get(".info-text").should("contain.text", "lebron");
 
-    cy.get(".repr-card").as("player-card");
-    cy.get("@player-card").should("contain.text", "LeBron James");
-    cy.get("@player-card").should("contain.text", "#6");
-    cy.get("@player-card").should("contain.text", "Forward");
+    // jersey numbers and listed positions change from season to season, so match
+    // the player's card by name and assert only what stays true
+    cy.get(".repr-card").contains("LeBron James").should("exist");
   });
 
   it("search team - lakers", function () {

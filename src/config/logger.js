@@ -18,14 +18,19 @@ const logger = winston.createLogger({
     })
     // winston.format.printf(info => `${info.timestamp} [${info.level}]: ${info.message}`),
   ),
-  transports: [
-    new winston.transports.File({ filename: "./logs/error.log", level: "error" }),
-    new winston.transports.File({ filename: "./logs/combined.log" }),
-  ]
+  transports: []
 });
 
-if (process.env.NODE_ENV != "production") {
+// Serverless filesystems are read-only apart from /tmp, so file transports would
+// throw on Vercel. Log to stdout there and let the platform collect it.
+if (process.env.VERCEL) {
   logger.add(new winston.transports.Console({}));
+} else {
+  logger.add(new winston.transports.File({ filename: "./logs/error.log", level: "error" }));
+  logger.add(new winston.transports.File({ filename: "./logs/combined.log" }));
+  if (process.env.NODE_ENV != "production") {
+    logger.add(new winston.transports.Console({}));
+  }
 }
 
 module.exports = logger;

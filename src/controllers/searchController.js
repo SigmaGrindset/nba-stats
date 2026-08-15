@@ -5,11 +5,18 @@ const logger = require("../config/logger");
 
 
 module.exports.searchdata_get = async (req, res) => {
+  // read from the query string: this is a GET route, and its body was dropped
+  // once the app sat behind a proxy
+  const query = req.query.query;
+  if (!query) {
+    return res.status(400).json({ error: "Provide a query parameter." });
+  }
+
   const teams = await Team
     .aggregate()
     .search({
       autocomplete: {
-        query: req.body.query,
+        query,
         path: "name"
       }
     });
@@ -18,7 +25,7 @@ module.exports.searchdata_get = async (req, res) => {
     .aggregate()
     .search({
       autocomplete: {
-        query: req.body.query,
+        query,
         path: "name"
       }
     });

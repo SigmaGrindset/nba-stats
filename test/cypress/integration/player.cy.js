@@ -53,7 +53,13 @@ describe("test player", function () {
         cy.task("careerStatsQuery", { player: player._id }).then(statGroups => {
 
           for (let statGroup of statGroups) {
-            console.log(statGroup)
+            // the view omits a group that has no rows, so a player whose team
+            // missed the playoffs has no Playoffs table to assert against.
+            // Asserting one exists made this test depend on how a particular
+            // season turned out.
+            if (!statGroup.data.length) {
+              continue;
+            }
             cy.contains(statGroup.statsGroupName).parent().within(() => {
               cy.get("tbody tr").then($rows => {
                 $rows.each(rowIndex => {

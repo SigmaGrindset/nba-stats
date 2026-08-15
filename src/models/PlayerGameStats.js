@@ -26,6 +26,12 @@ const playerGameStatsSchema = new mongoose.Schema({
     unique: true,
     required: true,
     autopopulate: true
+  },
+
+  // needed to count games started when deriving career averages
+  started: {
+    type: Boolean,
+    default: false
   }
 });
 

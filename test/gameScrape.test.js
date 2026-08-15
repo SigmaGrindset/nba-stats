@@ -1,64 +1,85 @@
+const {
+  scrapeGame,
+  regularSeasonGameIds,
+  postSeasonGameIds,
+  buildGameId
+} = require("../src/scrape/games");
 
-const { getTeamLinks } = require("../src/scrape/teams.js");
-const { scrapeGame, getGameLinks } = require("../src/scrape/games");
-jest.setTimeout(60 * 1000);
+jest.setTimeout(90 * 1000);
 
+const SEASON = "2025-26";
+
+const STAT_FIELDS = [
+  "min", "fgm", "fga", "fg_pct", "fg3m", "fg3a", "fg3_pct",
+  "ftm", "fta", "ft_pct", "oreb", "dreb", "reb", "ast",
+  "stl", "blk", "to", "pf", "pts", "plus_minus"
+];
+
+describe("game id enumeration", () => {
+
+  test("builds well formed ids for a season", () => {
+    expect(buildGameId(SEASON, "regular", 1)).toEqual("0022500001");
+    expect(buildGameId(SEASON, "regular", 1230)).toEqual("0022501230");
+    // series are numbered from 0, so the Finals are round 4 series 0
+    expect(buildGameId(SEASON, "playoffs", "401")).toEqual("0042500401");
+  });
+
+  test("covers a full regular season", () => {
+    const ids = regularSeasonGameIds(SEASON);
+    expect(ids.length).toEqual(1230);
+    expect(new Set(ids).size).toEqual(1230);
+    ids.forEach(id => expect(id).toMatch(/^00225\d{5}$/));
+  });
+
+  test("postseason candidates shrink each round", () => {
+    const ids = postSeasonGameIds(SEASON);
+    // (8 + 4 + 2 + 1) series * up to 7 games
+    expect(ids.length).toEqual(105);
+    expect(new Set(ids).size).toEqual(ids.length);
+  });
+});
 
 describe("game scrape", () => {
 
-  test("getGameLinks", async () => {
-    const teamLinks = await getTeamLinks();
-    const gameLinks = await getGameLinks(teamLinks[0]);
-
-    expect(gameLinks.length >= 1).toBeTruthy();
-  });
-
-  test("single game", async () => {
-    const teamLinks = await getTeamLinks();
-    const gameLinks = await getGameLinks(teamLinks[0]);
-    const gameData = await scrapeGame(gameLinks[0]);
+  test("returns game metadata and both box scores", async () => {
+    const gameData = await scrapeGame(regularSeasonGameIds(SEASON)[0]);
 
     expect(typeof gameData.id).toEqual("string");
     expect(gameData.attendance).toBeDefined();
     expect(gameData.officials).toBeDefined();
     expect(gameData.location).toBeDefined();
+    expect(gameData.summaryText).toBeDefined();
+    expect(gameData.summaryLocation).toBeDefined();
     expect(gameData.date).toBeDefined();
-    expect(gameData.dateEpoch).toBeDefined();
-    expect(gameData.boxScore).toBeDefined();
+    expect(typeof gameData.dateEpoch).toEqual("number");
+    expect(isNaN(gameData.dateEpoch)).toBe(false);
+
     const boxScore = gameData.boxScore;
     expect(boxScore.length).toEqual(2);
-    const teamBoxScore = boxScore[0];
-    expect(typeof teamBoxScore.teamId).toEqual("number");
-    expect(teamBoxScore.playerStats.length >= 3).toBeTruthy();
-    teamBoxScore.playerStats.forEach(player => {
-      if (player.status == undefined) {
-        // ako ima neku statistiku, odnosno ako je igrao
-        expect(player.player).toBeDefined();
-        expect(player.min).toBeDefined();
-        expect(player.fgm).toBeDefined();
-        expect(player.fga).toBeDefined();
-        expect(player.fg_pct).toBeDefined();
-        expect(player.fg3m).toBeDefined();
-        expect(player.fg3a).toBeDefined();
-        expect(player.fg3_pct).toBeDefined();
-        expect(player.ftm).toBeDefined();
-        expect(player.fta).toBeDefined();
-        expect(player.ft_pct).toBeDefined();
-        expect(player.oreb).toBeDefined();
-        expect(player.dreb).toBeDefined();
-        expect(player.reb).toBeDefined();
-        expect(player.ast).toBeDefined();
-        expect(player.stl).toBeDefined();
-        expect(player.blk).toBeDefined();
-        expect(player.to).toBeDefined();
-        expect(player.pf).toBeDefined();
-        expect(player.pts).toBeDefined();
-        expect(player.plus_minus).toBeDefined();
 
-      } else {
-        expect(typeof player.player).toEqual("number");
-        expect(typeof player.status).toEqual("string");
-      }
+    boxScore.forEach(teamBoxScore => {
+      expect(typeof teamBoxScore.teamId).toEqual("number");
+      expect(teamBoxScore.playerStats.length >= 3).toBeTruthy();
+
+      // db.js reads the team totals off the end of the list
+      const totals = teamBoxScore.playerStats.slice(-1)[0];
+      expect(totals.player).toEqual("totals");
+      expect(typeof totals.pts).toEqual("number");
+
+      teamBoxScore.playerStats.forEach(player => {
+        expect(player.player).toBeDefined();
+        if (player.status === undefined) {
+          STAT_FIELDS.forEach(field => expect(player[field]).toBeDefined());
+        } else {
+          expect(typeof player.player).toEqual("number");
+          expect(typeof player.status).toEqual("string");
+        }
+      });
     });
+  });
+
+  test("rejects an id that never existed, without retrying", async () => {
+    // one past the end of the regular season
+    await expect(scrapeGame("0022501231")).rejects.toMatchObject({ permanent: true });
   });
 });

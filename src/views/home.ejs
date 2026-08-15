@@ -19,10 +19,10 @@
 
     <div class="hero-section">
       <div class="left">
-        <div class="heading">Search for any game Lorem ipsum dolor sit amet.</div>
+        <div class="heading">Every team, every player, every box score.</div>
         <div class="desc">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla culpa sequi nam officiis quod
-          reiciendis.
+          Browse all 30 NBA franchises, their current rosters and season averages, and the full
+          box score of every game played this season.
         </div>
         <form id="search">
 
@@ -46,26 +46,7 @@
     </div>
   </div>
 
+  <script src="/js/search.js"></script>
 </body>
 
 </html>
-
-<script>
-
-  const form = document.querySelector("#search");
-  const input = form.querySelector("input");
-  const search = form.querySelector("#search-icon");
-  search.addEventListener("click", (event) => {
-    if (input.value != "") {
-      document.location.pathname = `/search/${input.value}`
-    }
-  });
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (input.value != "") {
-      document.location.pathname = `/search/${input.value}`
-    }
-
-  });
-
-</script>

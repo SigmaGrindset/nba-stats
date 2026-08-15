@@ -116,15 +116,22 @@ const playerCareerStatsSchema = new mongoose.Schema({
 
 playerCareerStatsSchema.statics.handlePlayerStats = async function (stats, playerId) {
   // stats je {type, seasons:[]}
-  if (stats) {
-    stats.seasons.forEach(async (season) => {
-      const existingSeasonStats = await this.findOne({ type: stats.type, player: playerId, season_id: season.season_id, team: season.team });
-      if (!existingSeasonStats) {
-        const newStats = await this.create({ ...season, player: playerId, type: stats.type });
-        return newStats;
-      }
-      return existingSeasonStats
+  if (!stats) {
+    return;
+  }
+  // sequential await, not forEach(async): the callback form fired every insert
+  // at once without awaiting, so duplicates raced the unique index below and
+  // the rejections escaped the caller's try/catch.
+  for (const season of stats.seasons) {
+    const existingSeasonStats = await this.findOne({
+      type: stats.type,
+      player: playerId,
+      season_id: season.season_id,
+      team: season.team
     });
+    if (!existingSeasonStats) {
+      await this.create({ ...season, player: playerId, type: stats.type });
+    }
   }
 }
 

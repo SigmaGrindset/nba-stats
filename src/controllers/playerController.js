@@ -8,20 +8,23 @@ const TeamCurrentRoster = require("../models/TeamCurrentRoster");
 module.exports.playerdetails_get = async (req, res) => {
   const playerId = req.params.playerId;
   const player = await Player.findOne({ _id: playerId });
+
+  // the null check used to come after player._id was already dereferenced,
+  // so an unknown id threw a TypeError instead of rendering the 404 page
+  if (!player) {
+    return res.status(404).render("errors/error.ejs", {
+      error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." }
+    });
+  }
+
   const regSeasonStats = await PlayerCareerStats.find({ type: "Career Regular Season Stats", player: player._id });
   const playoffsStats = await PlayerCareerStats.find({ type: "Career Playoffs Stats", player: player._id });
-  const gamesStats = await PlayerGameStats.find({player:playerId}).limit(5);
   let team = await TeamCurrentRoster.findOne({ player: player._id });
   if (team) {
     team = team.team;
   };
   const stats = [regSeasonStats, playoffsStats];
 
-  if (player) {
-    res.render("player_details.ejs", { player, stats, team });
-  } else {
-    res.render("errors/error.ejs", { error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." } })
-
-  }
+  return res.render("player_details.ejs", { player, stats, team });
 }
 

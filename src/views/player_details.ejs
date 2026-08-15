@@ -35,12 +35,15 @@
         <div class="main-info">
 
           <div class="name"><%= player.name %></div>
-          <% if (team) { %>
-          <div class="desc"><%= team.name %> · <%= player.number %> · <%= player.position %></div>
-          <% } else { %>
-          <div class="desc"><%= player.number %> · <%= player.position %></div>
-          <%}  %>
+          <%# nba.com has no jersey number for around one player in seven, and no
+              listed position for a few, so joining only the parts that exist
+              avoids rendering a dangling separator %>
+          <% const descParts = [team && team.name, player.number, player.position].filter(Boolean); %>
+          <div class="desc"><%= descParts.join(" · ") %></div>
           <div class="main-stats">
+            <%# rookies and two-way players have no season averages yet, so the
+                whole block has to tolerate stats being absent %>
+            <% if (player.stats) { %>
             <% if (player.stats.ppg) { %>
             <div class="stat">
               <div class="stat-name">PPG</div>
@@ -65,6 +68,7 @@
               <div class="stat-value"><%=player.stats.pie%></div>
             </div>
 
+            <% } %>
             <% } %>
 
           </div>

@@ -15,7 +15,13 @@ const BoxScoreStats = require("../../../src/models/BoxScoreStats");
 const PlayerGameStats = require("../../../src/models/PlayerGameStats");
 const PlayerCareerStats = require("../../../src/models/PlayerCareerStats");
 
-mongoose.connect("***REMOVED***")
+require("dotenv").config();
+
+if (!process.env.MONGO_URI) {
+  throw new Error("MONGO_URI is not set. Copy .env.example to .env and fill it in.");
+}
+
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log(`connected to db for tests`);
   })

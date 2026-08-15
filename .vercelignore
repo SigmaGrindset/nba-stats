@@ -1,0 +1,13 @@
+node_modules
+logs
+test
+grafana_dashboard.json
+Dockerfile
+Dockerfile.grafana
+Dockerfile.influxdb
+docker-compose.yml
+cypress.config.js
+mongo_connect.sh
+random.txt
+etc
+.env

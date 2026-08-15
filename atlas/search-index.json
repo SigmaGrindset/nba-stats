@@ -1,0 +1,25 @@
+{
+  "_comment": [
+    "Atlas Search index definition used by src/controllers/searchController.js.",
+    "Create this index named exactly 'default' on BOTH the 'teams' and 'players'",
+    "collections - $search resolves to the 'default' index when no index name is",
+    "given, and the search page queries both collections the same way.",
+    "",
+    "Atlas UI: Database > Search > Create Search Index > JSON Editor.",
+    "Or: mongosh --eval 'db.teams.createSearchIndex(\"default\", <this without _comment>)'",
+    "",
+    "Without these indexes the search route errors while the rest of the site works."
+  ],
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "name": {
+        "type": "autocomplete",
+        "tokenization": "edgeGram",
+        "minGrams": 2,
+        "maxGrams": 15,
+        "foldDiacritics": true
+      }
+    }
+  }
+}

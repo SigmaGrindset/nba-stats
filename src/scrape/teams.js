@@ -1,11 +1,10 @@
-const jsdom = require("jsdom")
-const { JSDOM } = jsdom
 const fs = require("fs").promises;
-const axios = require("axios");
-const { axiosInstance, BASEURL } = require("./main");
-const { getPlayerLinks } = require("./players");
-const { transformLabel, loadDynamicPage, scrapeUntilSuccessful } = require("../utils/scrape_utils");
+const path = require("path");
+const { fetchNextData } = require("./main");
+const { ordinal, scrapeUntilSuccessful } = require("../utils/scrape_utils");
 const logger = require("../config/logger");
+
+const TEAM_LINKS_PATH = path.join(__dirname, "..", "..", "team_links.json");
 
 const teamColors = {
   "ATL": "#e03a3e",
@@ -40,142 +39,114 @@ const teamColors = {
   "WAS": "#002b5c"
 };
 
+// Team ids are permanent, so the checked-in link list stays valid across seasons.
 async function getTeamLinks() {
-  // daje linkove svih timova
-  const data = JSON.parse(await fs.readFile("./team_links.json"));
+  const data = JSON.parse(await fs.readFile(TEAM_LINKS_PATH));
   if (data.links.length !== 30) {
-    // ako nema sve timove onda treb scrapeati
-    const links = await scrapeTeamLinks();
-    data.links = links;
-    await fs.writeFile("./team_links.json", JSON.stringify(data), err => {
-      if (err) {
-        logger.error(err);
-      }
-    });
+    throw new Error(`team_links.json has ${data.links.length} links, expected 30`);
   }
-  return data.links
+  return data.links;
 }
 
+function teamLogoURL(teamId, variant) {
+  return `https://cdn.nba.com/logos/nba/${teamId}/${variant}/D/logo.svg`;
+}
 
-async function scrapeTeamLinks() {
-  // uzima linkove svih timova sa stranice
-  const res = await axios.get("https://www.nba.com/teams");
-  const dom = new JSDOM(res.data);
-  const teamLinksContainer = dom.window.document.querySelectorAll(".TeamFigure_tfLinks__gwWFj");
-  const teamLinks = []
-  teamLinksContainer.forEach(async container => {
-    let teamLink = container.querySelector("a").getAttribute("href"); // uvijek je prvi link za profile
-    if (teamLink.slice(-1) == "/") {
-      teamLinks.push(teamLink.slice(0, -1));
-    } else {
-      teamLinks.push(teamLink);
+// The info cards in the view render rows as [label, ...cells], and join any cell
+// that is itself an array with ", ". These builders produce that shape.
+function buildCoaching(coaches) {
+  const byType = {};
+  (coaches || []).forEach(coach => {
+    const type = coach.COACH_TYPE || "Coach";
+    if (!byType[type]) {
+      byType[type] = [];
     }
+    byType[type].push(coach.COACH_NAME);
   });
-  return teamLinks;
+  return Object.entries(byType).map(([type, names]) => [type, names]);
 }
 
-
-
-function scrapeInfoBox(infoBox) {
-  const blockContent = infoBox.querySelector(".Block_blockContent__6iJ_n");
-  const rows = blockContent.querySelectorAll("div").item(1).querySelectorAll("div");
-  const data = [];
-  rows.forEach(row => {
-    const name = row.querySelector("h3").textContent.replaceAll("\n", "").replaceAll("&nbsp;", "").replaceAll(/\u00a0/g, '');
-    const valuesArr = [];
-    const values = row.querySelectorAll("li");
-    values.forEach(value => {
-      valuesArr.push(value.textContent);
-    });
-    data.push([name, valuesArr]);
-  });
-
-  return data;
+function buildAchievements(awards) {
+  const groups = [
+    ["NBA Championships", (awards || {}).champ],
+    ["Conference Titles", (awards || {}).conf],
+    ["Division Titles", (awards || {}).div],
+    ["NBA Cup", (awards || {}).commCupChamp]
+  ];
+  return groups
+    .filter(([, list]) => list && list.length)
+    .map(([label, list]) => [label, list.map(a => String(a.YEARAWARDED))]);
 }
 
+function buildBackground(background) {
+  const labels = {
+    YEARFOUNDED: "Founded",
+    CITY: "City",
+    ARENA: "Arena",
+    ARENACAPACITY: "Capacity",
+    OWNER: "Owner",
+    GENERALMANAGER: "General Manager",
+    HEADCOACH: "Head Coach",
+    DLEAGUEAFFILIATION: "G League Affiliate"
+  };
+  return Object.entries(labels)
+    .filter(([key]) => (background || {})[key])
+    .map(([key, label]) => [label, String(background[key])]);
+}
+
+// The old "Records" card scraped a franchise-leaders table. That data is only
+// available from stats.nba.com, which rate-limits aggressively, so the card now
+// shows retired numbers - which the team page already ships in its JSON.
+function buildRetired(retired) {
+  return (retired || [])
+    .filter(r => r.PLAYER)
+    .map(r => [r.PLAYER, r.JERSEY ? `#${r.JERSEY}` : "-", r.SEASONSWITHTEAM || "-"]);
+}
+
+function buildRanks(ranks) {
+  const r = ranks || {};
+  return {
+    ppg: { placement: ordinal(r.PTS_RANK), value: r.PTS_PG },
+    apg: { placement: ordinal(r.AST_RANK), value: r.AST_PG },
+    rpg: { placement: ordinal(r.REB_RANK), value: r.REB_PG },
+    oppg: { placement: ordinal(r.OPP_PTS_RANK), value: r.OPP_PTS_PG }
+  };
+}
+
+function conferenceName(conference) {
+  if (conference === "East") return "Eastern Conference";
+  if (conference === "West") return "Western Conference";
+  return conference || "";
+}
 
 async function scrapeTeam(link) {
-  const res = await axiosInstance.get(link);
-  const dom = new JSDOM(res.data);
-  const document = dom.window.document;
-
-  // general
-  const teamFollowBtn = document.querySelector(".TeamFollowButton_follow__bJdBf").querySelector("button");
-  const teamShortText = teamFollowBtn.getAttribute("data-content");
-  const pageColor = teamColors[teamShortText];
-  const imageURL = document.querySelector(".TeamHeader_teamLogoBW__s7vYd").getAttribute("src");
-  const globalImageURL = imageURL.replace("primary", "global");
-
-  const id = parseInt(link.split("/").slice(-2, -1)[0]);
-  const name = document.querySelector(".TeamHeader_name__MmHlP").textContent;
-  const recordContainers = document.querySelector(".TeamHeader_record__wzofp").querySelectorAll("span")
-  const record = recordContainers.item(0).textContent;
-  const placementText = recordContainers.item(1).textContent.replace("|", "").replace(" ", "").replace(" ", "");
-
-  // info cards
-  const coachingContainer = document.querySelector(".TeamProfile_sectionCoaches__e66bL");
-  const coaching = scrapeInfoBox(coachingContainer);
-
-  const triple = document.querySelectorAll(".TeamProfile_sectionTriple__kKQEx");
-  const achievementsContainer = triple.item(1);
-  const achievements = scrapeInfoBox(achievementsContainer);
-
-  const records = [];
-  const allTimeRecordsContainer = triple.item(0);
-  const recordsRows = allTimeRecordsContainer.querySelector("table").querySelectorAll("tr");
-  recordsRows.forEach(row => {
-    const statName = row.querySelector(".TeamRecords_text__sr_pn").textContent;
-    const player = row.querySelector(".TeamRecords_player__1qlhr").textContent;
-    const value = parseInt(row.querySelector(".TeamRecords_stat__R8MJw").textContent);
-    records.push([statName, player, value]);
-  });
-
-  const background = [];
-  const backgroundContainer = document.querySelector(".TeamBackground_list__y1CMX");
-  const names = backgroundContainer.querySelectorAll("dt");
-  const values = backgroundContainer.querySelectorAll("dd");
-  for (let i = 0; i < names.length; i++) {
-    background.push([names.item(i).textContent, values.item(i).textContent]);
+  const pageProps = await fetchNextData(link);
+  const team = pageProps.team;
+  if (!team || !team.info) {
+    throw new Error(`no team data at ${link}`);
   }
 
-  // ranks
-  const ranksData = {};
-  const ranksContainer = document.querySelectorAll(".TeamHeader_rank__lMnzF");
-  ranksContainer.forEach(rankConainer => {
-    const label = rankConainer.querySelector(".TeamHeader_rankLabel__5mPf9").textContent;
-    const placement = rankConainer.querySelector(".TeamHeader_rankOrdinal__AaXPR").textContent;
-    const value = parseFloat(rankConainer.querySelector(".TeamHeader_rankValue__ZGDCq").textContent);
-    ranksData[transformLabel(label)] = { placement, value };
-  });
+  const info = team.info;
+  const id = info.TEAM_ID;
 
-  // players
-  const playerIds = []
-  const playerLinks = await getPlayerLinks(link);
-  playerLinks.forEach(async link => {
-    const playerId = parseInt(link.split("/").slice(-3));
-    playerIds.push(playerId);
-  });
-
-  const teamData = {
+  return {
     id,
-    name,
-    record,
-    players: playerIds,
-    placementText,
-    imageURL,
-    globalImageURL,
-    pageColor,
-    ranksData,
-    coaching,
-    achievements,
-    background,
-    records
+    name: `${info.TEAM_CITY} ${info.TEAM_NAME}`,
+    abbreviation: info.TEAM_ABBREVIATION,
+    record: `${info.W}-${info.L}`,
+    placementText: `${ordinal(info.CONF_RANK)} in ${conferenceName(info.TEAM_CONFERENCE)}`,
+    players: (team.roster || []).map(p => p.PLAYER_ID),
+    imageURL: teamLogoURL(id, "primary"),
+    globalImageURL: teamLogoURL(id, "global"),
+    pageColor: teamColors[info.TEAM_ABBREVIATION] || "#000",
+    ranksData: buildRanks(team.ranks),
+    coaching: buildCoaching(team.coaches),
+    achievements: buildAchievements(team.awards),
+    background: buildBackground(team.background),
+    records: buildRetired(team.retired)
   };
-  return teamData;
 }
-
-// scrapeTeam("/team/1610612738/celtics").then(data => { console.log(data) });
-
 
 module.exports.getTeamLinks = scrapeUntilSuccessful(getTeamLinks);
 module.exports.scrapeTeam = scrapeUntilSuccessful(scrapeTeam);
+module.exports.teamColors = teamColors;

@@ -3,115 +3,121 @@ const Team = require("../models/Team");
 const Game = require("../models/Game");
 const TeamCurrentRoster = require("../models/TeamCurrentRoster");
 const PlayerCareerStats = require("../models/PlayerCareerStats");
+const PlayerGameStats = require("../models/PlayerGameStats");
 const logger = require("../config/logger");
+
+// These endpoints read their parameters from the query string. They previously
+// read req.body on GET requests, which proxies and CDNs are free to discard -
+// so the API worked locally and returned "please provide request body" once
+// deployed behind one.
+
+function notFound(res, message) {
+  return res.status(404).json({ error: message });
+}
+
+function serverError(res, err) {
+  logger.error(err);
+  return res.status(500).json({ error: "Internal server error." });
+}
 
 module.exports.player_get = async function (req, res) {
   try {
+    const { playerId, name, number, teamId } = req.query;
 
-    if (req.body.playerId) {
-      const player = await Player.findOne({ _id: req.body.playerId });
-      if (player) {
-        return res.json({ player });
-      } else {
-        return res.json({ error: "Error 404, player not found." });
-      }
-    } else if (req.body.name) {
-      const players = await Player.find({ name: req.body.name });
-      return res.json({
-        players
-      });
-    } else if (req.body.number) {
-      const players = await Player.find({ number: req.body.number });
-      return res.json({
-        players
-      });
-    } else if (req.body.teamId) {
-      const playerRosters = await TeamCurrentRoster.find({ team: req.body.teamId });
-      const players = [];
-      playerRosters.forEach(roster => {
-        players.push(roster.player);
-      });
-      return res.json({
-        players
-      });
+    if (playerId) {
+      const player = await Player.findOne({ _id: playerId });
+      return player ? res.json({ player }) : notFound(res, "Player not found.");
     }
+    if (name) {
+      return res.json({ players: await Player.find({ name }) });
+    }
+    if (number) {
+      return res.json({ players: await Player.find({ number }) });
+    }
+    if (teamId) {
+      const playerRosters = await TeamCurrentRoster.find({ team: teamId });
+      return res.json({ players: playerRosters.map(roster => roster.player) });
+    }
+
+    return res.status(400).json({
+      error: "Provide one of: playerId, name, number, teamId."
+    });
   } catch (err) {
-    logger.error(err);
-    return res.json({ error: "400 error" });
+    return serverError(res, err);
   }
 }
 
 module.exports.game_get = async function (req, res) {
   try {
+    const { gameId, teamId } = req.query;
 
-    if (req.body.gameId) {
-      const game = await Game.findOne({ _id: req.body.gameId });
-      if (game) {
-        return res.json(game);
-      } else {
-        return res.json({ error: "Error 404, game not found." })
-      }
-    } else if (req.body.teamId) {
-      const games = [];
-      const homeGames = await Game.find({ homeTeam: req.body.teamId });
-      const awayGames = await Game.find({ awayTeam: req.body.teamId });
-      games.push(...homeGames);
-      games.push(...awayGames);
-      return res.json(games)
+    if (gameId) {
+      const game = await Game.findOne({ _id: gameId });
+      return game ? res.json(game) : notFound(res, "Game not found.");
     }
+    if (teamId) {
+      const games = await Game.find({
+        $or: [{ homeTeam: teamId }, { awayTeam: teamId }]
+      }).sort({ dateEpoch: 1 });
+      return res.json(games);
+    }
+
+    return res.status(400).json({ error: "Provide one of: gameId, teamId." });
   } catch (err) {
-    logger.error(err);
-    return res.json({ error: "400 error" });
+    return serverError(res, err);
   }
 }
-
 
 module.exports.team_get = async function (req, res) {
   try {
+    const { teamId, name } = req.query;
 
-    if (req.body.teamId) {
-      const team = await Team.findOne({ _id: req.body.teamId });
-      if (team) {
-        return res.json(team);
-      } else {
-        return res.json({ error: "Error 404, team not found" })
-      }
-    } else if (req.body.name) {
-      const team = await Team.findOne({ name: req.body.name });
-      if (team) {
-        return res.json(team);
-      } else {
-        return res.json({ error: "Error 404, team not found" });
-      }
+    if (teamId) {
+      const team = await Team.findOne({ _id: teamId });
+      return team ? res.json(team) : notFound(res, "Team not found.");
     }
+    if (name) {
+      const team = await Team.findOne({ name });
+      return team ? res.json(team) : notFound(res, "Team not found.");
+    }
+
+    return res.status(400).json({ error: "Provide one of: teamId, name." });
   } catch (err) {
-    logger.error(err);
-    return res.json({ error: "400 error" });
+    return serverError(res, err);
   }
 }
 
-
 module.exports.playercareerstats_get = async function (req, res) {
   try {
-    if (req.body.playerId) {
-      const stats = await PlayerCareerStats.find({ player: req.body.playerId });
-      return res.json(stats)
+    const { playerId } = req.query;
+    if (!playerId) {
+      return res.status(400).json({ error: "Provide playerId." });
     }
+    return res.json(await PlayerCareerStats.find({ player: playerId }));
   } catch (err) {
-    logger.error(err);
-    return res.json({ error: "400 error" });
+    return serverError(res, err);
   }
 }
 
 module.exports.playergamestats_get = async function (req, res) {
   try {
-    // player game team
-    const playerQuery = await Player.find({ player: req.body.playerId });
-    const teamQuery = await Player.find({ team: req.body.teamId });
-    const gameQuery = await Player.find({ game: req.body.gameId });
+    const { playerId, teamId, gameId } = req.query;
 
+    // previously queried the Player model on fields it doesn't have, and never
+    // sent a response - so the request hung until the client timed out
+    const query = {};
+    if (playerId) query.player = playerId;
+    if (teamId) query.team = teamId;
+    if (gameId) query.game = gameId;
+
+    if (Object.keys(query).length === 0) {
+      return res.status(400).json({
+        error: "Provide at least one of: playerId, teamId, gameId."
+      });
+    }
+
+    return res.json(await PlayerGameStats.find(query));
   } catch (err) {
-    logger.error(err);
-    return res.json({ error: "400 error" });
+    return serverError(res, err);
   }
 }

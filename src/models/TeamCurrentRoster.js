@@ -22,7 +22,10 @@ teamCurrentRosterSchema.statics.assignPlayer = async function (playerId, teamId)
   const existingTeam = await this.findOne({ player: playerId });
   if (existingTeam) {
     if (existingTeam.team != teamId) {
-      await this.deleteOne({ player: playerId, team: teamId });
+      // filter on the player alone: the stale row holds the *old* team, so
+      // filtering by the new teamId matched nothing and the insert below then
+      // tripped the unique index on player.
+      await this.deleteOne({ player: playerId });
       const newTeam = await this.create({ player: playerId, team: teamId });
       return newTeam
     } else {

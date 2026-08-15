@@ -1,188 +1,200 @@
-const jsdom = require("jsdom")
-const { JSDOM } = jsdom
-const { axiosInstance, BASEURL } = require("./main");
-const { mergeColumnRow, transformLabel, loadDynamicPage, scrapeUntilSuccessful } = require("../utils/scrape_utils");
-
-
-
-async function getPlayerLinks(teamLink) {
-  // vraca linkove svih igraca iz nekoga tima
-  const res = await axiosInstance.get(teamLink);
-  const dom = new JSDOM(res.data);
-  const document = dom.window.document;
-
-  const links = [];
-  const playersTable = document.querySelector(".MockStatsTable_statsTable__V_Skx").querySelector("table");
-  const playerLinksContainers = playersTable.querySelector("tbody").querySelectorAll(".primary.text");
-  playerLinksContainers.forEach(container => {
-    const link = container.querySelector("a").getAttribute("href");
-    links.push(link);
-  });
-  return links;
-}
-
-
-
-
-
-async function scrapePlayer(link) {
-  const res = await axiosInstance.get(link);
-  const dom = new JSDOM(res.data);
-  const document = dom.window.document;
-
-  if (res.request.res.responseUrl == "https://www.nba.com/players") {
-    // redirectalo nas je na /players jer stranica za igraca ne postoji
-    return {};
-  }
-  const playerId = parseInt(link.split("/").slice(-2, -1));
-  const headerInfo = document.querySelector(".PlayerSummary_mainInnerInfo__jv3LO");
-  let number;
-  let position;
-  if (headerInfo) {
-    // retired igraci nemaju headerInfo
-    const headerInfoArr = headerInfo.textContent.split("|");
-    number = headerInfoArr[1].trim();
-    if (headerInfoArr[2]) {
-      // nekim igracima ne pise broj
-      position = headerInfoArr[2].trim();
-    }
-  }
-  const playerNameContainers = document.querySelectorAll(".PlayerSummary_playerNameText___MhqC");
-  const playerName = playerNameContainers.item(0).textContent.concat(" ", playerNameContainers.item(1).textContent).replaceAll("\n", "");
-
-  const statsContainers = document.querySelectorAll(".PlayerSummary_playerStat__rmEOP");
-  const stats = {};
-  statsContainers.forEach(container => {
-    const label = transformLabel(container.querySelector(".PlayerSummary_playerStatLabel__I3TO3").textContent);
-    const value = parseFloat(container.querySelector(".PlayerSummary_playerStatValue___EDg_").textContent);
-    const stat = {};
-    stats[label] = value;
-  });
-
-  const playerImageURL = document.querySelector(".PlayerSummary_playerImage__sysif").getAttribute("src");
-
-  const playerInfo = {};
-  const playerInfoMainContainer = document.querySelector(".PlayerSummary_hw__HNuGb");
-  const playerInfoContainers = playerInfoMainContainer.querySelectorAll(".PlayerSummary_playerInfo__om2G4");
-  playerInfoContainers.forEach(container => {
-    const label = transformLabel(container.querySelector(".PlayerSummary_playerInfoLabel__hb5fs").textContent);
-    const value = container.querySelector(".PlayerSummary_playerInfoValue__JS8_v").textContent;
-    playerInfo[label] = value;
-  });
-
-
-  const playerData = {
-    id: playerId,
-    name: playerName,
-    imageURL: playerImageURL,
-    number, position, stats, ...playerInfo
-  };
-  return playerData;
-}
-
-
+const { fetchNextData, fetchStatsResultSet } = require("./main");
+const { scrapeUntilSuccessful } = require("../utils/scrape_utils");
 
 function createLinkFromPlayerId(playerId) {
-  return `/player/${playerId}/`
+  return `/player/${playerId}/`;
 }
 
-
-async function getPlayerStatsLink(settings) {
-  let profileDocument;
-  if (settings.playerId) {
-    return `/stats/player/${(settings.playerId.toString())}/career`;
-  }
-  else if (settings.profileLink) {
-    const res = await axiosInstance.get(settings.profileLink);
-    const profileDom = new JSDOM(res.data);
-    profileDocument = profileDom.window.document;
-  }
-
-  const viewMode = profileDocument.querySelector(".InnerNavTabs_list__tIFRN");
-  const statsButton = viewMode.querySelectorAll(".InnerNavTab_tab__bs7aN").item(1);
-  const statsLink = statsButton.querySelector("a").getAttribute("href");
-
-
-  const statsRes = await axiosInstance.get(statsLink);
-  const statsDom = new JSDOM(statsRes.data);
-  const statsDocument = statsDom.window.document;
-
-  const optionList = statsDocument.querySelector(".StatsQuickNavSelector_list__nb3l1").querySelectorAll("li");
-  const careerStatsLink = optionList.item(2).querySelector("a").getAttribute("href");
-  // drugi li je za career stats
-  return careerStatsLink;
+function headshotURL(playerId) {
+  return `https://cdn.nba.com/headshots/nba/latest/1040x760/${playerId}.png`;
 }
 
+// nba.com sends birthdates without a timezone ("1998-03-03T00:00:00"), which
+// JS parses as local midnight. Reading that back as UTC shifts the date a day
+// earlier, so pin it to UTC explicitly.
+function parseUTC(dateString) {
+  if (!dateString) {
+    return null;
+  }
+  const normalized = /(Z|[+-]\d{2}:?\d{2})$/.test(dateString)
+    ? dateString
+    : `${dateString}Z`;
+  const date = new Date(normalized);
+  return isNaN(date.getTime()) ? null : date;
+}
 
-async function scrapePlayerStatsTable(table) {
-  const theadRows = table.querySelector("thead").querySelectorAll("tr")
-  const columns = theadRows.item(1).querySelectorAll("th");
-  const tableName = theadRows.item(0).querySelector("th").textContent;
+function formatBirthdate(birthdate) {
+  const date = parseUTC(birthdate);
+  if (!date) {
+    return undefined;
+  }
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  });
+}
 
-  const columnNames = [];
-  const stats = {
-    type: tableName,
-    seasons: []
+function ageFromBirthdate(birthdate) {
+  const born = parseUTC(birthdate);
+  if (!born) {
+    return undefined;
+  }
+  const now = new Date();
+  let age = now.getUTCFullYear() - born.getUTCFullYear();
+  const monthDiff = now.getUTCMonth() - born.getUTCMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getUTCDate() < born.getUTCDate())) {
+    age -= 1;
+  }
+  return String(age);
+}
+
+// nba.com leaves fields blank for fringe roster players, and sometimes sends the
+// literal string "null" rather than an empty one - which would otherwise be
+// stored and rendered verbatim. Returning undefined lets the Player model apply
+// its "Unknown" defaults instead.
+function cleanValue(value) {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+  const text = String(value).trim();
+  if (!text || text.toLowerCase() === "null" || text.toLowerCase() === "undefined") {
+    return undefined;
+  }
+  return text;
+}
+
+function formatDraft(info) {
+  if (!info.DRAFT_YEAR || info.DRAFT_YEAR === "Undrafted") {
+    return "Undrafted";
+  }
+  return `${info.DRAFT_YEAR} Rd ${info.DRAFT_ROUND} Pick ${info.DRAFT_NUMBER}`;
+}
+
+function formatExperience(seasonExp) {
+  if (seasonExp === undefined || seasonExp === null) {
+    return undefined;
+  }
+  return seasonExp === 0 ? "Rookie" : String(seasonExp);
+}
+
+// The Player model stores these as strings and only accepts a stats subdocument
+// when ppg/rpg/apg are all present, so a player with no recorded season is
+// stored without one rather than failing validation.
+function buildStats(stats) {
+  if (!stats || stats.PTS === undefined || stats.REB === undefined || stats.AST === undefined) {
+    return undefined;
+  }
+  const built = {
+    ppg: String(stats.PTS),
+    rpg: String(stats.REB),
+    apg: String(stats.AST)
   };
+  if (stats.PIE !== undefined && stats.PIE !== null) {
+    built.pie = String(stats.PIE);
+  }
+  return built;
+}
 
-  columns.forEach(column => {
-    const columnName = column.getAttribute("field");
-    columnNames.push(transformLabel(columnName));
-  });
+async function scrapePlayer(playerId) {
+  const pageProps = await fetchNextData(createLinkFromPlayerId(playerId));
+  const player = pageProps.player;
 
+  if (!player || !player.info || !player.info.PERSON_ID) {
+    // nba.com redirects unknown ids to the players index
+    return {};
+  }
 
-  const rows = table.querySelector("tbody").querySelectorAll("tr");
-  rows.forEach(row => {
-    const rowStats = [];
-    const cells = row.querySelectorAll("td");
-    cells.forEach(cell => {
-      let cellValue = cell.textContent;
-      if (!cellValue.includes("-")) {
-        // season je oblika 2018-19
-        if (!isNaN(parseFloat(cellValue))) {
-          cellValue = parseFloat(cellValue);
-        }
-      }
-      rowStats.push(cellValue);
-    });
+  const info = player.info;
 
-    const rowStatsObj = mergeColumnRow(columnNames, rowStats);
-    stats.seasons.push(rowStatsObj);
-  });
+  return {
+    id: info.PERSON_ID,
+    name: info.DISPLAY_FIRST_LAST,
+    imageURL: headshotURL(info.PERSON_ID),
+    // the views render this verbatim, and the original scraper captured it with
+    // the "#" already attached
+    number: info.JERSEY !== undefined && cleanValue(info.JERSEY) !== undefined
+      ? `#${cleanValue(info.JERSEY)}`
+      : undefined,
+    position: cleanValue(info.POSITION),
+    height: cleanValue(info.HEIGHT),
+    weight: cleanValue(info.WEIGHT),
+    country: cleanValue(info.COUNTRY),
+    last_attended: cleanValue(info.SCHOOL) || cleanValue(info.LAST_AFFILIATION),
+    birthdate: formatBirthdate(info.BIRTHDATE),
+    draft: formatDraft(info),
+    experience: formatExperience(info.SEASON_EXP),
+    age: ageFromBirthdate(info.BIRTHDATE),
+    stats: buildStats(player.stats)
+  };
+}
+
+// PlayerCareerStats.handlePlayerStats expects { type, seasons: [...] } where each
+// season's keys already match the model's columns. stats.nba.com returns exactly
+// those columns, so lowercasing the headers is the whole transformation.
+const CAREER_TYPES = {
+  regSeason: {
+    resultSet: "SeasonTotalsRegularSeason",
+    type: "Career Regular Season Stats"
+  },
+  playoffs: {
+    resultSet: "SeasonTotalsPostSeason",
+    type: "Career Playoffs Stats"
+  }
+};
+
+function toSeasonRows(rows) {
+  return rows.map(row => ({
+    season_id: row.season_id,
+    team: row.team_abbreviation,
+    player_age: row.player_age,
+    gp: row.gp,
+    gs: row.gs,
+    min: row.min,
+    pts: row.pts,
+    fgm: row.fgm,
+    fga: row.fga,
+    fg_pct: row.fg_pct,
+    fg3m: row.fg3m,
+    fg3a: row.fg3a,
+    fg3_pct: row.fg3_pct,
+    ftm: row.ftm,
+    fta: row.fta,
+    ft_pct: row.ft_pct,
+    oreb: row.oreb,
+    dreb: row.dreb,
+    reb: row.reb,
+    ast: row.ast,
+    stl: row.stl,
+    blk: row.blk,
+    tov: row.tov,
+    pf: row.pf
+  }));
+}
+
+async function scrapePlayerStats(playerId) {
+  const stats = { regSeason: undefined, playoffs: undefined };
+
+  for (const [key, config] of Object.entries(CAREER_TYPES)) {
+    const rows = await fetchStatsResultSet(
+      "/stats/playercareerstats",
+      { PerMode: "PerGame", PlayerID: playerId, LeagueID: "00" },
+      config.resultSet
+    );
+    if (rows.length) {
+      stats[key] = { type: config.type, seasons: toSeasonRows(rows) };
+    }
+  }
+
   return stats;
 }
 
-
-async function scrapePlayerStats(statsLink) {
-  const pageContent = await loadDynamicPage(BASEURL.concat(statsLink));
-  const dom = new JSDOM(pageContent);
-
-
-  const statsTable = dom.window.document.querySelectorAll(".Crom_table__p1iZz");
-  const stats = {
-    regSeason: undefined,
-    playoffs: undefined
-  }
-  // neki igraci nemaju statistiku
-  if (statsTable.item(0)) {
-    if (statsTable.item(0).querySelector(".Crom_colgroup__qYrzI").textContent.toLowerCase().includes("regular season")) {
-      const regSeasonStats = await scrapePlayerStatsTable(statsTable.item(0));
-      stats.regSeason = regSeasonStats;
-    }
-  }
-  if (statsTable.item(1)) {
-    if (statsTable.item(1).querySelector(".Crom_colgroup__qYrzI").textContent.toLowerCase().includes("playoffs")) {
-      playoffStats = await scrapePlayerStatsTable(statsTable.item(1));
-      stats.playoffs = playoffStats
-    }
-  }
-  return stats;
-}
-
-
-
-module.exports.getPlayerLinks = scrapeUntilSuccessful(getPlayerLinks);
 module.exports.scrapePlayer = scrapeUntilSuccessful(scrapePlayer);
-module.exports.scrapePlayerStats = scrapeUntilSuccessful(scrapePlayerStats);
-module.exports.getPlayerStatsLink = scrapeUntilSuccessful(getPlayerStatsLink);
+// Few attempts on purpose. When stats.nba.com is throttling, retries don't help,
+// and each one costs a full timeout - so the caller's circuit breaker detects the
+// outage quickly instead of stalling the run player by player.
+module.exports.scrapePlayerStats = scrapeUntilSuccessful(scrapePlayerStats, 3);
 module.exports.createLinkFromPlayerId = createLinkFromPlayerId;
+module.exports.headshotURL = headshotURL;
+module.exports.CAREER_TYPES = CAREER_TYPES;

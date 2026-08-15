@@ -1,5 +1,3 @@
-const fs = require("fs").promises;
-const puppeteer = require("puppeteer");
 const logger = require("../config/logger");
 
 module.exports.transformLabel = function (label) {
@@ -26,30 +24,19 @@ module.exports.mergeColumnRow = function (columnNames, rowStats) {
   return obj
 }
 
-module.exports.loadDynamicPage = async function (fullLink) {
-  const browser = await puppeteer.launch({
-    headless: false, args: [
-      '--disable-background-timer-throttling',
-      '--disable-backgrounding-occluded-windows',
-      '--disable-renderer-backgrounding'
-    ]
-  });
-  try {
-    const page = await browser.newPage();
-    await page.goto(fullLink);
-    await page.waitForSelector("#onetrust-accept-btn-handler");
-    await page.click("#onetrust-accept-btn-handler");
-
-    const content = await page.content();
-    await browser.close();
-    return content;
-  } catch (err) {
-    await browser.close();
-    logger.error("page load error", err);
+// 1 -> "1st", 2 -> "2nd", 23 -> "23rd"
+module.exports.ordinal = function (n) {
+  if (n === null || n === undefined || isNaN(n)) {
+    return "-";
   }
-
-};
-
+  const num = Number(n);
+  const mod100 = num % 100;
+  if (mod100 >= 11 && mod100 <= 13) {
+    return `${num}th`;
+  }
+  const suffix = { 1: "st", 2: "nd", 3: "rd" }[num % 10] || "th";
+  return `${num}${suffix}`;
+}
 
 function sleep(ms) {
   return new Promise((resolve) => {
@@ -59,16 +46,30 @@ function sleep(ms) {
 
 module.exports.sleep = sleep;
 
-module.exports.scrapeUntilSuccessful = function (wrapped) {
+// Retries a scrape a bounded number of times with exponential backoff, then gives
+// up and rethrows. The previous version looped forever, so a selector change or a
+// permanent 404 would spin silently instead of surfacing the failure.
+module.exports.scrapeUntilSuccessful = function (wrapped, attempts = 4) {
   return async function () {
-    while (true) {
+    let lastErr;
+    for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
-        const data = await wrapped.apply(this, arguments);
-        return data;
+        return await wrapped.apply(this, arguments);
       } catch (err) {
-        logger.error(err);
-        await sleep(1000);
+        lastErr = err;
+        const status = err.response && err.response.status;
+        if (status === 404 || err.permanent) {
+          // the resource genuinely isn't there - retrying can't help
+          throw err;
+        }
+        if (attempt < attempts) {
+          const backoff = 1000 * 2 ** (attempt - 1);
+          logger.warn(`${wrapped.name} failed (attempt ${attempt}/${attempts}): ${err.message}. retrying in ${backoff}ms`);
+          await sleep(backoff);
+        }
       }
     }
+    logger.error(`${wrapped.name} failed after ${attempts} attempts: ${lastErr.message}`);
+    throw lastErr;
   }
 }

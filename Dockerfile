@@ -1,22 +1,17 @@
-# FROM loadimpact/k6
-# RUN k6 login cloud -t LI_TOKEN
-
-FROM node:18
+FROM node:22-slim
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
-
-RUN npm install -g pm2
-
+# ci installs exactly what the lockfile pins; --omit=dev leaves out cypress,
+# jest, gulp and pm2's dev tooling
+RUN npm ci --omit=dev
 
 COPY . .
 
+ENV NODE_ENV=production
 ENV PORT=3000
-
 EXPOSE 3000
 
-# CMD ["npm", "run", "start:dev"]
-CMD ["pm2-runtime", "ecosystem.config.js"]
+CMD ["node", "src/app.js"]
