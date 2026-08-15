@@ -3,7 +3,7 @@
 A server-rendered NBA statistics site. Browse all 30 teams, their rosters, every player's
 career numbers, and the full box score of every game in the season.
 
-**Live:** _(add the deployment URL here)_
+**Live:** https://nba-stats-orcin.vercel.app
 
 ---
 
