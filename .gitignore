@@ -141,3 +141,6 @@ dmypy.json
 # vercel
 .vercel
 .env*
+
+# msys/git-bash crash dumps
+*.stackdump

@@ -2,9 +2,8 @@
   "name": "nba-stats",
   "version": "2.0.0",
   "description": "NBA statistics site - Express + MongoDB, data scraped from nba.com",
-  "main": "src/app.js",
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node src/app.js",
@@ -17,7 +16,7 @@
     "scrape:summary": "node src/db.js summary",
     "build:css": "gulp buildStylesProd",
     "watch:css": "gulp",
-    "test": "jest test/*.test.js",
+    "test": "jest",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
