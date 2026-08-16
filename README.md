@@ -108,7 +108,8 @@ five starters carry a position in nba.com's feed).
 
 ## Running locally
 
-**Requirements:** Node.js 20+, and a MongoDB database (Atlas free tier is enough).
+**Requirements:** Node.js 22 (pinned in `engines`, so Vercel builds on the same major
+that development uses), and a MongoDB database (Atlas free tier is enough).
 
 ```bash
 git clone https://github.com/SigmaGrindset/nba-stats.git
