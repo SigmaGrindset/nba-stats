@@ -440,6 +440,31 @@
   text-align: left;
   background-color: black;
 }
+.stats-table-wrapper .season-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 0;
+  background: #212121;
+}
+.stats-table-wrapper .season-picker .season-picker-link {
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background-color: transparent;
+  color: white;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.stats-table-wrapper .season-picker .season-picker-link:hover {
+  border-color: white;
+}
+.stats-table-wrapper .season-picker .season-picker-link-active {
+  background-color: white;
+  border-color: white;
+  color: black;
+  font-weight: 700;
+}
 .stats-table-wrapper .stats-table-content-wrapper {
   overflow-x: auto;
   padding: 0.75rem 1rem;

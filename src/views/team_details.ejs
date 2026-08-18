@@ -209,7 +209,17 @@
 
       <div class="menu-content menu-content-hidden" id="schedule">
         <div class="stats-table-wrapper">
-          <div class="table-heading">Games</div>
+          <div class="table-heading">Games<%= season ? ` - ${season}` : "" %></div>
+
+          <% if (seasons.length > 1) { %>
+          <div class="season-picker">
+            <% seasons.forEach(option => { %>
+            <a class="season-picker-link<%= option === season ? " season-picker-link-active" : "" %>"
+              href="/team/<%= team._id %>?season=<%= option %>#schedule"><%= option %></a>
+            <% }) %>
+          </div>
+          <% } %>
+
           <div class="stats-table-content-wrapper">
 
 

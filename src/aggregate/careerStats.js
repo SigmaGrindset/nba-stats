@@ -34,6 +34,27 @@ function percentage(made, attempted) {
   return attempted > 0 ? round(made / attempted, 3) : 0;
 }
 
+// Player.age is whatever the player's age was on the day they were scraped, so
+// using it directly would stamp today's age onto every season a player ever
+// played. The NBA quotes a season's age as of February 1st, midway through it.
+//
+// birthdate is stored as the display string players.js formatted ("Mar 3, 1998"),
+// which Date parses to local midnight - so the reference date is built with local
+// accessors too rather than mixing the two calendars.
+function ageDuringSeason(birthdate, season) {
+  const born = new Date(birthdate);
+  if (!birthdate || isNaN(born.getTime())) {
+    return null;
+  }
+  const reference = new Date(Number(String(season).split("-")[0]) + 1, 1, 1);
+  let age = reference.getFullYear() - born.getFullYear();
+  if (reference.getMonth() < born.getMonth()
+    || (reference.getMonth() === born.getMonth() && reference.getDate() < born.getDate())) {
+    age -= 1;
+  }
+  return age;
+}
+
 function buildPipeline(seasonSuffix) {
   const averages = {};
   AVERAGED.forEach(field => {
@@ -110,15 +131,22 @@ async function deriveCareerStats(season) {
   const rows = await PlayerGameStats.aggregate(buildPipeline(seasonSuffix));
 
   if (!rows.length) {
-    logger.warn("no game stats found to derive career stats from - scrape games first");
+    logger.warn(`no ${season} game stats found to derive career stats from - scrape games first`);
     return { inserted: 0, existing: 0 };
   }
 
-  // team tricodes and player ages come from documents we already scraped
+  // team tricodes and birthdates come from documents we already scraped
   const teams = await Team.find({}, { abbreviation: 1 }).lean();
   const teamAbbrev = new Map(teams.map(t => [String(t._id), t.abbreviation]));
-  const players = await Player.find({}, { age: 1 }).lean();
-  const playerAge = new Map(players.map(p => [p._id, parseInt(p.age, 10) || 0]));
+  const players = await Player.find({}, { age: 1, birthdate: 1 }).lean();
+  const playerRecords = new Map(players.map(p => [p._id, p]));
+
+  // One query rather than one per row. Across several seasons this is thousands
+  // of rows, and on a re-run every one of them already exists.
+  const storedKeys = new Set(
+    (await PlayerCareerStats.find({ season_id: season }, { player: 1, team: 1, type: 1 }).lean())
+      .map(row => `${row.type}|${row.player}|${row.team}`)
+  );
 
   let inserted = 0;
   let existing = 0;
@@ -128,23 +156,20 @@ async function deriveCareerStats(season) {
     const type = SEASON_TYPES[seasonType];
     const teamCode = teamAbbrev.get(String(team)) || "NBA";
 
-    const alreadyStored = await PlayerCareerStats.findOne({
-      type,
-      player,
-      season_id: season,
-      team: teamCode
-    });
-    if (alreadyStored) {
+    if (storedKeys.has(`${type}|${player}|${teamCode}`)) {
       existing++;
       continue;
     }
+
+    const record = playerRecords.get(player) || {};
+    const age = ageDuringSeason(record.birthdate, season);
 
     const document = {
       season_id: season,
       player,
       type,
       team: teamCode,
-      player_age: playerAge.get(player) || 0,
+      player_age: age === null ? parseInt(record.age, 10) || 0 : age,
       gp: row.gp,
       gs: row.gs,
       min: round(row.min, 1),
@@ -165,7 +190,7 @@ async function deriveCareerStats(season) {
     }
   }
 
-  logger.info(`derived career stats: ${inserted} inserted, ${existing} already present`);
+  logger.info(`derived ${season} career stats: ${inserted} inserted, ${existing} already present`);
   return { inserted, existing };
 }
 

@@ -4,6 +4,7 @@ const Game = require("../models/Game");
 const TeamCurrentRoster = require("../models/TeamCurrentRoster");
 const PlayerCareerStats = require("../models/PlayerCareerStats");
 const PlayerGameStats = require("../models/PlayerGameStats");
+const { seasonIdPattern } = require("../utils/season");
 const logger = require("../config/logger");
 
 // These endpoints read their parameters from the query string. They previously
@@ -13,6 +14,22 @@ const logger = require("../config/logger");
 
 function notFound(res, message) {
   return res.status(404).json({ error: message });
+}
+
+// The collection-returning endpoints are paginated. Unbounded, a query like
+// "every box score line this team has produced" is tens of thousands of
+// documents with their refs populated, which is more than the serverless
+// response limit allows and more than any caller wanted in one go.
+const DEFAULT_LIMIT = 200;
+const MAX_LIMIT = 1000;
+
+function pagination(req) {
+  const requested = parseInt(req.query.limit, 10);
+  const skip = parseInt(req.query.skip, 10);
+  return {
+    limit: Math.min(requested > 0 ? requested : DEFAULT_LIMIT, MAX_LIMIT),
+    skip: skip > 0 ? skip : 0
+  };
 }
 
 function serverError(res, err) {
@@ -49,16 +66,19 @@ module.exports.player_get = async function (req, res) {
 
 module.exports.game_get = async function (req, res) {
   try {
-    const { gameId, teamId } = req.query;
+    const { gameId, teamId, season } = req.query;
 
     if (gameId) {
       const game = await Game.findOne({ _id: gameId });
       return game ? res.json(game) : notFound(res, "Game not found.");
     }
     if (teamId) {
-      const games = await Game.find({
-        $or: [{ homeTeam: teamId }, { awayTeam: teamId }]
-      }).sort({ dateEpoch: 1 });
+      const { limit, skip } = pagination(req);
+      const query = { $or: [{ homeTeam: teamId }, { awayTeam: teamId }] };
+      if (season) {
+        query._id = seasonIdPattern(season);
+      }
+      const games = await Game.find(query).sort({ dateEpoch: 1 }).skip(skip).limit(limit);
       return res.json(games);
     }
 
@@ -101,7 +121,7 @@ module.exports.playercareerstats_get = async function (req, res) {
 
 module.exports.playergamestats_get = async function (req, res) {
   try {
-    const { playerId, teamId, gameId } = req.query;
+    const { playerId, teamId, gameId, season } = req.query;
 
     // previously queried the Player model on fields it doesn't have, and never
     // sent a response - so the request hung until the client timed out
@@ -116,7 +136,12 @@ module.exports.playergamestats_get = async function (req, res) {
       });
     }
 
-    return res.json(await PlayerGameStats.find(query));
+    if (season) {
+      query.game = gameId || seasonIdPattern(season);
+    }
+
+    const { limit, skip } = pagination(req);
+    return res.json(await PlayerGameStats.find(query).skip(skip).limit(limit));
   } catch (err) {
     return serverError(res, err);
   }

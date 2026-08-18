@@ -14,8 +14,12 @@ module.exports.gamedetails_get = async (req, res) => {
     });
   }
 
-  const awayTeamStats = await PlayerGameStats.find({ game: gameId, team: game.awayTeam._id });
-  const homeTeamStats = await PlayerGameStats.find({ game: gameId, team: game.homeTeam._id });
+  // autopopulate resolves a reference to a player we never stored as null, and
+  // the view dereferences it - one such row would take down the whole box score
+  const named = rows => rows.filter(row => row.player && row.stats);
+
+  const awayTeamStats = named(await PlayerGameStats.find({ game: gameId, team: game.awayTeam._id }));
+  const homeTeamStats = named(await PlayerGameStats.find({ game: gameId, team: game.homeTeam._id }));
 
   const teamStats = [
     {

@@ -16,6 +16,8 @@ jest.setTimeout(10 * 60 * 1000);
 
 const TEAM_ID = 1610612738;
 const PLAYER_ID = 1628369;
+// a second player, with a birthdate and games five seasons apart
+const VETERAN_ID = 201939;
 
 const REGULAR_SEASON_GAMES = [
   { game: "0022500001", started: true, min: "30:00", fgm: 10, fga: 20, fg3m: 2, fg3a: 5, ftm: 4, fta: 4, pts: 26, reb: 8, oreb: 2, dreb: 6, ast: 5, stl: 1, blk: 0, to: 3, pf: 2 },
@@ -36,7 +38,12 @@ beforeAll(async () => {
     globalImageURL: "x", imageURL: "x", record: "1-0", placementText: "1st",
     records: [], coaching: [], background: [], achievements: []
   });
+  // no birthdate, so the stored age is the only thing to fall back on
   await Player.create({ _id: PLAYER_ID, name: "Jayson Tatum", imageURL: "x", age: "28" });
+  await Player.create({
+    _id: VETERAN_ID, name: "Stephen Curry", imageURL: "x",
+    age: "38", birthdate: "Mar 14, 1988"
+  });
 
   for (const game of [...REGULAR_SEASON_GAMES, PLAYOFF_GAME]) {
     const box = await BoxScoreStats.create({ ...game, fg_pct: 0, fg3_pct: 0, ft_pct: 0, plus_minus: "0" });
@@ -51,6 +58,19 @@ beforeAll(async () => {
     game: "0022500004", player: PLAYER_ID, team: TEAM_ID, stats: dnpBox._id, started: false
   });
 
+  // the same player in two seasons, five years apart
+  for (const gameId of ["0022000001", "0022500005"]) {
+    const box = await BoxScoreStats.create({
+      min: "35:00", fgm: 10, fga: 20, fg3m: 6, fg3a: 12, ftm: 4, fta: 4, pts: 30,
+      reb: 5, oreb: 0, dreb: 5, ast: 6, stl: 1, blk: 0, to: 3, pf: 2,
+      fg_pct: 0, fg3_pct: 0, ft_pct: 0, plus_minus: "0"
+    });
+    await PlayerGameStats.create({
+      game: gameId, player: VETERAN_ID, team: TEAM_ID, stats: box._id, started: true
+    });
+  }
+
+  await deriveCareerStats("2020-21");
   await deriveCareerStats("2025-26");
 });
 
@@ -108,8 +128,27 @@ describe("derived career stats", () => {
     }).lean();
 
     expect(reg.team).toEqual("BOS");
+    // no birthdate on this player, so the age falls back to the stored one
     expect(reg.player_age).toEqual(28);
     expect(reg.season_id).toEqual("2025-26");
+  });
+
+  test("keeps each season's row separate", async () => {
+    const rows = await PlayerCareerStats
+      .find({ player: VETERAN_ID, type: "Career Regular Season Stats" })
+      .sort({ season_id: 1 }).lean();
+
+    expect(rows.map(row => row.season_id)).toEqual(["2020-21", "2025-26"]);
+    rows.forEach(row => expect(row.gp).toEqual(1));
+  });
+
+  test("ages a player as of the season played, not as of today", async () => {
+    const rows = await PlayerCareerStats
+      .find({ player: VETERAN_ID, type: "Career Regular Season Stats" })
+      .sort({ season_id: 1 }).lean();
+
+    // born Mar 14 1988, measured at February 1st in each season
+    expect(rows.map(row => row.player_age)).toEqual([32, 37]);
   });
 
   test("is idempotent - a second run inserts nothing", async () => {

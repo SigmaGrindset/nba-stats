@@ -34,6 +34,39 @@
     background-color: $caption-bg;
   }
 
+  // Sits between the heading and the table, so it takes the table's background
+  // and leaves the rounded corners to the two blocks around it.
+  .season-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: $table-padding-vertical $table-padding-horizontal 0;
+    background: $content-bg;
+
+    // The selected season is a pill in the table's own row colour, so it reads
+    // as attached to the table below it; the rest sit back against the strip.
+    .season-picker-link {
+      padding: .25rem .6rem;
+      border-radius: $border-radius;
+      border: 1px solid rgba($headers-col, .35);
+      background-color: transparent;
+      color: $headers-col;
+      font-size: .85rem;
+      text-decoration: none;
+    }
+
+    .season-picker-link:hover {
+      border-color: $headers-col;
+    }
+
+    .season-picker-link-active {
+      background-color: $cell-bg;
+      border-color: $cell-bg;
+      color: $content-col;
+      font-weight: 700;
+    }
+  }
+
   .stats-table-content-wrapper {
     overflow-x: auto;
     padding: $table-padding-vertical $table-padding-horizontal;

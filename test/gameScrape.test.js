@@ -1,13 +1,6 @@
-const {
-  scrapeGame,
-  regularSeasonGameIds,
-  postSeasonGameIds,
-  buildGameId
-} = require("../src/scrape/games");
+const { scrapeGame } = require("../src/scrape/games");
 
 jest.setTimeout(90 * 1000);
-
-const SEASON = "2025-26";
 
 const STAT_FIELDS = [
   "min", "fgm", "fga", "fg_pct", "fg3m", "fg3a", "fg3_pct",
@@ -15,34 +8,10 @@ const STAT_FIELDS = [
   "stl", "blk", "to", "pf", "pts", "plus_minus"
 ];
 
-describe("game id enumeration", () => {
-
-  test("builds well formed ids for a season", () => {
-    expect(buildGameId(SEASON, "regular", 1)).toEqual("0022500001");
-    expect(buildGameId(SEASON, "regular", 1230)).toEqual("0022501230");
-    // series are numbered from 0, so the Finals are round 4 series 0
-    expect(buildGameId(SEASON, "playoffs", "401")).toEqual("0042500401");
-  });
-
-  test("covers a full regular season", () => {
-    const ids = regularSeasonGameIds(SEASON);
-    expect(ids.length).toEqual(1230);
-    expect(new Set(ids).size).toEqual(1230);
-    ids.forEach(id => expect(id).toMatch(/^00225\d{5}$/));
-  });
-
-  test("postseason candidates shrink each round", () => {
-    const ids = postSeasonGameIds(SEASON);
-    // (8 + 4 + 2 + 1) series * up to 7 games
-    expect(ids.length).toEqual(105);
-    expect(new Set(ids).size).toEqual(ids.length);
-  });
-});
-
 describe("game scrape", () => {
 
   test("returns game metadata and both box scores", async () => {
-    const gameData = await scrapeGame(regularSeasonGameIds(SEASON)[0]);
+    const gameData = await scrapeGame("0022500001");
 
     expect(typeof gameData.id).toEqual("string");
     expect(gameData.attendance).toBeDefined();
@@ -78,8 +47,57 @@ describe("game scrape", () => {
     });
   });
 
-  test("rejects an id that never existed, without retrying", async () => {
-    // one past the end of the regular season
-    await expect(scrapeGame("0022501231")).rejects.toMatchObject({ permanent: true });
+  test("reads an older season the same way", async () => {
+    // 2020-21 was a 72-game season played largely without crowds, so it exercises
+    // both the shortened schedule and the "Not reported" attendance path
+    const gameData = await scrapeGame("0022000180");
+
+    expect(gameData.id).toEqual("0022000180");
+    expect(gameData.date).toContain("2021");
+    expect(gameData.boxScore.length).toEqual(2);
+  });
+
+  test("lists a player once even when nba.com lists them twice", async () => {
+    // 2021 Conference Finals game 1 carries personId 1626171 twice: "Bobby
+    // Portis Jr." with an empty line and "Bobby Portis" with the 14:42 he played.
+    // Two rows for one player violates PlayerGameStats' unique index.
+    const gameData = await scrapeGame("0042000301");
+
+    const bucks = gameData.boxScore[1];
+    const portis = bucks.playerStats.filter(player => player.player === 1626171);
+
+    expect(portis.length).toEqual(1);
+    expect(portis[0].min).toEqual("14:42");
+
+    gameData.boxScore.forEach(teamBoxScore => {
+      const ids = teamBoxScore.playerStats.map(player => player.player);
+      expect(new Set(ids).size).toEqual(ids.length);
+    });
+  });
+
+  test("marks exactly five starters per team", async () => {
+    // started is inferred from the position field, which only the starting five
+    // carry. It holds from 2019-20 on but over-reports in older seasons, which is
+    // where the scraped range stops.
+    for (const gameId of ["0022500001", "0022000180"]) {
+      const gameData = await scrapeGame(gameId);
+      gameData.boxScore.forEach(teamBoxScore => {
+        const starters = teamBoxScore.playerStats.filter(player => player.started);
+        expect(starters.length).toEqual(5);
+      });
+    }
+  });
+
+  test("treats an empty page as worth retrying, not as a game that never was", async () => {
+    // Every id now comes from a schedule card that reported the game final, so a
+    // page with no game object is either nba.com hiccupping or a page it will
+    // never render, and the two look identical from here. Flagged permanent - as
+    // this was while ids were enumerated rather than discovered - the retry
+    // wrapper gives up on both, and a run is quietly short a game it could have
+    // had. 0022000816 came back empty once and served fine three times after.
+    const error = await scrapeGame("0022501231").catch(err => err);
+
+    expect(error.message).toMatch(/no game data/);
+    expect(error.permanent).toBeUndefined();
   });
 });

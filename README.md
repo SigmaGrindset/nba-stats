@@ -1,7 +1,7 @@
 # NBA Stats
 
 A server-rendered NBA statistics site. Browse all 30 teams, their rosters, every player's
-career numbers, and the full box score of every game in the season.
+career numbers, and the full box score of every game since the 2019-20 season.
 
 **Live:** https://nba-stats-orcin.vercel.app
 
@@ -13,7 +13,7 @@ career numbers, and the full box score of every game in the season.
 |------|-------|---------|
 | Home | `/` | Landing page with search |
 | Teams | `/teams` | All 30 franchises |
-| Team | `/team/:teamId` | Record, league ranks, roster, every game played, franchise background |
+| Team | `/team/:teamId` | Record, league ranks, roster, games by season, franchise background |
 | Player | `/player/:playerId` | Bio, current averages, career stats split by regular season and playoffs |
 | Game | `/game/:gameId` | Full box score for both teams, plus arena, attendance and officials |
 | Search | `/search/:query` | Fuzzy autocomplete across players and teams |
@@ -56,6 +56,8 @@ src/
   views/              EJS templates
   public/             Compiled CSS, client JS, static assets
   scrape/             nba.com ingestion (not used at request time)
+  aggregate/          Career stats rebuilt from stored box scores
+  utils/              Season/game-id helpers, worker pool, retry wrapper
   config/             Logger and cached database connection
 ```
 
@@ -86,25 +88,53 @@ Game identifiers are structured rather than arbitrary:
 ││└┬┘└─┬─┘
 ││ │   └──── sequence within the season
 ││ └──────── season start year (2025 → "25")
-│└────────── season type (2 regular, 4 playoffs, 5 play-in)
+│└────────── season type (2 regular, 4 playoffs, 5 play-in, 6 NBA Cup final)
 └─────────── league (00 = NBA)
 ```
 
-That makes a season's games directly enumerable, so ingestion doesn't depend on schedule
-endpoints — which matters, because nba.com's public schedule rolls over to the upcoming
-season the moment the previous one ends.
+Because the id carries the season, nothing stores it a second time on every document:
+`src/utils/season.js` reads it back out, which is how the career stats aggregation and the
+team page's season filter scope their queries.
+
+Which ids exist comes from `src/scrape/schedule.js`. nba.com's `/games` page is a date
+picker, and asking it for one date returns that day's game cards *and* a
+`{ "YYYY-MM-DD": gameCount }` map covering the whole calendar year — so one request per
+year yields the exact set of dates worth visiting, and nothing is fetched on spec.
+
+Deriving the ids from the id pattern instead would need the length of each season's
+sequence, and that isn't a constant: 2019-20 stopped dead in March and resumed with eight
+seeding games a team, 2020-21 was 72 games rather than 82, the play-in only exists from
+2019-20 on, and the NBA Cup final has a season type of its own. Every card is also
+labelled with its type, which is how preseason, All-Star and Summer League games are kept
+out.
+
+Discovery and the game scrape both run through a worker pool
+(`src/utils/pool.js`). nba.com serves this happily in parallel — measured 4.3 pages/s with
+eight requests in flight and no failures — and past that the local connection saturates
+before the server objects.
+
+First sightings of a player go through their own gate, because each one also costs two
+requests to `stats.nba.com`, which throttles far harder. While that host is still being
+called they are fetched one at a time; once the circuit breaker below has given up on it,
+nothing but nba.com is left and the gate widens. That matters more than it sounds — a game
+waits on every unfamiliar name in its box score, and the first night of a new season is
+twenty of them at once.
 
 Career stats come from `stats.nba.com`, which rate-limits by IP and can refuse for hours
 at a time. Requests are paced and retried with exponential backoff, and a circuit breaker
 stops asking once it has clearly stopped answering — otherwise a single run could spend
 hours timing out player by player.
 
-Because that source can't be relied on, career numbers for the scraped season are also
-derivable without it: `src/aggregate/careerStats.js` rebuilds them from the box scores
-already in the database using a MongoDB aggregation, and inserts only the rows that are
+Because that source can't be relied on, career numbers are also derivable without it:
+`src/aggregate/careerStats.js` rebuilds them from the box scores already in the database
+using a MongoDB aggregation, one season at a time, and inserts only the rows that are
 missing. Shooting percentages are computed from summed makes and attempts rather than by
-averaging per-game percentages, and games started are counted from the box score (only the
-five starters carry a position in nba.com's feed).
+averaging per-game percentages; games started are counted from the box score (only the
+five starters carry a position in nba.com's feed); and a row's age is the player's age on
+February 1st of that season, not their age today.
+
+The NBA Cup final is stored but deliberately left out of these totals — it has its own
+season type precisely because it doesn't count towards regular season records.
 
 ## Running locally
 
@@ -119,24 +149,35 @@ npm install
 cp .env.example .env      # then fill in MONGO_URI
 ```
 
-Populate the database — this takes roughly an hour, and is safe to re-run since it skips
-anything already stored:
+Populate the database — seven seasons is around 8,900 games and takes a couple of hours. It
+is safe to re-run and to interrupt, since it skips anything already stored:
 
 ```bash
 npm run scrape:teams        # 30 teams, rosters, player bios and career stats
-npm run scrape:games        # ~1,230 regular season games, plus play-in and playoffs
+npm run scrape:games        # every game from 2019-20 on, with play-in and playoffs
 npm run scrape:careerstats  # backfill career stats from box scores if needed
 npm run scrape:summary      # print collection counts
 ```
 
-`TEAM_LIMIT` and `GAME_LIMIT` cap how much is fetched, which is useful for checking the
-whole pipeline works before committing to a full run:
+| Variable | Default | Effect |
+|----------|---------|--------|
+| `SEASONS` | `2019-20` … `2025-26` | Comma-separated list of seasons to ingest |
+| `SEASON` | — | Shorthand for a single season |
+| `CONCURRENCY` | `6` | Pages in flight while discovering and scraping games |
+| `TEAM_LIMIT` / `GAME_LIMIT` | unlimited | Cap how much is fetched |
+
+The limits are there to check the whole pipeline works before committing to a full run:
 
 ```bash
-TEAM_LIMIT=1 GAME_LIMIT=5 npm run scrape
+SEASON=2025-26 TEAM_LIMIT=1 GAME_LIMIT=5 npm run scrape
 ```
 
-`SEASON` selects which season to ingest (default `2025-26`).
+Scraping further back than 2019-20 works, but the data thins out as you go: plus/minus
+stops at 1996-97, turnovers and offensive rebounds around 1985-86, steals and blocks at
+1973-74, and rebounds and assists at 1960-61 — a box score from 1946-47 carries points and
+shooting only. The starters heuristic degrades too, over-reporting through the 2000s and
+returning nobody at all before that, and arena names and attendance for old games come
+back filled in with present-day values. 2019-20 is where all of that is still sound.
 
 Then start the app:
 
@@ -171,13 +212,19 @@ minutes per IP.
 |----------|-----------|
 | `/api/team` | `teamId` or `name` |
 | `/api/player` | `playerId`, `name`, `number` or `teamId` |
-| `/api/game` | `gameId` or `teamId` |
+| `/api/game` | `gameId` or `teamId`, optionally `season` |
 | `/api/player-career-stats` | `playerId` |
-| `/api/player-game-stats` | any of `playerId`, `teamId`, `gameId` |
+| `/api/player-game-stats` | any of `playerId`, `teamId`, `gameId`, optionally `season` |
+
+The two endpoints that return collections take `limit` (200 by default, 1000 at most) and
+`skip`. Unpaginated, a query like "every box score line this team has produced" is tens of
+thousands of documents with their references populated — more than the serverless response
+limit allows, and more than any caller wanted in one go.
 
 ```bash
 curl 'http://localhost:3000/api/team?name=Boston%20Celtics'
 curl 'http://localhost:3000/api/player-game-stats?gameId=0022500001'
+curl 'http://localhost:3000/api/game?teamId=1610612738&season=2021-22'
 ```
 
 ## Testing
@@ -223,10 +270,10 @@ conventional (non-serverless) hosting.
 
 ## Notes
 
-Data covers the 2025-26 season. The scraper is deliberately polite — it paces requests and
-backs off on failure — so a full run is slow by design.
+Data covers the 2019-20 season onwards. The scraper backs off on failure and keeps new
+player lookups single-file, so a full run is slow by design.
 
-Career stats on the deployed instance are the derived kind described above, so they cover
-the scraped season rather than a player's full career. `stats.nba.com` blocks the IP the
-scrape ran from; re-running `npm run scrape:teams` from an unblocked network backfills the
-real multi-season tables in place, without disturbing anything else.
+Career stats on the deployed instance are the derived kind described above — one row per
+season the scrape covers, rather than a player's full career. `stats.nba.com` blocks the IP
+the scrape ran from; re-running `npm run scrape:teams` from an unblocked network backfills
+the real all-time tables in place, without disturbing anything else.

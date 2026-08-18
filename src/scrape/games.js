@@ -1,74 +1,8 @@
 const { fetchNextData } = require("./main");
 const { scrapeUntilSuccessful } = require("../utils/scrape_utils");
 
-// NBA game ids are structured, not arbitrary:
-//   <2-digit league><1-digit season type><2-digit season start year><5-digit sequence>
-// e.g. 0022500001 = league 00, type 2 (regular season), season 2025-26, game 1.
-// That means a season's games can be enumerated directly, which avoids the
-// schedule endpoints entirely - useful because nba.com's public schedule rolls
-// over to the upcoming season as soon as the previous one ends.
-const SEASON_TYPES = {
-  regular: "002",
-  playoffs: "004",
-  playin: "005"
-};
-
-const REGULAR_SEASON_GAMES = 1230; // 30 teams * 82 games / 2
-
-function seasonSuffix(season) {
-  // "2025-26" -> "25"
-  const startYear = String(season).split("-")[0];
-  return startYear.slice(-2);
-}
-
-function buildGameId(season, type, sequence) {
-  const prefix = SEASON_TYPES[type];
-  if (!prefix) {
-    throw new Error(`unknown season type: ${type}`);
-  }
-  return `${prefix}${seasonSuffix(season)}${String(sequence).padStart(5, "0")}`;
-}
-
-function regularSeasonGameIds(season) {
-  const ids = [];
-  for (let i = 1; i <= REGULAR_SEASON_GAMES; i++) {
-    ids.push(buildGameId(season, "regular", i));
-  }
-  return ids;
-}
-
-// Postseason sequence is 00<round><series><game>, with series numbered from 0
-// (so the Finals are round 4, series 0). Rounds halve each time. Series end in
-// four to seven games, so callers skip the candidates that don't resolve.
-function postSeasonGameIds(season) {
-  const ids = [];
-  const seriesPerRound = { 1: 8, 2: 4, 3: 2, 4: 1 };
-  for (const round of [1, 2, 3, 4]) {
-    for (let series = 0; series < seriesPerRound[round]; series++) {
-      for (let game = 1; game <= 7; game++) {
-        ids.push(buildGameId(season, "playoffs", `${round}${series}${game}`));
-      }
-    }
-  }
-  return ids;
-}
-
-// The play-in uses the same round/series/game sequence as the postseason, but
-// every series is a single game: round one is the 7v8 and 9v10 matchups in both
-// conferences, round two the two elimination games between their losers and
-// winners. Six games, and nba.com answers 503 rather than 404 for ids outside
-// that set, so enumerating a wider space would look like an outage.
-const PLAY_IN_SERIES_PER_ROUND = { 1: 4, 2: 2 };
-
-function playInGameIds(season) {
-  const ids = [];
-  for (const round of Object.keys(PLAY_IN_SERIES_PER_ROUND)) {
-    for (let series = 0; series < PLAY_IN_SERIES_PER_ROUND[round]; series++) {
-      ids.push(buildGameId(season, "playin", `${round}${series}1`));
-    }
-  }
-  return ids;
-}
+// Which games exist, and which ids they carry, comes from schedule.js.
+// utils/season.js documents the id format and derives the season back out of it.
 
 function gameURL(gameId) {
   return `/game/${gameId}`;
@@ -116,16 +50,50 @@ function mapStats(statistics) {
   };
 }
 
+// How much of a game a row actually represents: one that took the floor beats a
+// recorded DNP, which beats an empty placeholder.
+function rowWeight(player) {
+  const minutes = (player.statistics || {}).minutes;
+  if (minutes && minutes !== "PT00M00.00S" && minutes !== "0:00") {
+    return 2;
+  }
+  return player.comment && player.comment.trim() ? 1 : 0;
+}
+
+// nba.com sometimes lists the same player twice in one box score, under one
+// personId: a rename leaves both spellings side by side, one of them an empty
+// placeholder. Seen as "Bobby Portis Jr." next to "Bobby Portis" with his actual
+// 14:42 and 11 points, and as "Lester Quiñones" next to "Lester Quinones".
+//
+// It is intermittent rather than fixed - games that returned two rows during a
+// scrape have since served one - so this can't be pinned to a list of known ids;
+// the feed just has to be treated as capable of repeating a player. Two rows for
+// one player breaks the one-row-per-player-per-game index, so the fuller row
+// wins and the placeholder is dropped. A Map keeps the feed's original order.
+function dedupePlayers(players) {
+  const byId = new Map();
+  for (const player of players) {
+    const seen = byId.get(player.personId);
+    if (!seen || rowWeight(player) > rowWeight(seen)) {
+      byId.set(player.personId, player);
+    }
+  }
+  return [...byId.values()];
+}
+
 // db.js expects { teamId, playerStats: [...] } with the team totals as the last row.
 function buildTeamBoxScore(team) {
-  const playerStats = (team.players || []).map(player => {
+  const playerStats = dedupePlayers(team.players || []).map(player => {
     const didNotPlay = player.comment && player.comment.trim();
+    // db.js falls back to this when nba.com has dropped the player's own page
+    const name = [player.firstName, player.familyName].filter(Boolean).join(" ");
+
     if (didNotPlay) {
-      return { player: player.personId, status: player.comment.trim() };
+      return { player: player.personId, name, status: player.comment.trim() };
     }
     // only the five starters carry a position in this feed; the bench has ""
     const started = Boolean(player.position && player.position.trim());
-    return { player: player.personId, started, ...mapStats(player.statistics) };
+    return { player: player.personId, name, started, ...mapStats(player.statistics) };
   });
 
   playerStats.push({ player: "totals", ...mapStats(team.statistics) });
@@ -164,11 +132,17 @@ async function scrapeGame(gameId) {
   const game = pageProps.game;
 
   if (!game || !game.homeTeam || !game.awayTeam) {
-    // Enumerated ids include candidates that never existed (sweeps, byes).
-    // Flag as permanent so the retry wrapper doesn't back off on a known miss.
-    const err = new Error(`no game data for ${gameId}`);
-    err.permanent = true;
-    throw err;
+    // Not flagged permanent, deliberately. An empty page used to be the expected
+    // answer for enumerated ids that never existed, but every id now comes from
+    // a schedule card that reported the game final, so it means one of two
+    // things and they are indistinguishable from here: nba.com hiccupping
+    // (0022000816 came back empty once and served fine three times after), or a
+    // page it will never render (0022500259 through 0022500261 are empty every
+    // time, while the rest of that night's games are fine). Retrying costs a few
+    // seconds and recovers the first; the second fails and gets reported. Called
+    // permanent, the first was silently dropped from the run - the worse of the
+    // two mistakes, because nothing said so.
+    throw new Error(`no game data for ${gameId}`);
   }
   if (game.gameStatus !== 3) {
     // 1 = scheduled, 2 = live, 3 = final. Only finished games have a box score.
@@ -195,8 +169,4 @@ async function scrapeGame(gameId) {
 }
 
 module.exports.scrapeGame = scrapeUntilSuccessful(scrapeGame);
-module.exports.regularSeasonGameIds = regularSeasonGameIds;
-module.exports.postSeasonGameIds = postSeasonGameIds;
-module.exports.playInGameIds = playInGameIds;
-module.exports.buildGameId = buildGameId;
 module.exports.gameURL = gameURL;

@@ -17,8 +17,15 @@ module.exports.playerdetails_get = async (req, res) => {
     });
   }
 
-  const regSeasonStats = await PlayerCareerStats.find({ type: "Career Regular Season Stats", player: player._id });
-  const playoffsStats = await PlayerCareerStats.find({ type: "Career Playoffs Stats", player: player._id });
+  // oldest season first, the way a career table reads. Only mattered once more
+  // than one season was scraped, before which every player had a single row.
+  const bySeason = { season_id: 1, team: 1 };
+  const regSeasonStats = await PlayerCareerStats
+    .find({ type: "Career Regular Season Stats", player: player._id })
+    .sort(bySeason);
+  const playoffsStats = await PlayerCareerStats
+    .find({ type: "Career Playoffs Stats", player: player._id })
+    .sort(bySeason);
   let team = await TeamCurrentRoster.findOne({ player: player._id });
   if (team) {
     team = team.team;
