@@ -10,6 +10,7 @@ require("dotenv").config();
 
 const logger = require("./config/logger");
 const connectToDatabase = require("./config/db");
+const { pageTitle } = require("./utils/title");
 
 require("./models/Team");
 require("./models/Player");
@@ -59,6 +60,15 @@ app.use(rateLimit({
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Every view reads `title`, and each render below passes one describing that
+// page. This is the floor under them: a render that passes none still gets the
+// site title rather than an EJS ReferenceError - or the literal "Document"
+// every page used to be called.
+app.use((req, res, next) => {
+  res.locals.title = pageTitle();
+  next();
+});
+
 // Every request needs the database, and on serverless the connection may not
 // exist yet. Awaiting the cached connection here keeps controllers unchanged.
 app.use(async (req, res, next) => {
@@ -71,7 +81,7 @@ app.use(async (req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.render("home.ejs");
+  res.render("home.ejs", { title: pageTitle() });
 });
 
 // Atlas pauses a free cluster after 30 days with zero connections, which would
@@ -110,6 +120,7 @@ app.use((req, res) => {
     return res.status(404).json({ error: "Endpoint not found." });
   }
   return res.status(404).render("errors/error.ejs", {
+    title: pageTitle("Page not found"),
     error: { name: "Error 404", desc: "The page you requested doesn't exist." }
   });
 });
@@ -121,6 +132,7 @@ app.use((err, req, res, next) => {
     return res.status(500).json({ error: "Internal server error." });
   }
   return res.status(500).render("errors/error.ejs", {
+    title: pageTitle("Something went wrong"),
     error: { name: "Error 500", desc: "Something went wrong on our end." }
   });
 });

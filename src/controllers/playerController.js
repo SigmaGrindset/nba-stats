@@ -1,5 +1,6 @@
 
 const logger = require("../config/logger");
+const { pageTitle } = require("../utils/title");
 const Player = require("../models/Player");
 const PlayerCareerStats = require("../models/PlayerCareerStats");
 const PlayerGameStats = require("../models/PlayerGameStats");
@@ -13,6 +14,7 @@ module.exports.playerdetails_get = async (req, res) => {
   // so an unknown id threw a TypeError instead of rendering the 404 page
   if (!player) {
     return res.status(404).render("errors/error.ejs", {
+      title: pageTitle("Page not found"),
       error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." }
     });
   }
@@ -32,6 +34,6 @@ module.exports.playerdetails_get = async (req, res) => {
   };
   const stats = [regSeasonStats, playoffsStats];
 
-  return res.render("player_details.ejs", { player, stats, team });
+  return res.render("player_details.ejs", { player, stats, team, title: pageTitle(player.name) });
 }
 

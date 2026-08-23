@@ -2,6 +2,7 @@ const Player = require("../models/Player");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
 const logger = require("../config/logger");
+const { pageTitle } = require("../utils/title");
 
 
 module.exports.searchdata_get = async (req, res) => {
@@ -55,7 +56,11 @@ module.exports.search_get = async (req, res) => {
     });
 
 
-  return res.render("search.ejs", { query, queryResults: [players, teams] });
+  return res.render("search.ejs", {
+    query,
+    queryResults: [players, teams],
+    title: pageTitle(`Search: ${query}`)
+  });
 }
 module.exports.search_post = async (req, res) => {
   logger.info(req.body);

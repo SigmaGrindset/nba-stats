@@ -3,6 +3,7 @@ const Game = require("../models/Game");
 const TeamCurrentRoster = require("../models/TeamCurrentRoster");
 const { seasonFromGameId, seasonIdPattern } = require("../utils/season");
 const logger = require("../config/logger");
+const { pageTitle } = require("../utils/title");
 
 module.exports.teamdetails_get = async (req, res) => {
   const teamId = req.params.teamId;
@@ -11,6 +12,7 @@ module.exports.teamdetails_get = async (req, res) => {
   // same as the player page: team.id was dereferenced before the null check
   if (!team) {
     return res.status(404).render("errors/error.ejs", {
+      title: pageTitle("Page not found"),
       error: { name: "Error 404 not found", desc: "The resource you requested doesn't exist." }
     });
   }
@@ -49,10 +51,15 @@ module.exports.teamdetails_get = async (req, res) => {
   // autopopulate leaves the ref null if the referenced team is missing
   const games = allGames.filter(game => game.awayTeam && game.homeTeam);
 
-  return res.render("team_details.ejs", { team, teamPlayers, games, seasons, season });
+  return res.render("team_details.ejs", {
+    team, teamPlayers, games, seasons, season,
+    // the season is in the title because it is in the URL: two tabs of the
+    // same franchise are otherwise indistinguishable
+    title: pageTitle(team.name, season && `${season} season`)
+  });
 }
 
 
 module.exports.teamsdetails_get = async (req, res) => {
-  return res.render("teams.ejs");
+  return res.render("teams.ejs", { title: pageTitle("Teams") });
 }
